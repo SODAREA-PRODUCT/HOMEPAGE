@@ -304,23 +304,37 @@
   }
   .data.ph1 h2 .l1{ opacity:1; transform:none; filter:none; }
   .data.ph2 h2 .l2{ opacity:1; transform:none; filter:none; }
-  .tagwall{
-    position:absolute; z-index:1; left:0; right:0; bottom:clamp(44px,9vh,96px);
-    display:flex; flex-direction:column;
-    opacity:0; transform:translateY(26px);
+  /* tre stilla kategorier — ett nyckelord i taget, mjuk crossfade */
+  .trust{
+    position:absolute; z-index:1; left:0; right:0; bottom:clamp(48px,10vh,110px);
+    display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(18px,4vw,64px);
+    max-width:1060px; margin:0 auto; text-align:center;
+    padding-left:max(var(--gutter), env(safe-area-inset-left));
+    padding-right:max(var(--gutter), env(safe-area-inset-right));
+    opacity:0; transform:translateY(24px);
     transition:opacity 1.1s var(--exp), transform 1.1s var(--exp);
-    -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
   }
-  .data.ph2 .tagwall{ opacity:1; transform:none; }
-  .tagrow{ display:flex; gap:0; width:max-content; will-change:transform; }
-  .tagrow.a{ animation:tag-l 80s linear infinite; }
-  .tag{
-    flex:none; font-family:'Readex Pro'; font-weight:500; font-size:clamp(15px,1.2vw + 8px,19px);
-    letter-spacing:.01em; color:#fff; opacity:.85; white-space:nowrap;
-    padding:0 clamp(20px,2.6vw,38px); transition:opacity .3s var(--ease);
+  .data.ph2 .trust{ opacity:1; transform:none; }
+  .tcat{
+    font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+    color:rgba(255,255,255,.55); margin-bottom:13px;
   }
-  .tag:hover{ opacity:1; }
-  @keyframes tag-l{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  .tkw{
+    position:relative; height:1.65em;
+    font-family:'Readex Pro'; font-weight:500; font-size:clamp(1.02rem,.9vw + .72rem,1.3rem);
+    letter-spacing:-.01em; color:#fff;
+  }
+  .tkw .kw{
+    position:absolute; left:0; right:0; top:0; opacity:0; transform:translateY(9px);
+    transition:opacity .9s var(--exp), transform .9s var(--exp);
+  }
+  .tkw .kw.on{ opacity:1; transform:none; }
+  .tkw .kw.leaving{ opacity:0; transform:translateY(-7px); }
+  @media (max-width:620px){
+    .trust{ grid-template-columns:1fr; gap:16px; bottom:clamp(36px,6vh,64px); }
+    .tcat{ margin-bottom:5px; font-size:10.5px; }
+    .tkw{ font-size:1rem; height:1.5em; }
+  }
 
   /* ---------- HOW / 3 STEPS ---------- */
   .steps{ display:flex; flex-direction:column; gap:clamp(72px,9vw,132px); margin-top:76px; max-width:1480px; }
@@ -536,7 +550,20 @@
           <h2><span class="l1">Skapa <em class="gw">realistiska förslag</em></span> <span class="l2">baserade på verkliga <em class="gw">planförutsättningar</em></span></h2>
         </div>
       </div>
-      <div class="tagwall" id="tagwall" aria-hidden="true"></div>
+      <div class="trust" id="trustCols" aria-hidden="true">
+        <div class="tcol">
+          <div class="tcat">Planunderlag</div>
+          <div class="tkw"><span class="kw on">Detaljplaner</span><span class="kw">GIS-data</span><span class="kw">Fastighetsgränser</span><span class="kw">Gestaltningsplan</span><span class="kw">Topografi</span></div>
+        </div>
+        <div class="tcol">
+          <div class="tcat">Bestämmelser</div>
+          <div class="tkw"><span class="kw on">Planbestämmelser</span><span class="kw">Byggrätter</span><span class="kw">Byggnadsvolymer</span><span class="kw">Exploateringsgrad</span><span class="kw">Parkeringskrav</span><span class="kw">Skyddsavstånd</span></div>
+        </div>
+        <div class="tcol">
+          <div class="tcat">Platsförutsättningar</div>
+          <div class="tkw"><span class="kw on">Infrastruktur</span><span class="kw">Naturvärden</span><span class="kw">Buller</span><span class="kw">Siktlinjer</span></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -829,16 +856,29 @@ function buildCaseCover(node, seed){
   node.appendChild(svg);
 }
 
-/* ---- data tags ---- */
-function buildTags(){
-  const host = document.getElementById('tagwall'); if(!host) return;
-  const WORDS = ['Detaljplan','GIS-data','Fastighetsgränser','Byggnadsvolym','Byggnadshöjd','Nockhöjd','Exploateringsgrad','Prickmark','Naturmark','Skyddsavstånd','Siktlinjer','Topografi','Buller','Infrastruktur','VA','Skyfall','Solstudier','Trädinventering','Marklutning','Parkeringskrav','Planbestämmelser','Kommunala riktlinjer','Restriktioner'];
-  const r = document.createElement('div'); r.className = 'tagrow a';
-  WORDS.concat(WORDS).forEach(t=>{ const s = document.createElement('span'); s.className='tag'; s.textContent=t; r.appendChild(s); });
-  host.appendChild(r);
+/* ---- förtroende-kolumner: ett nyckelord i taget, lugn crossfade, lätt osynkade ---- */
+function startTrustCols(){
+  const cols = document.querySelectorAll('#trustCols .tkw');
+  if(!cols.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  cols.forEach((col, ci)=>{
+    const kws = col.querySelectorAll('.kw');
+    if(kws.length < 2) return;
+    let i = 0;
+    const period = 2600 + ci * 340;      /* olika takt per kolumn */
+    setTimeout(()=>{
+      setInterval(()=>{
+        const prev = kws[i];
+        i = (i + 1) % kws.length;
+        prev.classList.remove('on'); prev.classList.add('leaving');
+        setTimeout(()=> prev.classList.remove('leaving'), 950);
+        kws[i].classList.add('on');
+      }, period);
+    }, ci * 900);                         /* osynkade starter */
+  });
 }
+startTrustCols();
 
-buildStep1(); buildStep2(); buildStep3(); buildTags();
+buildStep1(); buildStep2(); buildStep3();
 document.querySelectorAll('.case-cover').forEach(c=> buildCaseCover(c, parseInt(c.dataset.scene,10)));
 
 /* ---- nav + reveal + hero rotate ---- */
