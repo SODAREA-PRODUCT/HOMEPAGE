@@ -270,9 +270,9 @@
   .shead p{ margin-top:22px; font-size:clamp(1rem,.6vw + .8rem,1.18rem); color:var(--body); max-width:56ch; }
 
   /* ---------- DATA (planförutsättningar) — sticky lock-bildspel ---------- */
-  .data{ position:relative; padding:0; height:240svh; }
+  .data{ position:relative; padding:0; height:240vh; height:240dvh; }
   .data-stick{
-    position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden;
+    position:sticky; top:0; min-height:100svh; height:100vh; height:100dvh; overflow:hidden;
     display:flex; flex-direction:column; justify-content:center;
   }
   .plan-slides{ position:absolute; inset:-9% 0; z-index:0; pointer-events:none; background:#0c0e16; will-change:transform; }
@@ -283,6 +283,11 @@
   }
   .pslide.on{ opacity:1; animation:kenburns 9.4s linear forwards; }
   @keyframes kenburns{ from{ transform:scale(1); } to{ transform:scale(1.085); } }
+  @keyframes pan{ from{ background-position:82% 50%; } to{ background-position:18% 50%; } }
+  @media (max-width:700px){
+    .pslide{ transform:none; background-position:82% 50%; }
+    .pslide.on{ animation:pan 9.8s linear forwards; }
+  }
   .pslide::after{
     content:''; position:absolute; inset:0;
     background:linear-gradient(180deg, rgba(10,13,20,.62) 0%, rgba(10,13,20,.44) 42%, rgba(10,13,20,.6) 100%);
@@ -316,12 +321,12 @@
   }
   .data.ph2 .trust{ opacity:1; transform:none; }
   .tcat{
-    font-size:12px; font-weight:600; letter-spacing:.24em; text-transform:uppercase;
+    font-size:12px; font-weight:600; letter-spacing:.32em; text-transform:uppercase;
     color:#fff; margin-bottom:13px;
   }
   .tkw{
     position:relative; height:1.65em;
-    font-family:'Readex Pro'; font-weight:500; font-size:clamp(1.02rem,.9vw + .72rem,1.3rem);
+    font-family:'Readex Pro'; font-weight:500; font-size:clamp(1.3rem, 1vw + .95rem, 1.7rem);
     letter-spacing:-.01em; color:#fff;
   }
   .tkw .kw{
@@ -333,7 +338,7 @@
   @media (max-width:620px){
     .trust{ grid-template-columns:1fr; gap:16px; bottom:clamp(36px,6vh,64px); }
     .tcat{ margin-bottom:5px; font-size:11px; }
-    .tkw{ font-size:1rem; height:1.5em; }
+    .tkw{ font-size:1.3rem; height:1.5em; }
   }
 
   /* ---------- HOW / 3 STEPS ---------- */
