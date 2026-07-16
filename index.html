@@ -272,7 +272,7 @@
   /* ---------- DATA (planförutsättningar) — sticky lock-bildspel ---------- */
   .data{ position:relative; padding:0; height:240svh; }
   .data-stick{
-    position:sticky; top:0; height:100svh; overflow:hidden;
+    position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden;
     display:flex; flex-direction:column; justify-content:center;
   }
   .plan-slides{ position:absolute; inset:-9% 0; z-index:0; pointer-events:none; background:#0c0e16; will-change:transform; }
@@ -285,7 +285,7 @@
   @keyframes kenburns{ from{ transform:scale(1); } to{ transform:scale(1.085); } }
   .pslide::after{
     content:''; position:absolute; inset:0;
-    background:linear-gradient(180deg, rgba(10,13,20,.62) 0%, rgba(10,13,20,.38) 42%, rgba(10,13,20,.58) 100%);
+    background:linear-gradient(180deg, rgba(10,13,20,.62) 0%, rgba(10,13,20,.44) 42%, rgba(10,13,20,.6) 100%);
     opacity:var(--dim, .6);
   }
   .data-stick > .wrap{ position:relative; z-index:1; }
@@ -316,8 +316,8 @@
   }
   .data.ph2 .trust{ opacity:1; transform:none; }
   .tcat{
-    font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
-    color:rgba(255,255,255,.55); margin-bottom:13px;
+    font-size:12px; font-weight:600; letter-spacing:.24em; text-transform:uppercase;
+    color:#fff; margin-bottom:13px;
   }
   .tkw{
     position:relative; height:1.65em;
@@ -332,7 +332,7 @@
   .tkw .kw.leaving{ opacity:0; transform:translateY(-7px); }
   @media (max-width:620px){
     .trust{ grid-template-columns:1fr; gap:16px; bottom:clamp(36px,6vh,64px); }
-    .tcat{ margin-bottom:5px; font-size:10.5px; }
+    .tcat{ margin-bottom:5px; font-size:11px; }
     .tkw{ font-size:1rem; height:1.5em; }
   }
 
@@ -541,9 +541,9 @@
   <section class="band data" id="planforutsattningar">
     <div class="data-stick">
       <div class="plan-slides" id="planSlides" aria-hidden="true">
-        <div class="pslide" style="background-image:url('media/plan-2.jpg'); --dim:.55;"></div>
-        <div class="pslide" style="background-image:url('media/plan-3.jpg'); --dim:.58;"></div>
-        <div class="pslide" style="background-image:url('media/plan-4.jpg'); --dim:.62;"></div>
+        <div class="pslide" style="background-image:url('media/plan-2.jpg'); --dim:.74;"></div>
+        <div class="pslide" style="background-image:url('media/plan-3.jpg'); --dim:.77;"></div>
+        <div class="pslide" style="background-image:url('media/plan-4.jpg'); --dim:.8;"></div>
       </div>
       <div class="wrap">
         <div class="shead">
