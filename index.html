@@ -269,13 +269,12 @@
   .shead p{ margin-top:22px; font-size:clamp(1rem,.6vw + .8rem,1.18rem); color:var(--body); max-width:56ch; }
 
   /* ---------- DATA (planförutsättningar) — fullscreen bildspel ---------- */
-  html{ scroll-snap-type:y proximity; }
   .data{
-    overflow:hidden; position:relative; scroll-snap-align:start;
+    overflow:hidden; position:relative;
     min-height:100svh; display:flex; flex-direction:column; justify-content:center;
     padding:clamp(72px,9vh,110px) 0;
   }
-  .plan-slides{ position:absolute; inset:0; z-index:0; pointer-events:none; background:#0c0e16; }
+  .plan-slides{ position:absolute; inset:-9% 0; z-index:0; pointer-events:none; background:#0c0e16; will-change:transform; }
   .pslide{
     position:absolute; inset:0; background-size:cover; background-position:center;
     opacity:0; transform:scale(1.085); will-change:opacity,transform;
@@ -293,10 +292,16 @@
   .data .shead h2{ color:#fff; }
   .data .shead h2 .soft{ color:rgba(255,255,255,.55); }
   .data .shead p{ margin-left:auto; margin-right:auto; color:rgba(255,255,255,.88); }
-  .tagwall{ margin-top:64px; display:flex; flex-direction:column; gap:26px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); }
+  .data h2 .l1, .data h2 .l2{
+    display:inline-block; opacity:0; transform:translateY(18px); filter:blur(6px);
+    transition:opacity .9s var(--exp), transform .9s var(--exp), filter .9s var(--exp);
+  }
+  .data .shead.in h2 .l1{ opacity:1; transform:none; filter:none; transition-delay:.15s; }
+  .data .shead.in h2 .l2{ opacity:1; transform:none; filter:none; transition-delay:.9s; }
+  .data .tagwall.reveal.in{ transition-delay:1.7s; }
+  .tagwall{ margin-top:clamp(80px,15vh,150px); display:flex; flex-direction:column; -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent); }
   .tagrow{ display:flex; gap:0; width:max-content; will-change:transform; }
-  .tagrow.a{ animation:tag-l 58s linear infinite; }
-  .tagrow.b{ animation:tag-r 66s linear infinite; }
+  .tagrow.a{ animation:tag-l 80s linear infinite; }
   .tag{
     flex:none; font-family:'Readex Pro'; font-weight:500; font-size:clamp(15px,1.2vw + 8px,19px);
     letter-spacing:.01em; color:#fff; opacity:.85; white-space:nowrap;
@@ -304,8 +309,6 @@
   }
   .tag:hover{ opacity:1; }
   @keyframes tag-l{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
-  @keyframes tag-r{ from{ transform:translateX(-50%); } to{ transform:translateX(0); } }
-  .data:hover .tagrow{ animation-play-state:paused; }
 
   /* ---------- HOW / 3 STEPS ---------- */
   .steps{ display:flex; flex-direction:column; gap:clamp(72px,9vw,132px); margin-top:76px; max-width:1480px; }
@@ -510,20 +513,17 @@
 
   <!-- ============ PLANFÖRUTSÄTTNINGAR (data tags) ============ -->
   <section class="band data" id="planforutsattningar">
-    <div class="plan-slides" aria-hidden="true">
-      <div class="pslide" style="background-image:url('media/plan-1.jpg'); --dim:.95;"></div>
+    <div class="plan-slides" id="planSlides" aria-hidden="true">
       <div class="pslide" style="background-image:url('media/plan-2.jpg'); --dim:.55;"></div>
-      <div class="pslide" style="background-image:url('media/plan-3.jpg'); --dim:.62;"></div>
+      <div class="pslide" style="background-image:url('media/plan-3.jpg'); --dim:.58;"></div>
       <div class="pslide" style="background-image:url('media/plan-4.jpg'); --dim:.62;"></div>
-      <div class="pslide" style="background-image:url('media/plan-5.jpg'); --dim:.58;"></div>
     </div>
     <div class="wrap">
-      <div class="shead reveal">
-        <h2>Genererat utifrån verkliga <span class="soft">planförutsättningar</span></h2>
-        <p>Varje visualisering utgår från detaljplanen och visar endast det som går att bygga.</p>
+      <div class="shead reveal blur">
+        <h2><span class="l1">Skapa realistiska förslag</span> <span class="soft l2">baserade på verkliga planförutsättningar</span></h2>
       </div>
     </div>
-    <div class="tagwall reveal" id="tagwall" aria-hidden="true"></div>
+    <div class="tagwall reveal blur" id="tagwall" aria-hidden="true"></div>
   </section>
 
   <!-- ============ HUR / 3 STEG ============ -->
@@ -818,15 +818,10 @@ function buildCaseCover(node, seed){
 /* ---- data tags ---- */
 function buildTags(){
   const host = document.getElementById('tagwall'); if(!host) return;
-  const A = ['Detaljplan','GIS-data','Fastighetsgränser','Byggnadsvolym','Byggnadshöjd','Nockhöjd','Exploateringsgrad','Prickmark','Naturmark','Skyddsavstånd','Siktlinjer'];
-  const B = ['Topografi','Buller','Infrastruktur','VA','Skyfall','Solstudier','Trädinventering','Marklutning','Parkeringskrav','Planbestämmelser','Kommunala riktlinjer','Restriktioner'];
-  function row(items, cls){
-    const r = document.createElement('div'); r.className = 'tagrow '+cls;
-    const seq = items.concat(items);
-    seq.forEach(t=>{ const s = document.createElement('span'); s.className='tag'; s.textContent=t; r.appendChild(s); });
-    return r;
-  }
-  host.appendChild(row(A,'a')); host.appendChild(row(B,'b'));
+  const WORDS = ['Detaljplan','GIS-data','Fastighetsgränser','Byggnadsvolym','Byggnadshöjd','Nockhöjd','Exploateringsgrad','Prickmark','Naturmark','Skyddsavstånd','Siktlinjer','Topografi','Buller','Infrastruktur','VA','Skyfall','Solstudier','Trädinventering','Marklutning','Parkeringskrav','Planbestämmelser','Kommunala riktlinjer','Restriktioner'];
+  const r = document.createElement('div'); r.className = 'tagrow a';
+  WORDS.concat(WORDS).forEach(t=>{ const s = document.createElement('span'); s.className='tag'; s.textContent=t; r.appendChild(s); });
+  host.appendChild(r);
 }
 
 buildStep1(); buildStep2(); buildStep3(); buildTags();
@@ -862,6 +857,24 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   const p = v.play();
   if(p && p.catch) p.catch(finish);
   setTimeout(finish, 8000); // säkerhetsnät om videon aldrig spelar/slutar
+})();
+
+/* parallax på bildlagret i plan-sektionen */
+(function(){
+  const sec = document.getElementById('planforutsattningar');
+  const layer = document.getElementById('planSlides');
+  if(!sec || !layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let ticking = false;
+  function upd(){
+    const r = sec.getBoundingClientRect();
+    if(r.bottom > 0 && r.top < innerHeight){
+      const p = (r.top + r.height/2 - innerHeight/2) / (innerHeight/2 + r.height/2);
+      layer.style.transform = `translateY(${(p * -42).toFixed(1)}px)`;
+    }
+    ticking = false;
+  }
+  window.addEventListener('scroll', ()=>{ if(!ticking){ requestAnimationFrame(upd); ticking = true; } }, {passive:true});
+  upd();
 })();
 
 /* plan-bildspel: smygande crossfade med långsam inzoomning (Ken Burns) */
