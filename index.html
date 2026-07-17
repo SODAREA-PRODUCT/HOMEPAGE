@@ -270,9 +270,9 @@
   .shead p{ margin-top:22px; font-size:clamp(1rem,.6vw + .8rem,1.18rem); color:var(--body); max-width:56ch; }
 
   /* ---------- DATA (planförutsättningar) — sticky lock-bildspel ---------- */
-  .data{ position:relative; padding:0; height:240vh; height:240dvh; }
+  .data{ position:relative; padding:0; height:240vh; height:240dvh; background:#0c0e16; }
   .data-stick{
-    position:sticky; top:0; min-height:100svh; height:100vh; height:100dvh; overflow:hidden;
+    position:sticky; top:0; height:100vh; height:100dvh; height:var(--appvh, 100dvh); overflow:hidden;
     display:flex; flex-direction:column; justify-content:center;
   }
   .plan-slides{ position:absolute; inset:-9% 0; z-index:0; pointer-events:none; background:#0c0e16; will-change:transform; }
@@ -288,7 +288,6 @@
   @media (max-width:700px){
     .pslide{ transform:none; background-position:82% 50%; }
     .pslide.on{ animation:pan 9.8s linear forwards; }
-    .data-stick{ height:100vh; height:100lvh; }
   }
   .pslide::after{
     content:''; position:absolute; inset:0;
@@ -297,7 +296,10 @@
   }
   .data-stick > .wrap{ position:relative; z-index:1; }
   .data .shead{ margin:0 auto; text-align:center; }
-  .data .shead h2{ color:#fff; }
+  .data .shead h2{
+    color:#fff;
+    filter:drop-shadow(0 2px 16px rgba(8,12,20,.5)) drop-shadow(0 0 44px rgba(8,12,20,.38));
+  }
   .data h2 .gw{
     font-style:normal;
     /* 25% uppljusade brandfärger — läsbarhet mot mörk fotobakgrund */
@@ -719,6 +721,14 @@
 </footer>
 
 <script>
+/* verklig viewporthöjd — svh/lvh/dvh spretar mellan Safari/Chrome på iOS */
+(function(){
+  function setVH(){ if(window.innerHeight > 0) document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px'); }
+  setVH();
+  window.addEventListener('resize', setVH, {passive:true});
+  window.addEventListener('orientationchange', setVH);
+})();
+
 const NS = 'http://www.w3.org/2000/svg';
 function el(tag, attrs){ const e = document.createElementNS(NS, tag); for(const k in attrs) e.setAttribute(k, attrs[k]); return e; }
 function svgRoot(vb){ return el('svg', {viewBox:vb, xmlns:NS}); }
