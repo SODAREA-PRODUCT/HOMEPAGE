@@ -350,50 +350,76 @@
     .tkw{ font-size:1.3rem; height:1.5em; }
   }
 
-  /* ---------- HOW / 3 STEPS ---------- */
-  .steps{ display:flex; flex-direction:column; gap:clamp(72px,9vw,132px); margin-top:76px; max-width:1480px; }
-  .step{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(40px,6vw,96px); align-items:center; }
-  .step:nth-child(even) .step-art{ order:2; }
-  .step-copy .pn{
-    font-family:'Readex Pro'; font-weight:600; font-size:13px; letter-spacing:.06em;
-    color:var(--muted); display:flex; align-items:center; gap:12px; margin-bottom:22px;
+  /* ---------- SÅ FUNGERAR SODAREA ---------- */
+  .how-head{ display:grid; grid-template-columns:1.25fr 1fr; gap:clamp(28px,5vw,90px); align-items:end; max-width:1480px; }
+  .how-head h2{ font-size:clamp(1.9rem, 3.4vw + .5rem, 3.15rem); line-height:1.08; }
+  .how-head .eyebrow{ margin-bottom:20px; }
+  .how-intro{ font-size:clamp(1rem,.5vw + .85rem,1.15rem); color:var(--body); max-width:44ch; justify-self:end; padding-bottom:6px; }
+  .how-band{
+    margin-top:clamp(40px,5vw,64px); display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+    max-width:1480px; border-radius:20px; overflow:hidden;
   }
-  .step-copy .pn::before{ content:''; width:28px; height:1px; background:var(--grad-135); }
-  .step-copy h3{ font-size:clamp(1.7rem,2.2vw + .6rem,2.5rem); margin-bottom:18px; }
-  .step-copy p{ font-size:clamp(1rem,.5vw + .82rem,1.15rem); color:var(--body); max-width:42ch; }
-  .step-art{
-    position:relative; border-radius:18px; border:1px solid var(--line);
-    background:linear-gradient(180deg,#fff, var(--panel));
-    box-shadow:var(--shadow-sm); overflow:hidden; aspect-ratio:5/4;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .step-art::before{
-    content:''; position:absolute; inset:0; pointer-events:none; opacity:.5;
-    background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
-    background-size:34px 34px; -webkit-mask-image:radial-gradient(circle at 50% 45%,#000,transparent 78%);
-    mask-image:radial-gradient(circle at 50% 45%,#000,transparent 78%);
-  }
-  .step-art svg{ position:relative; width:82%; height:82%; overflow:visible; }
-  .step-badge{
-    position:absolute; top:16px; left:16px; z-index:4; font-size:11px; font-weight:600;
-    letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
-    padding:6px 11px; border-radius:999px; background:rgba(255,255,255,.8);
+  .hb{ position:relative; margin:0; aspect-ratio:1/1; overflow:hidden; background:var(--panel); }
+  .hb img{ width:100%; height:100%; object-fit:cover; transition:transform .8s var(--exp); }
+  .hb:hover img{ transform:scale(1.045); }
+  .chip{
+    position:absolute; top:14px; left:14px; z-index:2;
+    font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ink);
+    padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.85);
     border:1px solid var(--line); backdrop-filter:blur(6px);
   }
-  /* scanning sweep for step 1 */
-  .scanline{
-    position:absolute; top:0; bottom:0; width:34%; z-index:3; pointer-events:none; left:-40%;
-    background:linear-gradient(90deg,transparent,rgba(61,126,255,.14),rgba(32,211,180,.05),transparent);
-    animation:scan 3.6s var(--ease) infinite;
+  .how-cols{ margin-top:clamp(28px,3.5vw,48px); display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(20px,3vw,48px); max-width:1480px; }
+  .hc-rail{ display:flex; align-items:center; margin-bottom:20px; }
+  .hc-rail .n{
+    flex:none; width:34px; height:34px; border-radius:50%; border:1.5px solid var(--azure);
+    display:grid; place-items:center; font-family:'Readex Pro'; font-weight:600; font-size:12.5px; color:var(--azure);
   }
-  .scanline::after{ content:''; position:absolute; right:33%; top:0; bottom:0; width:1.5px; background:linear-gradient(180deg,transparent,var(--azure),transparent); opacity:.7; }
-  @keyframes scan{ 0%{ left:-40%; } 60%,100%{ left:120%; } }
-  @media (max-width:820px){
-    .steps{ margin-top:52px; }
-    .step{ grid-template-columns:1fr; gap:26px; }
-    .step:nth-child(even) .step-art{ order:0; }
-    .step-copy{ order:2; }
+  .hc-rail i{
+    flex:1; height:1.5px; margin-left:12px; background:linear-gradient(90deg, var(--azure), var(--line));
+    transform-origin:left; transform:scaleX(0); transition:transform 1.3s var(--exp) .35s;
   }
+  .hc.reveal.in .hc-rail i{ transform:scaleX(1); }
+  .hc h3{ font-size:1.35rem; margin-bottom:12px; }
+  .hc p{ font-size:15px; color:var(--body); max-width:38ch; }
+  .hc-icon{ width:46px; height:46px; margin-top:18px; opacity:.92; }
+  .how-swipe, .hs-dots, .hs-hint{ display:none; }
+  .how-trust{
+    margin-top:clamp(48px,6vw,84px); max-width:1480px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px 18px;
+    border:1px solid var(--line); border-radius:16px; background:#fff;
+    padding:18px clamp(16px,2.5vw,34px); flex-wrap:wrap;
+  }
+  .ht{ display:inline-flex; align-items:center; gap:10px; font-size:14px; font-weight:500; color:var(--body); }
+  .ht svg{ width:17px; height:17px; color:var(--azure); flex:none; }
+  @media (max-width:860px){
+    .how-head{ grid-template-columns:1fr; align-items:start; }
+    .how-intro{ justify-self:start; padding-bottom:0; }
+    .how-band, .how-cols{ display:none; }
+    .how-swipe{
+      display:flex; gap:14px; margin-top:34px;
+      overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      margin-left:calc(-1 * var(--gutter)); margin-right:calc(-1 * var(--gutter));
+      padding:4px var(--gutter) 8px;
+    }
+    .how-swipe::-webkit-scrollbar{ display:none; }
+    .hs-card{
+      flex:0 0 82%; scroll-snap-align:center; border:1px solid var(--line); border-radius:18px;
+      background:#fff; box-shadow:var(--shadow-sm); overflow:hidden;
+    }
+    .hs-img{ background:var(--panel); }
+    .hs-img img{ width:100%; height:auto; display:block; }
+    .hs-body{ padding:18px 20px 22px; }
+    .hs-body .schip{ display:inline-block; font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--azure); margin-bottom:8px; }
+    .hs-body h3{ font-size:1.2rem; margin-bottom:8px; }
+    .hs-body p{ font-size:14px; color:var(--body); }
+    .hs-dots{ display:flex; justify-content:center; gap:8px; margin-top:18px; }
+    .hs-dots span{ width:7px; height:7px; border-radius:999px; background:var(--line); transition:all .35s var(--exp); cursor:pointer; }
+    .hs-dots span.active{ width:22px; background:var(--azure); }
+    .hs-hint{ display:block; text-align:center; margin-top:12px; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .how-trust{ display:grid; grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:560px){ .how-trust{ grid-template-columns:1fr; } }
 
   /* ---------- REFERENSCASE ---------- */
   .cases{ display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-top:64px; max-width:1480px; }
@@ -584,51 +610,76 @@
   <!-- ============ HUR / 3 STEG ============ -->
   <section class="band hair" id="hur">
     <div class="wrap">
-      <div class="shead reveal">
-        <div class="eyebrow"><span class="dot"></span> Så fungerar det</div>
-        <h2>Från planhandling <span class="soft">till byggbar framtid.</span></h2>
+      <div class="how-head">
+        <div class="reveal">
+          <div class="eyebrow"><span class="dot"></span> Så fungerar SODAREA</div>
+          <h2>Från planunderlag<br><span class="grad-text">till byggbara beslut.</span></h2>
+        </div>
+        <p class="how-intro reveal rd1">Tre steg. Ett sammanhängande arbetsflöde – från analys av verkliga planförutsättningar till byggbara alternativ och beslut som alla förstår.</p>
       </div>
 
-      <div class="steps">
-        <!-- Analysera -->
-        <article class="step">
-          <div class="step-art reveal blur">
-            <span class="step-badge">Detaljplan</span>
-            <span class="scanline"></span>
-            <div id="stepArt1"></div>
-          </div>
-          <div class="step-copy reveal rd1">
-            <div class="pn">01 — Analysera</div>
+      <!-- Desktop: bildband + tidslinje-kolumner -->
+      <div class="how-band reveal rd1">
+        <figure class="hb"><img src="media/how-1.jpg" alt="Detaljplan med markerade byggbara områden" loading="lazy"><figcaption class="chip">01 · Analysera</figcaption></figure>
+        <figure class="hb"><img src="media/how-2.jpg" alt="Volymstudie med markerad byggnadsvolym" loading="lazy"><figcaption class="chip">02 · Iterera</figcaption></figure>
+        <figure class="hb"><img src="media/how-3.jpg" alt="Fotorealistisk vy över färdig stadsmiljö" loading="lazy"><figcaption class="chip">03 · Visualisera</figcaption></figure>
+      </div>
+      <div class="how-cols">
+        <div class="hc reveal">
+          <div class="hc-rail"><span class="n">01</span><i></i></div>
+          <h3>Analysera</h3>
+          <p>Ladda upp planunderlag och låt SODAREA analysera detaljplaner, GIS-data och bestämmelser. Byggbara ramar identifieras och struktureras automatiskt.</p>
+          <img class="hc-icon" src="media/icon-1.png" alt="" loading="lazy">
+        </div>
+        <div class="hc reveal rd1">
+          <div class="hc-rail"><span class="n">02</span><i></i></div>
+          <h3>Iterera</h3>
+          <p>Utveckla byggbara alternativ. Flytta volymer, justera våningsantal, testa olika lösningar och jämför konsekvenser – alltid inom detaljplanens ramar.</p>
+          <img class="hc-icon" src="media/icon-2.png" alt="" loading="lazy">
+        </div>
+        <div class="hc reveal rd2">
+          <div class="hc-rail"><span class="n">03</span></div>
+          <h3>Visualisera</h3>
+          <p>Skapa realistiska miljöbilder och filmer som gör framtida platser enkla att förstå och lättare att fatta beslut kring.</p>
+          <img class="hc-icon" src="media/icon-3.png" alt="" loading="lazy">
+        </div>
+      </div>
+
+      <!-- Mobil: svepbara stegkort -->
+      <div class="how-swipe reveal" id="howSwipe">
+        <article class="hs-card">
+          <div class="hs-img"><img src="media/how-iso-1.jpg" alt="" loading="lazy"></div>
+          <div class="hs-body">
+            <span class="schip">01 · Analysera</span>
             <h3>Analysera</h3>
-            <p>Importera planunderlag och analysera verkliga planförutsättningar — linjer, koordinater och bestämmelser läses in och struktureras automatiskt.</p>
+            <p>Ladda upp planunderlag och låt SODAREA analysera detaljplaner, GIS-data och bestämmelser. Byggbara ramar identifieras och struktureras automatiskt.</p>
           </div>
         </article>
-
-        <!-- Utforska -->
-        <article class="step">
-          <div class="step-art reveal blur">
-            <span class="step-badge">Volymstudie</span>
-            <div id="stepArt2"></div>
-          </div>
-          <div class="step-copy reveal rd1">
-            <div class="pn">02 — Utforska</div>
-            <h3>Utforska</h3>
-            <p>Skapa och jämför byggbara alternativ inom detaljplanens ramar. Flytta volymer, testa våningar och se konsekvenserna direkt.</p>
+        <article class="hs-card">
+          <div class="hs-img"><img src="media/how-iso-2.jpg" alt="" loading="lazy"></div>
+          <div class="hs-body">
+            <span class="schip">02 · Iterera</span>
+            <h3>Iterera</h3>
+            <p>Utveckla byggbara alternativ. Flytta volymer, justera våningsantal, testa olika lösningar och jämför konsekvenser – alltid inom detaljplanens ramar.</p>
           </div>
         </article>
-
-        <!-- Visualisera -->
-        <article class="step">
-          <div class="step-art reveal blur">
-            <span class="step-badge">Miljöbild</span>
-            <div id="stepArt3"></div>
-          </div>
-          <div class="step-copy reveal rd1">
-            <div class="pn">03 — Visualisera</div>
+        <article class="hs-card">
+          <div class="hs-img"><img src="media/how-iso-3.jpg" alt="" loading="lazy"></div>
+          <div class="hs-body">
+            <span class="schip">03 · Visualisera</span>
             <h3>Visualisera</h3>
-            <p>Presentera framtida platser som verklighetstrogna miljöbilder och filmer — ett beslutsunderlag som alla intressenter förstår.</p>
+            <p>Skapa realistiska miljöbilder och filmer som gör framtida platser enkla att förstå och lättare att fatta beslut kring.</p>
           </div>
         </article>
+      </div>
+      <div class="hs-dots" id="hsDots" aria-hidden="true"><span class="active"></span><span></span><span></span></div>
+      <div class="hs-hint">Svep för att se stegen</div>
+
+      <div class="how-trust reveal rd2">
+        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-2.9 7.6-7 9-4.1-1.4-7-4.6-7-9V6z"/><path d="M9.2 12l2 2 3.6-3.8"/></svg> Alltid inom planens ramar</div>
+        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg> Snabbare beslut</div>
+        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5S13.9 16 14.5 19"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M16.5 14.5c2.2 0 3.7 1.3 4.2 3.5"/></svg> Samsyn med alla intressenter</div>
+        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/></svg> Bättre projekt från start</div>
       </div>
     </div>
   </section>
@@ -904,6 +955,26 @@ function startTrustCols(){
 }
 
 buildStep1(); buildStep2(); buildStep3();
+
+/* mobil stegkarusell: dots följer swipen, tap på dot scrollar */
+(function(){
+  const wrap = document.getElementById('howSwipe');
+  const dots = document.querySelectorAll('#hsDots span');
+  if(!wrap || !dots.length) return;
+  const cards = wrap.querySelectorAll('.hs-card');
+  function upd(){
+    const x = wrap.scrollLeft + wrap.clientWidth / 2;
+    let idx = 0, best = Infinity;
+    cards.forEach((c, i)=>{
+      const d = Math.abs(c.offsetLeft + c.offsetWidth/2 - x);
+      if(d < best){ best = d; idx = i; }
+    });
+    dots.forEach((d, i)=> d.classList.toggle('active', i === idx));
+  }
+  wrap.addEventListener('scroll', ()=> requestAnimationFrame(upd), {passive:true});
+  dots.forEach((d, i)=> d.addEventListener('click', ()=> cards[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'})));
+  upd();
+})();
 document.querySelectorAll('.case-cover').forEach(c=> buildCaseCover(c, parseInt(c.dataset.scene,10)));
 
 /* ---- nav + reveal + hero rotate ---- */
