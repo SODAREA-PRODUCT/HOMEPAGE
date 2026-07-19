@@ -1014,6 +1014,7 @@ buildStep1(); buildStep2(); buildStep3();
   const progWrap = story.querySelector('.story-prog');
   const pnodes = [...story.querySelectorAll('.story-prog .pnode')];
   const head = story.querySelector('.story-head');
+  const stick = story.querySelector('.story-stick');
   const headParts = head ? [head.querySelector('.eyebrow'), head.querySelector('h2'), head.querySelector('p')] : [];
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let ticking = false;
@@ -1051,7 +1052,8 @@ buildStep1(); buildStep2(); buildStep3();
     const fm = mobile ? p * 2 : f;                              /* mobilen behåller sin resa */
     const stageW = stage.clientWidth;
 
-    /* fas 1: rubriken byggs — fas 2: den kliver tillbaka */
+    /* fas 1: rubriken byggs CENTRERAD på scenen — fas 2: den dansar ut till
+       sin kolumn i synk med att korten kliver in */
     if(head && !mobile){
       headParts.forEach((el, i)=>{
         if(!el) return;
@@ -1059,7 +1061,9 @@ buildStep1(); buildStep2(); buildStep3();
         el.style.opacity = o.toFixed(3);
         el.style.transform = `translateY(${((1 - o) * 14).toFixed(1)}px)`;
       });
-      head.style.transform = `translateY(${(-18 * E).toFixed(1)}px) scale(${(1 - .07 * E).toFixed(3)})`;
+      const Ee = E * E * (3 - 2 * E);                       /* smoothstep — tung, fysisk */
+      const cx = stick.clientWidth / 2 - (head.offsetLeft + head.offsetWidth / 2);
+      head.style.transform = `translate(${(cx * (1 - Ee)).toFixed(1)}px, ${(-18 * Ee).toFixed(1)}px) scale(${(1.06 - .13 * Ee).toFixed(3)})`;
     } else if(head){
       headParts.forEach(el=>{ if(el){ el.style.opacity = ''; el.style.transform = ''; } });
       head.style.transform = '';
