@@ -271,7 +271,7 @@
   .shead p{ margin-top:22px; font-size:clamp(1rem,.6vw + .8rem,1.18rem); color:var(--body); max-width:56ch; }
 
   /* ---------- DATA (planförutsättningar) — sticky lock-bildspel ---------- */
-  .data{ position:relative; padding:0; height:240vh; height:240dvh; background:#0c0e16; }
+  .data{ position:relative; padding:0; height:240vh; background:#0c0e16; }  /* medvetet vh, inte dvh: dvh ändras när iOS-verktygsfältet döljs och fick allt nedanför att hoppa */
   .data-stick{
     position:sticky; top:0; height:100vh; height:100dvh; height:var(--appvh, 100dvh); overflow:hidden;
     display:flex; flex-direction:column; justify-content:center;
@@ -484,15 +484,22 @@
   @media (max-width:939px){
     .how-head{ grid-template-columns:1fr; align-items:start; }
     .how-intro{ justify-self:start; padding-bottom:0; }
-    .story{ height:320vh; }
-    .story-stick{ display:block; padding:0; }
+    /* mobil: inga sticky-akter — tre hela kort i ett vertikalt flöde */
+    .story{ height:auto; }
+    .story-stick{ position:static; height:auto; overflow:visible; display:block; padding:0; }
     .story-head{ display:none; }
-    .story-stage{ height:100%; }
-    .story-glow{ top:44%; width:120vw; filter:blur(clamp(110px,26vw,180px)); }
-    .sstep{ width:min(84vw, 420px); top:45%; }
+    .story-stage{ height:auto; perspective:none; display:grid; grid-template-columns:1fr; gap:24px; padding:10px 0 4px; justify-items:center; }
+    .story-glow{ display:none; }
+    .story-prog{ display:none; }
+    .sstep{ position:relative; left:auto; top:auto; width:min(100%, 460px);
+      opacity:0; transform:translateY(28px);
+      transition:opacity .8s var(--exp), transform .8s var(--exp);
+      box-shadow:0 2px 6px rgba(20,22,27,.05), 0 22px 48px -20px rgba(20,22,27,.14); }
+    .sstep.m-in{ opacity:1; transform:none; }
+    .ss-fog, .ss-ring{ display:none; }
     .ss-plate{ min-height:0; padding:16px 20px 20px; }
+    .ss-plate p{ max-width:none; }
     .ss-name{ font-size:1.35rem; }
-    .story-prog{ left:50%; right:auto; transform:translateX(-50%); width:min(72vw,340px); top:auto; bottom:max(28px, env(safe-area-inset-bottom)); }
     .story.static .story-stage{ grid-template-columns:1fr; }
     .how-trust{ display:grid; grid-template-columns:1fr 1fr; }
   }
@@ -734,6 +741,7 @@
   @media (prefers-reduced-motion: reduce){
     *{ transition-duration:.001ms !important; animation-duration:.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
     .reveal{ opacity:1 !important; transform:none !important; filter:none !important; }
+    .sstep{ opacity:1 !important; transform:none !important; }
     .scanline{ display:none; }
     #intro{ display:none !important; }
     html.boot .cin{ opacity:1; }
@@ -1017,10 +1025,18 @@
 <script>
 /* verklig viewporthöjd — svh/lvh/dvh spretar mellan Safari/Chrome på iOS */
 (function(){
-  function setVH(){ if(window.innerHeight > 0) document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px'); }
-  setVH();
-  window.addEventListener('resize', setVH, {passive:true});
-  window.addEventListener('orientationchange', setVH);
+  /* uppdatera bara vid breddändring — höjdändringar på mobil är oftast bara
+     verktygsfältet som glider in/ut, och att följa dem får sidan att skaka */
+  let lastW = 0;
+  function setVH(force){
+    if(window.innerHeight <= 0) return;
+    if(!force && window.innerWidth === lastW) return;
+    lastW = window.innerWidth;
+    document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px');
+  }
+  setVH(true);
+  window.addEventListener('resize', ()=>setVH(false), {passive:true});
+  window.addEventListener('orientationchange', ()=>setTimeout(()=>setVH(true), 250));
 })();
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -1303,9 +1319,27 @@ buildStep1(); buildStep2(); buildStep3();
     return {E, F, f, ring};
   }
 
+  function clearMobileStyles(){
+    stick.style.opacity = '';
+    if(head){ head.style.transform = ''; head.classList.remove('centered'); }
+    headParts.forEach(el=>{ if(el){ el.style.opacity = ''; el.style.transform = ''; } });
+    steps.forEach(s=>{
+      s.removeAttribute('style');
+      s.removeAttribute('data-side');
+      s.removeAttribute('tabindex');
+      ['.ss-plate p','.ss-img','.ss-fog','.ss-ring'].forEach(sel=>{
+        const el = s.querySelector(sel); if(el) el.removeAttribute('style');
+      });
+    });
+  }
   function apply(){
-    const p = progress();
     const mobile = innerWidth < 940;
+    if(mobile){
+      if(!story.classList.contains('m-flow')){ story.classList.add('m-flow'); clearMobileStyles(); }
+      ticking = false; return;
+    }
+    story.classList.remove('m-flow');
+    const p = progress();
     const {E, F, f, ring} = phases(p);
     /* exit-dissolve: när sektionen lämnas tonar hela scenen bort istället
        för att åka upp skarp — och tonar in igen vid scroll tillbaka */
@@ -1422,8 +1456,8 @@ buildStep1(); buildStep2(); buildStep3();
   /* klick: desktop siktar på fasernas progresspunkter, mobilen på halvor */
   const P_TARGETS = [ (B.focusIn + B.h0) / 2, (B.t1 + B.h1) / 2, (B.t2 + 1) / 2 ];
   function scrollToStep(i){
-    const pt = innerWidth < 940 ? i / 2 : P_TARGETS[i];
-    const top = story.offsetTop + pt * (story.offsetHeight - innerHeight);
+    if(innerWidth < 940) return;
+    const top = story.offsetTop + P_TARGETS[i] * (story.offsetHeight - innerHeight);
     window.scrollTo({top, behavior:'smooth'});
   }
   steps.forEach((s, i)=>{
@@ -1431,36 +1465,11 @@ buildStep1(); buildStep2(); buildStep3();
     s.addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ') && s.hasAttribute('data-side')){ e.preventDefault(); scrollToStep(i); } });
   });
 
-  /* mobil: mjuk snap med dödzoner + horisontell swipe */
-  let snapT = null, touching = false;
-  window.addEventListener('scroll', ()=>{
-    if(innerWidth >= 940) return;
-    clearTimeout(snapT);
-    snapT = setTimeout(()=>{
-      if(touching) return;
-      const p = progress();
-      if(p < 0.06 || p > 0.94) return;
-      const nearest = Math.round(p * 2);
-      const dist = Math.abs(p - nearest / 2);
-      if(dist > 0.006 && dist <= 0.22) scrollToStep(nearest);
-    }, 190);
-  }, {passive:true});
-  window.addEventListener('touchstart', ()=>{ touching = true; }, {passive:true});
-  window.addEventListener('touchend', ()=>{ touching = false; }, {passive:true});
-
-  let tx = null, ty = null;
-  story.addEventListener('touchstart', e=>{ tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
-  story.addEventListener('touchend', e=>{
-    if(tx === null || innerWidth >= 940) return;
-    const dx = e.changedTouches[0].clientX - tx;
-    const dy = e.changedTouches[0].clientY - ty;
-    tx = ty = null;
-    if(Math.abs(dx) > 56 && Math.abs(dx) > Math.abs(dy) * 1.4){
-      const cur = Math.round(progress() * 2);
-      const next = Math.max(0, Math.min(2, cur + (dx < 0 ? 1 : -1)));
-      if(next !== cur) scrollToStep(next);
-    }
-  }, {passive:true});
+  /* mobil: kortens entré i flödet — ett i taget, en gång */
+  const mio = new IntersectionObserver(es=>{
+    es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('m-in'); mio.unobserve(en.target); } });
+  }, {threshold:.15, rootMargin:'0px 0px -4% 0px'});
+  steps.forEach(s=> mio.observe(s));
 
   /* alla kort andas alltid: oberoende eviga klockor, fasförskjutna */
   steps.forEach((s, i)=>{
@@ -1494,9 +1503,13 @@ window.addEventListener('scroll', onScrollHeader, {passive:true}); onScrollHeade
 
 /* Eir-style: elementen easar in när de kommer in i vyn och ut när de lämnar —
    scrollar man tillbaka spelas intåget upp igen. Hero (redan .in via kaskaden) lämnas orörd. */
+const touchUI = window.matchMedia('(pointer:coarse)').matches;
 const io = new IntersectionObserver((entries)=>{
-  entries.forEach(entry=>{ entry.target.classList.toggle('in', entry.isIntersecting); });
-}, {threshold:.12, rootMargin:'6% 0px -8% 0px'});
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){ entry.target.classList.add('in'); if(touchUI) io.unobserve(entry.target); }
+    else if(!touchUI) entry.target.classList.remove('in');
+  });
+}, touchUI ? {threshold:.05, rootMargin:'0px 0px -5% 0px'} : {threshold:.12, rootMargin:'6% 0px -8% 0px'});
 document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
 
 /* intro: symbol-animation vid load (1.3x), sedan kaskad — logga först, resten "i kanon" */
