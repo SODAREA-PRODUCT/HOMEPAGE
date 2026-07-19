@@ -361,7 +361,7 @@
   .story{ position:relative; height:250vh; margin-top:clamp(8px,1.5vw,24px); }
   .story-stick{
     position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden;
-    display:grid; grid-template-columns:minmax(280px, 400px) 1fr;
+    display:grid; grid-template-columns:minmax(260px, 360px) 1fr;
     gap:clamp(24px,3vw,64px); align-items:center;
     padding-left:max(var(--gutter), env(safe-area-inset-left));
     padding-right:max(var(--gutter), env(safe-area-inset-right));
@@ -384,10 +384,14 @@
 
   /* premiumkortet: ETT objekt — bild + informationsplatta, rak skarv */
   .sstep{
-    position:absolute; left:50%; top:44%; width:clamp(280px, 38%, 440px);
+    position:absolute; left:50%; top:42%; width:clamp(336px, 46%, 528px);
     transform:translate(-50%,-50%);
     border-radius:22px; overflow:hidden; background:transparent;
     will-change:transform,opacity;
+  }
+  .ss-fog{
+    position:absolute; inset:0; z-index:4; pointer-events:none;
+    background:var(--paper); opacity:0; border-radius:inherit;
   }
   .sstep[data-side]{ cursor:pointer; }
   .sstep:focus-visible{ outline:2px solid var(--azure); outline-offset:6px; }
@@ -415,7 +419,7 @@
   /* timeline: centrerad under KORTGRUPPEN (i stage, inte layouten) */
   .story-prog{
     position:absolute; z-index:2; left:50%; transform:translateX(-50%);
-    bottom:clamp(22px,4vh,46px); width:min(72%, 600px); height:2px;
+    bottom:clamp(48px, 8vh, 92px); width:min(72%, 600px); height:2px;
   }
   .story-prog .pline{ position:absolute; inset:0; background:var(--line); border-radius:2px; }
   .story-prog .pfill{ position:absolute; left:0; top:0; height:100%; width:0%; background:linear-gradient(90deg, var(--teal), var(--azure), var(--violet)); border-radius:2px; }
@@ -682,7 +686,9 @@
               <span class="ss-num" style="color:var(--teal)">01</span>
               <h3 class="ss-name">Analys</h3>
               <p>Planunderlag, GIS-data och bestämmelser analyseras och struktureras automatiskt.</p>
+            
             </div>
+            <i class="ss-fog" aria-hidden="true"></i>
           </article>
           <article class="sstep" data-step="1">
             <div class="ss-img"><span class="ss-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268.5 302.33" fill="url(#sgF)" aria-hidden="true"><defs><linearGradient id="sgF" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#20d3b4"/><stop offset="52%" stop-color="#3d7eff"/><stop offset="100%" stop-color="#9159ff"/></linearGradient></defs> <g> <g> <g> <path d="M35.5,250.47c-1.38-.73-1.15-3.67-.7-5.11.48-1.54,2.05-3,4.2-3.15l90.74,48.02.54-38.6-.21-39.52.13-67.64-14.32-8.71c-1.51-.88-.84-3.93-.11-5,.77-1.13,2.95-3.43,4.54-2.6l12.88,6.74c1.55.81,2.9.99,4.41-.14,5.91-4.4,12.06-7.72,18.74-10.82l27.66-12.81,9.92-5.11,6.43-4,14.99-7.58c1.46-.74,4.52-.48,5.92.42,1.28.82,1.75,3.35,1.31,4.54-.57,1.53-1.65,2.75-3.33,3.62l-79.57,41.39-.38,118.93-.07,27.14,10.96-5.68c2.12-1.1,4.58-1.93,7.06-.71,1.86.91,2.74,5.64.59,6.81l-17.23,9.41c-2.16,1.18-5.45,2.71-7.96,1.64-10.73-4.58-20.64-9.99-30.72-15.72l-12.82-7.28-35.18-18.71-18.41-9.8Z"/> <path d="M259.81,86.97c0-1.94-.24-3.15-.71-4.72l-19.14,9.93c-1.94,1.01-3.82,1.31-5.72-.61-1.24-1.25-1.85-5.18,0-6.61,4.69-3.66,10.02-6.09,15.25-8.79l5.59-2.88-14.64-8.22-42.63-23.19-25.98-13.59c-2.99-1.56-5.5-4.86-3.37-8.15,1.7-2.63,4.94-2.06,7.28-.79l28.56,15.47,48.79,27.12c2.91,1.62,5.62,3.33,7.99,5.65,4.15,4.05,7.16,10.01,7.17,16.1l.25,105.29c0,2.67-2.79,5.21-4.94,4.7-2.96-.71-4.01-3.8-4-6.56l.09-40.8.17-59.35Z"/> <path d="M96.64,126.1L20.53,86.67l-9.09-4.62-.57,23.48c-.05,2.2-1.76,3.36-3.99,3.17-.96-.08-2.58-.48-3.22-1.01-.69-.58-1.29-2.38-1.27-3.53l.6-29c.06-2.81.83-4.17,3.3-5.78l6.59-4.29c7.74-5.04,15.59-9.47,23.81-13.67,1.73-.88,3.67-.77,5.12.08,1.54.9,2.02,2.58,2.26,4.69.02,1.39-.48,3.13-1.79,3.84l-25.21,13.66,27.86,14.96,31.32,16.67,28.35,14.62c1.08.56,1.81,2.53,1.97,3.51.17,1.07-.61,2.99-1.72,3.51-2.79,1.31-5.31.64-8.23-.87Z"/> <path d="M189.83,274.34l-13.7,7.05c-1.62.83-4.24,1.53-5.46-.54-1.31-2.21-.47-6.39,2.27-7.83l59.89-31.43,26.58-14.71.13-16.27c.01-1.75,1.44-3.96,2.86-4.99.93-.68,2.93-.74,3.88-.24s1.95,2.19,1.96,3.56l.17,20.24c.01,1.34-.77,4.18-2.07,4.87l-44.09,23.32-18.27,9.83-14.16,7.13Z"/> <path d="M17.56,241.02l-14.41-7.61c-1.69-.89-3.18-2.8-3.15-4.84l.2-12.19,1.54-80.35.37-9.22c.1-2.46,2.31-3.7,4.1-3.73,2.17-.03,4.22,1.45,4.2,4.18l-.13,18.19-.53,28.93-.31,51.87,13.44,7.35c2.02,1.1,1.8,4.7.82,6.03-1.3,1.77-3.75,2.64-6.13,1.38Z"/> <path d="M63.34,48.62c-2.25,1.22-4.65,1.66-6.74,1.24-1.07-.22-2.37-2.6-2.41-3.74.81-2,2.57-4.46,4.68-5.65l46.89-26.49,23.62-12.38c4.01-2.1,8.58-2.13,12.66.02l13.71,7.24c1.8.95,3.09,2.07,3.24,4.11.13,1.86-1.35,3.61-3.55,4.34-2.5.83-4.89-1.34-7.21-2.39l-12.32-5.59L63.34,48.62Z"/> </g> </g> </g> </svg></span><img class="on" src="media/step-f1.jpg" alt="Forma" loading="lazy" width="1080" height="1080"><img class="" src="media/step-f2.jpg" alt="Forma" loading="lazy" width="1080" height="1080"><img class="" src="media/step-f3.jpg" alt="Forma" loading="lazy" width="1080" height="1080"><img class="" src="media/step-f4.jpg" alt="Forma" loading="lazy" width="1080" height="1080"></div>
@@ -690,7 +696,9 @@
               <span class="ss-num" style="color:var(--azure)">02</span>
               <h3 class="ss-name">Forma</h3>
               <p>Flytta volymer, justera våningsantal och testa olika lösningar inom detaljplanens ramar.</p>
+            
             </div>
+            <i class="ss-fog" aria-hidden="true"></i>
           </article>
           <article class="sstep" data-step="2">
             <div class="ss-img"><span class="ss-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 293.82 287.81" fill="url(#sgV)" aria-hidden="true"><defs><linearGradient id="sgV" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#20d3b4"/><stop offset="52%" stop-color="#3d7eff"/><stop offset="100%" stop-color="#9159ff"/></linearGradient></defs> <g> <g> <g> <path d="M264.79,287.46l-68.76.02-137.87.06-29.53.27c-12.97.12-25.04-10.06-27.83-22.41l-.46-7.56.12-60.38.06-150.36c0-8.2-1.42-15.38.42-23.58C3.79,10.9,15.99.2,29.75.19L265.97,0c5.1,0,9.3,2.21,13.32,4.85,7.77,5.1,12.7,13.48,14.29,22.67l.11,62.49.02,56.41.11,70.06-.07,43.01c-.01,8.73-5.85,17.05-12.09,22.39-4.91,4.2-10.31,5.58-16.87,5.58ZM165.93,182.34l15.69-16.28,10.22-10.79,5.89-6.15c2.39-2.49,5.3-5.06,8.94-5.35,6.51-.53,13.73,9.04,18.63,14.51l21.05,23.48,5.89,6.48,7.85,8.29,23.18,24.77.75-3.86-.03-52.98-.18-132.19-.45-6.12c-1.84-8.55-10.59-17.13-19.89-17.13l-133.87.08-81.94.33c-6.82.03-13.07-.86-19.78.11-8.13,1.17-15.01,8.53-17.45,16.14-1.48,4.62-1.3,9.18-1.44,13.85l-.46,14.99v20.59s.12,97.89.12,97.89l.7,59.76,7.76-8.27,30.21-31.27,2.18-2.25,1.39-.45c.32-.1.38-1.09.46-1.48l3.49-3.8,22.06-23.87,9.8-9.76c3.58-2.84,8.65-3.82,12.22-.25l21.38,21.39,10.77,10.82,12.67,12.81,3.92,4.99,9.91-10.33,8.38-8.67ZM10.75,244.45c-1,6.62-.85,12.7-.15,19.01.38,3.41,2.56,5.87,4.77,8.2,4.43,4.68,9.76,6.78,16.41,6.79l181.21.17,51.01-.26c2.25-.01,5.07-.05,6.98-.99,4.98-2.47,9.04-7.12,11.07-12.31,1.39-3.56,1.63-7.74,1.59-11.55l-.19-16.96-22.73-24.18-9.43-10.13-19.46-21-19.76-21.75-4.66-4.52-25.35,27.03-24.86,27.32c.99,1.96,2.05,3.33,3.51,4.53,2.46,2.03,3.99,5.67,2.09,8.44-.78,1.15-3.71,2.34-5.07,1.99-3.28-.83-5.84-3.11-8.06-5.39l-8.43-8.64-25.41-27.04-23.19-23.91-9.1,9.72-24.23,25.17-6.29,6.82-19.82,20.63-22.48,22.78Z"/> <path d="M121.21,85.21c-3.76,18.91-26.26,30.51-44.09,22.8-9.83-4.25-17.35-12.71-18.52-23.44-.6-5.47-.85-10.9,1.12-15.94,2.61-6.67,6.82-12.75,13-16.46,5.9-3.54,12.95-5.19,19.85-4.77,12.84.79,24.79,12.2,28.15,24.36,1.17,4.25,1.35,9.13.49,13.46ZM93.23,99.73c10.36-1.91,18.27-11.38,18.07-22.03-.1-5.5-3.09-9.91-6.82-13.63-7.33-7.31-18.7-9.11-27.44-2.99-3.76,2.63-6.95,6.88-8.61,11.17-1.38,3.55-1.15,7.96-.07,11.59,3.09,10.42,14.34,17.84,24.88,15.89Z"/> </g> </g> </g> </svg></span><img class="on" src="media/step-v1.jpg" alt="Visualisera" loading="lazy" width="1080" height="1080"><img class="" src="media/step-v2.jpg" alt="Visualisera" loading="lazy" width="1080" height="1080"><img class="" src="media/step-v3.jpg" alt="Visualisera" loading="lazy" width="1080" height="1080"></div>
@@ -698,7 +706,9 @@
               <span class="ss-num" style="color:var(--violet)">03</span>
               <h3 class="ss-name">Visualisera</h3>
               <p>Förvandla byggbara alternativ till realistiska beslutsunderlag som alla kan förstå.</p>
+            
             </div>
+            <i class="ss-fog" aria-hidden="true"></i>
           </article>
             <div class="story-prog" aria-hidden="true">
               <i class="pline"></i><i class="pfill" id="storyProgFill"></i>
@@ -708,15 +718,7 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="how-trust reveal rd2">
-        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-2.9 7.6-7 9-4.1-1.4-7-4.6-7-9V6z"/><path d="M9.2 12l2 2 3.6-3.8"/></svg> Alltid inom planens ramar</div>
-        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg> Snabbare beslut</div>
-        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5S13.9 16 14.5 19"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M16.5 14.5c2.2 0 3.7 1.3 4.2 3.5"/></svg> Samsyn med alla intressenter</div>
-        <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/></svg> Bättre projekt från start</div>
-      </div>
-    </div>
+      </div>    </div>
   </section>
 
   <!-- ============ REFERENSCASE ============ -->
@@ -1007,8 +1009,8 @@ buildStep1(); buildStep2(); buildStep3();
 
   if(reduce){ story.classList.add('static'); return; }
 
-  const depth = x => x <= 1 ? 1 - .22 * x : .78 - .18 * Math.min(x - 1, 1);
-  const sideX = d => Math.sign(d) * (58 * Math.min(Math.abs(d), 1) + 26 * Math.max(0, Math.abs(d) - 1));
+  const depth = x => x <= 1 ? 1 - .30 * x : .70 - .18 * Math.min(x - 1, 1);
+  const sideX = d => Math.sign(d) * (40 * Math.min(Math.abs(d), 1) + 18 * Math.max(0, Math.abs(d) - 1));
 
   function progress(){
     const r = story.getBoundingClientRect();
@@ -1030,12 +1032,14 @@ buildStep1(); buildStep2(); buildStep3();
       const plate = s.querySelector('.ss-plate');
       const desc = plate.querySelector('p');
       const img = s.querySelector('.ss-img');
+      const veil = s.querySelector('.ss-fog');
       if(!mobile){
         const off = sideX(d) / 100 * stageW;
         s.style.transform = `translate(calc(-50% + ${off.toFixed(1)}px), calc(-50% + ${((1 - w) * 12).toFixed(1)}px)) scale(${k.toFixed(3)})`;
         s.style.zIndex = String(30 - Math.round(x * 10));
-        s.style.filter = `saturate(${(.55 + .45 * (1 - fog)).toFixed(2)}) contrast(${(.9 + .1 * (1 - fog)).toFixed(2)})`;
-        s.style.opacity = String(Math.max(.25, 1 - .3 * fog).toFixed(3));
+        s.style.filter = `saturate(${(.7 + .3 * (1 - fog)).toFixed(2)})`;
+        s.style.opacity = '1';                              /* kortet är helt — dimman ligger framför */
+        if(veil) veil.style.opacity = Math.min(.78, fog * .5).toFixed(3);
         if(img) img.style.transform = '';
       } else {
         s.style.transform = `translate(-50%, calc(-50% + ${(d * 66).toFixed(1)}vh)) scale(${(.88 + .12 * w).toFixed(3)})`;
@@ -1045,8 +1049,8 @@ buildStep1(); buildStep2(); buildStep3();
         if(img) img.style.transform = `translateY(${(d * -6).toFixed(1)}vh)`;
       }
       /* plattan: närvaro i fokus, dimma i periferin */
-      const pa = mobile ? 1 : Math.max(.08, 1 - fog * 1.05);
-      plate.style.background = `rgba(255,255,255,${pa.toFixed(3)})`;
+      plate.style.background = '#fff';
+      if(mobile && veil) veil.style.opacity = '0';
       s.style.boxShadow = `0 2px 6px rgba(20,22,27,${(.05 * w).toFixed(3)}), 0 26px 52px -22px rgba(20,22,27,${(.20 * w).toFixed(3)})`;
       if(desc){
         const dw = Math.max(0, 1 - x * 1.6);
@@ -1083,17 +1087,21 @@ buildStep1(); buildStep2(); buildStep3();
   });
 
   /* mobil: mjuk snap vid släppt scroll + horisontell swipe byter steg */
-  let snapT = null;
+  let snapT = null, touching = false;
   window.addEventListener('scroll', ()=>{
     if(innerWidth >= 940) return;
     clearTimeout(snapT);
     snapT = setTimeout(()=>{
+      if(touching) return;
       const p = progress();
-      if(p <= 0.001 || p >= 0.999) return;
+      if(p < 0.06 || p > 0.94) return;               /* dödzoner vid in-/utträde */
       const nearest = Math.round(p * 2);
-      if(Math.abs(p - nearest / 2) > 0.006) scrollToStep(nearest);
-    }, 170);
+      const dist = Math.abs(p - nearest / 2);
+      if(dist > 0.006 && dist <= 0.22) scrollToStep(nearest);   /* aldrig långa ryck */
+    }, 190);
   }, {passive:true});
+  window.addEventListener('touchstart', ()=>{ touching = true; }, {passive:true});
+  window.addEventListener('touchend', ()=>{ touching = false; }, {passive:true});
 
   let tx = null, ty = null;
   story.addEventListener('touchstart', e=>{ tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
