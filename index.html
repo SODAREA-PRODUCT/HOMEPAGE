@@ -525,7 +525,7 @@
     border:1px solid rgba(255,255,255,.08); margin-top:0;
     box-shadow:0 2px 8px rgba(0,0,0,.3), 0 34px 70px -26px rgba(0,0,0,.55);
   }
-  .film-caption{ grid-column:1 / -1; }
+  .film-caption{ grid-column:2; }
   @media (max-width:939px){
     .case-grid{ display:flex; flex-direction:column; align-items:stretch; gap:22px; }
     .case-copy{ order:1; }
@@ -572,30 +572,59 @@
   }
 
   /* ---------- VISION ---------- */
-  .vision{ border-top:1px solid var(--line); background:var(--paper); position:relative; overflow:hidden; }
+  /* ---------- VISION — mörk breaker ---------- */
+  .vision{
+    position:relative; overflow:hidden;
+    padding:clamp(64px, 7vw, 104px) 0;
+    background:
+      radial-gradient(ellipse 55% 60% at 15% 20%, rgba(32,211,180,.06), transparent 60%),
+      radial-gradient(ellipse 50% 55% at 85% 80%, rgba(145,89,255,.07), transparent 60%),
+      linear-gradient(160deg, #0b0f1e 0%, #101731 55%, #0a0d18 100%);
+  }
   .vision::before{
     content:''; position:absolute; inset:-25%; z-index:0; pointer-events:none;
     background:
-      radial-gradient(42% 40% at 28% 32%, rgba(32,211,180,.10), transparent 70%),
-      radial-gradient(46% 44% at 72% 55%, rgba(61,126,255,.09), transparent 70%),
-      radial-gradient(40% 42% at 50% 82%, rgba(145,89,255,.08), transparent 70%);
+      radial-gradient(40% 40% at 30% 35%, rgba(61,126,255,.06), transparent 70%),
+      radial-gradient(42% 44% at 68% 60%, rgba(32,211,180,.05), transparent 70%);
     filter:blur(70px);
-    animation:vision-drift 22s ease-in-out infinite alternate;
+    animation:vision-drift 24s ease-in-out infinite alternate;
   }
-  .vision .wrap{ position:relative; z-index:1; }
   @keyframes vision-drift{
     0%{ transform:translate(0,0) rotate(0deg) scale(1); }
-    50%{ transform:translate(3%, -2%) rotate(3deg) scale(1.06); }
-    100%{ transform:translate(-3%, 2%) rotate(-3deg) scale(1.02); }
+    100%{ transform:translate(-3%, 2%) rotate(-3deg) scale(1.05); }
   }
-  .vision .wrap{ max-width:900px; text-align:center; }
-  .vision .eyebrow{ margin-bottom:32px; }
-  .vision h2{
-    font-size:clamp(1.9rem,3.2vw + .8rem,3.4rem); line-height:1.14; letter-spacing:-.025em;
-    color:var(--ink); text-wrap:balance;
+  .vision-grid{
+    position:relative; z-index:1;
+    display:grid; grid-template-columns:1.2fr auto 1fr;
+    gap:clamp(28px, 4vw, 64px); align-items:center;
   }
-  .vision h2 .g{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .vision p{ margin:32px auto 0; font-size:clamp(1.05rem,.7vw + .82rem,1.25rem); color:var(--body); max-width:60ch; }
+  .v-head{
+    font-size:clamp(1.9rem, 2.6vw + .8rem, 3.3rem); line-height:1.14; color:#fff;
+    letter-spacing:-.02em;
+  }
+  .v-head .vl{ display:block; padding-bottom:.06em; }
+  .v-head .vl + .vl{ margin-top:.3em; }
+  .v-rule{
+    width:1px; align-self:stretch; min-height:120px;
+    background:linear-gradient(180deg, transparent, rgba(255,255,255,.30), transparent);
+  }
+  .v-body{ color:rgba(255,255,255,.75); font-size:15.5px; line-height:1.7; max-width:46ch; }
+  .vision .w{
+    display:inline-block; opacity:0; transform:translateY(8px);
+    transition:opacity .5s var(--ease), transform .5s var(--ease);
+  }
+  .vision .w.on{ opacity:1; transform:none; }
+  .gwx2{
+    background:linear-gradient(90deg, #58dec7 0%, #6e9eff 45%, #ad83ff 90%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:rot-grad 7s ease-in-out infinite; background-size:220% 100%;
+  }
+  @media (max-width:860px){
+    .vision-grid{ display:block; }
+    .v-rule{ width:64px; height:1px; min-height:0; margin:26px 0;
+      background:linear-gradient(90deg, rgba(255,255,255,.30), transparent); }
+    .v-body{ max-width:none; }
+  }
 
   /* ---------- CTA ---------- */
   .cta{ border-top:1px solid var(--line); text-align:center; padding:clamp(96px,12vw,168px) 0; }
@@ -834,11 +863,11 @@
   </section>
 
   <!-- ============ VISION ============ -->
-  <section class="band vision">
-    <div class="wrap">
-      <div class="eyebrow line reveal" style="justify-content:center;">Vision</div>
-      <h2 class="reveal rd1">När fler kan se samma framtid blir det enklare att fatta <span class="g">bättre beslut.</span></h2>
-      <p class="reveal rd2">SODAREA hjälper kommuner, exploatörer, arkitekter och projektutvecklare att utforska fler möjligheter innan första spadtaget — med planens verkliga förutsättningar som grund.</p>
+  <section class="vision" id="visionBreak">
+    <div class="wrap vision-grid">
+      <h2 class="v-head"><span class="vl"><span class="w" data-g="1">När</span> <span class="w" data-g="1">fler</span> <span class="w" data-g="1">kan</span> <span class="w gwx2" data-g="1">se</span> <span class="w gwx2" data-g="1">samma</span> <span class="w gwx2" data-g="1">framtid</span></span><span class="vl"><span class="w" data-g="2">blir</span> <span class="w" data-g="2">det</span> <span class="w" data-g="2">enklare</span> <span class="w" data-g="2">att</span> <span class="w" data-g="2">fatta</span> <span class="w" data-g="2">bättre</span> <span class="w" data-g="2">beslut.</span></span></h2>
+      <div class="v-rule" aria-hidden="true"></div>
+      <p class="v-body"><span class="w" data-g="3">SODAREA</span> <span class="w" data-g="3">hjälper</span> <span class="w" data-g="3">kommuner,</span> <span class="w" data-g="3">projektutvecklare,</span> <span class="w" data-g="3">fastighetsförvaltare</span> <span class="w" data-g="3">och</span> <span class="w" data-g="3">arkitekter</span> <span class="w" data-g="3">att</span> <span class="w" data-g="3">effektivisera</span> <span class="w" data-g="3">utforskandet</span> <span class="w" data-g="3">av</span> <span class="w" data-g="3">byggbara</span> <span class="w" data-g="3">möjligheter</span> <span class="w" data-g="3">innan</span> <span class="w" data-g="3">beslut</span> <span class="w" data-g="3">och</span> <span class="w" data-g="3">första</span> <span class="w" data-g="3">spadtaget</span> <span class="w" data-g="3">tas.</span></p>
     </div>
   </section>
 
@@ -1057,6 +1086,30 @@ function startTrustCols(){
 }
 
 buildStep1(); buildStep2(); buildStep3();
+
+/* Vision-breakern: skrivs ut ord för ord — rad 1 → paus → rad 2 → paus → brödtext */
+(function(){
+  const sec = document.getElementById('visionBreak');
+  if(!sec) return;
+  const groups = [1,2,3].map(g => [...sec.querySelectorAll(`.w[data-g="${g}"]`)]);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ groups.flat().forEach(w=>w.classList.add('on')); return; }
+  let played = false;
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting || played) return;
+      played = true;
+      let t = 200;
+      const steps = [[0,130,650],[1,110,550],[2,38,0]];   /* [grupp, ord-takt, paus efter] */
+      steps.forEach(([gi, pace, pause])=>{
+        groups[gi].forEach(w=>{ setTimeout(()=> w.classList.add('on'), t); t += pace; });
+        t += pause;
+      });
+      io.disconnect();
+    });
+  }, {threshold:.45});
+  io.observe(sec);
+})();
 
 /* CTA-symbolen: spela endast i vy, stilla vid reduced motion */
 (function(){
