@@ -355,11 +355,18 @@
   .how-head h2{ font-size:clamp(1.9rem, 3.4vw + .5rem, 3.15rem); line-height:1.08; }
   .how-head .eyebrow{ margin-bottom:20px; }
   .how-intro{ font-size:clamp(1rem,.5vw + .85rem,1.15rem); color:var(--body); max-width:44ch; justify-self:end; padding-bottom:6px; }
-  .how-band{
-    margin-top:clamp(40px,5vw,64px); display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
-    max-width:1480px; border-radius:20px; overflow:hidden;
+
+  .how-cards{
+    margin-top:clamp(40px,5vw,64px); max-width:1480px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(18px,2.6vw,34px);
   }
-  .hb{ position:relative; margin:0; aspect-ratio:1/1; overflow:hidden; background:#fff; }
+  .hs-card{
+    border:1px solid var(--line); border-radius:20px; background:#fff; overflow:hidden;
+    box-shadow:0 2px 6px rgba(20,22,27,.05), 0 22px 48px -20px rgba(20,22,27,.16);
+    transition:transform .5s var(--exp), box-shadow .5s var(--exp);
+  }
+  .hs-card:hover{ transform:translateY(-4px); box-shadow:0 4px 10px rgba(20,22,27,.06), 0 30px 60px -22px rgba(20,22,27,.22); }
+  .hs-img{ position:relative; aspect-ratio:1/1; background:#fff; overflow:hidden; }
   .sfade .sf{
     position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
     opacity:0; transition:opacity .9s var(--ease);
@@ -371,21 +378,12 @@
     padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.85);
     border:1px solid var(--line); backdrop-filter:blur(6px);
   }
-  .how-cols{ margin-top:clamp(28px,3.5vw,48px); display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(20px,3vw,48px); max-width:1480px; }
-  .hc-rail{ display:flex; align-items:center; margin-bottom:20px; }
-  .hc-rail .n{
-    flex:none; width:34px; height:34px; border-radius:50%; border:1.5px solid var(--azure);
-    display:grid; place-items:center; font-family:'Readex Pro'; font-weight:600; font-size:12.5px; color:var(--azure);
-  }
-  .hc-rail i{
-    flex:1; height:1.5px; margin-left:12px; background:linear-gradient(90deg, var(--azure), var(--line));
-    transform-origin:left; transform:scaleX(0); transition:transform 1.3s var(--exp) .35s;
-  }
-  .hc.reveal.in .hc-rail i{ transform:scaleX(1); }
-  .hc h3{ font-size:1.35rem; margin-bottom:12px; }
-  .hc p{ font-size:15px; color:var(--body); max-width:38ch; }
-  .hc-icon{ width:46px; height:46px; margin-top:18px; opacity:.92; }
-  .how-swipe, .hs-dots, .hs-hint{ display:none; }
+  .hs-body{ padding:6px 26px 30px; }
+  .hc-icon{ width:64px; height:64px; margin-bottom:10px; }
+  .hs-body h3{ font-size:1.32rem; margin-bottom:10px; }
+  .hs-body p{ font-size:14.5px; color:var(--body); }
+  .hs-dots, .hs-hint{ display:none; }
+
   .how-trust{
     margin-top:clamp(48px,6vw,84px); max-width:1480px;
     display:flex; align-items:center; justify-content:space-between; gap:12px 18px;
@@ -394,28 +392,24 @@
   }
   .ht{ display:inline-flex; align-items:center; gap:10px; font-size:14px; font-weight:500; color:var(--body); }
   .ht svg{ width:17px; height:17px; color:var(--azure); flex:none; }
+
   @media (max-width:860px){
     .how-head{ grid-template-columns:1fr; align-items:start; }
     .how-intro{ justify-self:start; padding-bottom:0; }
-    .how-band, .how-cols{ display:none; }
-    .how-swipe{
+    .how-cards{
       display:flex; gap:14px; margin-top:34px;
       overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
       scrollbar-width:none;
       margin-left:calc(-1 * var(--gutter)); margin-right:calc(-1 * var(--gutter));
-      padding:4px var(--gutter) 8px;
+      padding:4px var(--gutter) 14px;
     }
-    .how-swipe::-webkit-scrollbar{ display:none; }
-    .hs-card{
-      flex:0 0 82%; scroll-snap-align:center; border:1px solid var(--line); border-radius:18px;
-      background:#fff; box-shadow:var(--shadow-sm); overflow:hidden;
-    }
-    .hs-img{ background:#fff; position:relative; aspect-ratio:1/1; overflow:hidden; }
-    .hs-body{ padding:18px 20px 22px; }
-    .hs-body .schip{ display:inline-block; font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--azure); margin-bottom:8px; }
+    .how-cards::-webkit-scrollbar{ display:none; }
+    .hs-card{ flex:0 0 82%; scroll-snap-align:center; }
+    .hs-body{ padding:4px 20px 24px; }
+    .hc-icon{ width:54px; height:54px; }
     .hs-body h3{ font-size:1.2rem; margin-bottom:8px; }
-    .hs-body p{ font-size:14px; color:var(--body); }
-    .hs-dots{ display:flex; justify-content:center; gap:8px; margin-top:18px; }
+    .hs-body p{ font-size:14px; }
+    .hs-dots{ display:flex; justify-content:center; gap:8px; margin-top:14px; }
     .hs-dots span{ width:7px; height:7px; border-radius:999px; background:var(--line); transition:all .35s var(--exp); cursor:pointer; }
     .hs-dots span.active{ width:22px; background:var(--azure); }
     .hs-hint{ display:block; text-align:center; margin-top:12px; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
@@ -620,75 +614,49 @@
         <p class="how-intro reveal rd1">Tre steg. Ett sammanhängande arbetsflöde – från analys av verkliga planförutsättningar till byggbara alternativ och beslut som alla förstår.</p>
       </div>
 
-      <!-- Desktop: bildband + tidslinje-kolumner -->
-      <div class="how-band reveal rd1">
-        <figure class="hb sfade">
-          <img class="sf on" src="media/step-a1.jpg" alt="Planunderlag analyseras i lager" loading="lazy">
-          <img class="sf" src="media/step-a2.jpg" alt="" loading="lazy">
-          <figcaption class="chip">01 · Analysera</figcaption>
-        </figure>
-        <figure class="hb sfade">
-          <img class="sf on" src="media/step-f1.jpg" alt="Volymstudie inom byggrättens ramar" loading="lazy">
-          <img class="sf" src="media/step-f2.jpg" alt="" loading="lazy">
-          <img class="sf" src="media/step-f3.jpg" alt="" loading="lazy">
-          <img class="sf" src="media/step-f4.jpg" alt="" loading="lazy">
-          <figcaption class="chip">02 · Iterera</figcaption>
-        </figure>
-        <figure class="hb sfade">
-          <img class="sf on" src="media/step-v1.jpg" alt="Fotorealistisk vy över färdig stadsmiljö" loading="lazy">
-          <img class="sf" src="media/step-v2.jpg" alt="" loading="lazy">
-          <img class="sf" src="media/step-v3.jpg" alt="" loading="lazy">
-          <figcaption class="chip">03 · Visualisera</figcaption>
-        </figure>
-      </div>
-      <div class="how-cols">
-        <div class="hc reveal">
-          <div class="hc-rail"><span class="n">01</span><i></i></div>
-          <h3>Analysera</h3>
-          <p>Ladda upp planunderlag och låt SODAREA analysera detaljplaner, GIS-data och bestämmelser. Byggbara ramar identifieras och struktureras automatiskt.</p>
-          <img class="hc-icon" src="media/icon-1.png" alt="" loading="lazy">
-        </div>
-        <div class="hc reveal rd1">
-          <div class="hc-rail"><span class="n">02</span><i></i></div>
-          <h3>Iterera</h3>
-          <p>Utveckla byggbara alternativ. Flytta volymer, justera våningsantal, testa olika lösningar och jämför konsekvenser – alltid inom detaljplanens ramar.</p>
-          <img class="hc-icon" src="media/icon-2.png" alt="" loading="lazy">
-        </div>
-        <div class="hc reveal rd2">
-          <div class="hc-rail"><span class="n">03</span></div>
-          <h3>Visualisera</h3>
-          <p>Skapa realistiska miljöbilder och filmer som gör framtida platser enkla att förstå och lättare att fatta beslut kring.</p>
-          <img class="hc-icon" src="media/icon-3.png" alt="" loading="lazy">
-        </div>
-      </div>
-
-      <!-- Mobil: svepbara stegkort -->
-      <div class="how-swipe reveal" id="howSwipe">
+      <!-- Stegkort — grid på desktop, svep på mobil -->
+      <div class="how-cards reveal rd1" id="howSwipe">
         <article class="hs-card">
-          <div class="hs-img sfade"><img class="sf on" src="media/step-a1.jpg" alt="" loading="lazy"><img class="sf" src="media/step-a2.jpg" alt="" loading="lazy"></div>
+          <div class="hs-img sfade">
+            <img class="sf on" src="media/step-a1.jpg" alt="Planunderlag analyseras i lager" loading="lazy">
+            <img class="sf" src="media/step-a2.jpg" alt="" loading="lazy">
+            <span class="chip">01 · Analysera</span>
+          </div>
           <div class="hs-body">
-            <span class="schip">01 · Analysera</span>
+            <img class="hc-icon" src="media/icon-1.png" alt="">
             <h3>Analysera</h3>
             <p>Ladda upp planunderlag och låt SODAREA analysera detaljplaner, GIS-data och bestämmelser. Byggbara ramar identifieras och struktureras automatiskt.</p>
           </div>
         </article>
         <article class="hs-card">
-          <div class="hs-img sfade"><img class="sf on" src="media/step-f1.jpg" alt="" loading="lazy"><img class="sf" src="media/step-f2.jpg" alt="" loading="lazy"><img class="sf" src="media/step-f3.jpg" alt="" loading="lazy"><img class="sf" src="media/step-f4.jpg" alt="" loading="lazy"></div>
+          <div class="hs-img sfade">
+            <img class="sf on" src="media/step-f1.jpg" alt="Volymstudie inom byggrättens ramar" loading="lazy">
+            <img class="sf" src="media/step-f2.jpg" alt="" loading="lazy">
+            <img class="sf" src="media/step-f3.jpg" alt="" loading="lazy">
+            <img class="sf" src="media/step-f4.jpg" alt="" loading="lazy">
+            <span class="chip">02 · Forma</span>
+          </div>
           <div class="hs-body">
-            <span class="schip">02 · Iterera</span>
-            <h3>Iterera</h3>
+            <img class="hc-icon" src="media/icon-2.png" alt="">
+            <h3>Forma</h3>
             <p>Utveckla byggbara alternativ. Flytta volymer, justera våningsantal, testa olika lösningar och jämför konsekvenser – alltid inom detaljplanens ramar.</p>
           </div>
         </article>
         <article class="hs-card">
-          <div class="hs-img sfade"><img class="sf on" src="media/step-v1.jpg" alt="" loading="lazy"><img class="sf" src="media/step-v2.jpg" alt="" loading="lazy"><img class="sf" src="media/step-v3.jpg" alt="" loading="lazy"></div>
+          <div class="hs-img sfade">
+            <img class="sf on" src="media/step-v1.jpg" alt="Fotorealistisk vy över färdig stadsmiljö" loading="lazy">
+            <img class="sf" src="media/step-v2.jpg" alt="" loading="lazy">
+            <img class="sf" src="media/step-v3.jpg" alt="" loading="lazy">
+            <span class="chip">03 · Visualisera</span>
+          </div>
           <div class="hs-body">
-            <span class="schip">03 · Visualisera</span>
+            <img class="hc-icon" src="media/icon-3.png" alt="">
             <h3>Visualisera</h3>
             <p>Skapa realistiska miljöbilder och filmer som gör framtida platser enkla att förstå och lättare att fatta beslut kring.</p>
           </div>
         </article>
       </div>
+
       <div class="hs-dots" id="hsDots" aria-hidden="true"><span class="active"></span><span></span><span></span></div>
       <div class="hs-hint">Svep för att se stegen</div>
 
