@@ -358,7 +358,7 @@
   .how-intro{ font-size:clamp(1rem,.5vw + .85rem,1.15rem); color:var(--body); max-width:44ch; justify-self:end; padding-bottom:6px; }
   @media (min-width:940px){ #hur > .wrap:first-child .how-head{ display:none; } }
 
-  .story{ position:relative; height:250vh; margin-top:clamp(8px,1.5vw,24px); }
+  .story{ position:relative; height:360vh; margin-top:clamp(8px,1.5vw,24px); }
   .story-stick{
     position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden;
     display:grid; grid-template-columns:minmax(260px, 360px) 1fr;
@@ -366,7 +366,11 @@
     padding-left:max(var(--gutter), env(safe-area-inset-left));
     padding-right:max(var(--gutter), env(safe-area-inset-right));
   }
-  .story-head{ position:relative; z-index:3; }
+  .story-head{ position:relative; z-index:3; transform-origin:left center; }
+  .story-head::before{
+    content:''; position:absolute; inset:-32px -72px -32px -48px; z-index:-1;
+    background:linear-gradient(90deg, var(--paper) 58%, rgba(252,252,251,0));
+  }
   .story-head .eyebrow{ margin-bottom:18px; }
   .story-head h2{ font-size:clamp(1.7rem, 2.2vw + .6rem, 2.7rem); line-height:1.1; margin-bottom:18px; }
   .story-head p{ font-size:15px; line-height:1.6; color:var(--body); max-width:38ch; }
@@ -403,9 +407,9 @@
   .ss-img img.on{ opacity:1; }
   .ss-badge{
     position:absolute; z-index:3; top:14px; left:14px;
-    width:44px; height:44px; border-radius:12px; background:#fff;
+    width:46px; height:46px; border-radius:13px; background:#fff;
     display:grid; place-items:center;
-    box-shadow:0 1px 2px rgba(20,22,27,.06), 0 6px 16px -6px rgba(20,22,27,.12);
+    box-shadow:0 2px 4px rgba(20,22,27,.05), 0 12px 26px -8px rgba(20,22,27,.16);
   }
   .ss-badge svg{ height:24px; width:auto; display:block; }
   .ss-plate{
@@ -418,6 +422,7 @@
 
   /* timeline: centrerad under KORTGRUPPEN (i stage, inte layouten) */
   .story-prog{
+    opacity:0;
     position:absolute; z-index:2; left:50%; transform:translateX(-50%);
     bottom:clamp(48px, 8vh, 92px); width:min(72%, 600px); height:2px;
   }
@@ -993,9 +998,12 @@ function startTrustCols(){
 
 buildStep1(); buildStep2(); buildStep3();
 
-/* Premiumkort på scen: scroll = progress; kort, platta, glow och timeline
-   interpoleras kontinuerligt. Informationsplattan löses upp i dimma när
-   kortet lämnar fokus — bilden lever alltid. */
+/* Kapitlet "Så fungerar SODAREA" i fyra faser:
+   1) intro — rubriken byggs lugnt, korten vilar offstage
+   2) scenen byggs — rubriken kliver tillbaka, korten glider in, timeline tänds
+   3) första fokus — kort 1 blåses upp och HÅLLS
+   4) arbetsflödet — fokus vandrar Analys → Forma → Visualisera
+   Allt interpoleras kontinuerligt ur en enda scrollprogress. */
 (function(){
   const story = document.getElementById('howStory');
   if(!story) return;
@@ -1003,72 +1011,115 @@ buildStep1(); buildStep2(); buildStep3();
   const steps = [...story.querySelectorAll('.sstep')];
   const glow = document.getElementById('storyGlow');
   const prog = document.getElementById('storyProgFill');
+  const progWrap = story.querySelector('.story-prog');
   const pnodes = [...story.querySelectorAll('.story-prog .pnode')];
+  const head = story.querySelector('.story-head');
+  const headParts = head ? [head.querySelector('.eyebrow'), head.querySelector('h2'), head.querySelector('p')] : [];
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let ticking = false;
 
   if(reduce){ story.classList.add('static'); return; }
 
+  const clamp01 = v => Math.min(1, Math.max(0, v));
+  const ramp = (p, a, b) => clamp01((p - a) / (b - a));
   const depth = x => x <= 1 ? 1 - .30 * x : .70 - .18 * Math.min(x - 1, 1);
   const sideX = d => Math.sign(d) * (40 * Math.min(Math.abs(d), 1) + 18 * Math.max(0, Math.abs(d) - 1));
 
   function progress(){
     const r = story.getBoundingClientRect();
     const total = r.height - innerHeight;
-    return total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+    return total > 0 ? clamp01(-r.top / total) : 0;
+  }
+
+  /* fasgränser (andel av sektionens scroll) */
+  const P_SCENE = 0.14, P_SCENE_END = 0.34, P_FOCUS = 0.46, P_HOLD_END = 0.60;
+
+  function phases(p){
+    const E = ramp(p, P_SCENE, P_SCENE_END);                    /* scenbygge */
+    let F, f;
+    if(p < P_SCENE_END){ F = 0; f = 1; }
+    else if(p < P_FOCUS){ const t = ramp(p, P_SCENE_END, P_FOCUS); F = t; f = 1 - t; }
+    else if(p < P_HOLD_END){ F = 1; f = 0; }
+    else { F = 1; f = (p - P_HOLD_END) / (1 - P_HOLD_END) * 2; }
+    return {E, F, f};
   }
 
   function apply(){
     const p = progress();
-    const f = p * 2;
     const mobile = innerWidth < 940;
+    const {E, F, f} = phases(p);
+    const fm = mobile ? p * 2 : f;                              /* mobilen behåller sin resa */
     const stageW = stage.clientWidth;
+
+    /* fas 1: rubriken byggs — fas 2: den kliver tillbaka */
+    if(head && !mobile){
+      headParts.forEach((el, i)=>{
+        if(!el) return;
+        const o = ramp(p, [0.00, 0.03, 0.07][i], [0.05, 0.105, 0.16][i]);
+        el.style.opacity = o.toFixed(3);
+        el.style.transform = `translateY(${((1 - o) * 14).toFixed(1)}px)`;
+      });
+      head.style.transform = `translateY(${(-18 * E).toFixed(1)}px) scale(${(1 - .07 * E).toFixed(3)})`;
+    } else if(head){
+      headParts.forEach(el=>{ if(el){ el.style.opacity = ''; el.style.transform = ''; } });
+      head.style.transform = '';
+    }
+
     steps.forEach((s, i)=>{
-      const d = i - f;
+      const d = i - fm;
       const x = Math.abs(d);
-      const w = Math.max(0, 1 - x);                       /* fokusvikt */
-      const k = depth(x);
-      const fog = Math.min(1, x * (d < 0 ? 1.15 : .92));  /* det förflutna bleknar mer */
       const plate = s.querySelector('.ss-plate');
       const desc = plate.querySelector('p');
       const img = s.querySelector('.ss-img');
       const veil = s.querySelector('.ss-fog');
       if(!mobile){
-        const off = sideX(d) / 100 * stageW;
+        const w = Math.max(0, 1 - x) * F;
+        const k = .62 + (depth(x) - .62) * F;
+        const fog = Math.min(1, x * (d < 0 ? 1.15 : .92));
+        const entryX = Math.pow(1 - E, 1.4) * (58 + i * 10);   /* in från höger i fas 2 */
+        const off = (sideX(d) + entryX) / 100 * stageW;
         s.style.transform = `translate(calc(-50% + ${off.toFixed(1)}px), calc(-50% + ${((1 - w) * 12).toFixed(1)}px)) scale(${k.toFixed(3)})`;
-        s.style.zIndex = String(30 - Math.round(x * 10));
-        s.style.filter = `saturate(${(.7 + .3 * (1 - fog)).toFixed(2)})`;
-        s.style.opacity = '1';                              /* kortet är helt — dimman ligger framför */
-        if(veil) veil.style.opacity = Math.min(.78, fog * .5).toFixed(3);
+        s.style.zIndex = String(20 - Math.round(x * 6) + (w > .5 ? 10 : 0));
+        s.style.filter = `saturate(${(.7 + .3 * w).toFixed(2)})`;
+        s.style.opacity = '1';
+        if(veil) veil.style.opacity = Math.min(.8, (.35 + (fog * .5 - .35) * F) + (1 - E) * .4).toFixed(3);
+        s.style.boxShadow = `0 2px 6px rgba(20,22,27,${(.05 * w).toFixed(3)}), 0 26px 52px -22px rgba(20,22,27,${(.20 * w).toFixed(3)})`;
+        if(desc){
+          const dw = Math.max(0, 1 - x * 1.6) * F;
+          desc.style.opacity = dw.toFixed(3);
+          desc.style.transform = `translateY(${((1 - dw) * 7).toFixed(1)}px)`;
+          desc.style.filter = `blur(${((1 - dw) * 2.5).toFixed(1)}px)`;
+        }
         if(img) img.style.transform = '';
       } else {
+        const w = Math.max(0, 1 - x * 1.05);
         s.style.transform = `translate(-50%, calc(-50% + ${(d * 66).toFixed(1)}vh)) scale(${(.88 + .12 * w).toFixed(3)})`;
-        s.style.opacity = Math.max(0, Math.min(1, (1 - x * 1.05) * 1.35)).toFixed(3);
+        s.style.opacity = clamp01((1 - x * 1.05) * 1.35).toFixed(3);
         s.style.zIndex = String(30 - Math.round(x * 10));
         s.style.filter = '';
+        if(veil) veil.style.opacity = '0';
+        s.style.boxShadow = `0 2px 6px rgba(20,22,27,.05), 0 22px 48px -20px rgba(20,22,27,.16)`;
+        if(desc){ desc.style.opacity = ''; desc.style.transform = ''; desc.style.filter = ''; }
         if(img) img.style.transform = `translateY(${(d * -6).toFixed(1)}vh)`;
       }
-      /* plattan: närvaro i fokus, dimma i periferin */
       plate.style.background = '#fff';
-      if(mobile && veil) veil.style.opacity = '0';
-      s.style.boxShadow = `0 2px 6px rgba(20,22,27,${(.05 * w).toFixed(3)}), 0 26px 52px -22px rgba(20,22,27,${(.20 * w).toFixed(3)})`;
-      if(desc){
-        const dw = Math.max(0, 1 - x * 1.6);
-        desc.style.opacity = dw.toFixed(3);
-        desc.style.transform = `translateY(${((1 - dw) * 7).toFixed(1)}px)`;
-        desc.style.filter = `blur(${((1 - dw) * 2.5).toFixed(1)}px)`;
-      }
     });
+
     if(glow){
-      const active = Math.max(0, Math.min(2, Math.round(f)));
-      glow.style.left = `calc(50% + ${((f - active) * 18).toFixed(1)}%)`;
-      glow.style.opacity = '1';
+      const active = Math.max(0, Math.min(2, Math.round(fm)));
+      glow.style.left = `calc(50% + ${((fm - active) * 18).toFixed(1)}%)`;
+      glow.style.opacity = mobile ? '1' : F.toFixed(3);
     }
-    if(prog) prog.style.width = (p * 100).toFixed(1) + '%';
-    pnodes.forEach((n, i)=> n.classList.toggle('active', f >= i - .25));
+    if(progWrap) progWrap.style.opacity = mobile ? '1' : E.toFixed(3);
+    if(prog){
+      const wf = mobile ? p : Math.max(0, fm) / 2 * F;
+      prog.style.width = (clamp01(wf) * 100).toFixed(1) + '%';
+    }
+    pnodes.forEach((n, i)=> n.classList.toggle('active', (mobile || F > .05) && fm >= i - .25));
     steps.forEach((s, i)=>{
-      s.toggleAttribute('data-side', Math.round(f) !== i);
-      s.setAttribute('tabindex', Math.round(f) !== i ? '0' : '-1');
+      const side = Math.round(fm) !== i || (!mobile && F < .5);
+      s.toggleAttribute('data-side', side);
+      s.setAttribute('tabindex', side ? '0' : '-1');
     });
     ticking = false;
   }
@@ -1077,8 +1128,11 @@ buildStep1(); buildStep2(); buildStep3();
   window.addEventListener('resize', onS, {passive:true});
   apply();
 
+  /* klick: desktop siktar på fasernas progresspunkter, mobilen på halvor */
+  const P_TARGETS = [ (P_FOCUS + P_HOLD_END) / 2, P_HOLD_END + (1 - P_HOLD_END) / 2, 0.995 ];
   function scrollToStep(i){
-    const top = story.offsetTop + (i / 2) * (story.offsetHeight - innerHeight);
+    const pt = innerWidth < 940 ? i / 2 : P_TARGETS[i];
+    const top = story.offsetTop + pt * (story.offsetHeight - innerHeight);
     window.scrollTo({top, behavior:'smooth'});
   }
   steps.forEach((s, i)=>{
@@ -1086,7 +1140,7 @@ buildStep1(); buildStep2(); buildStep3();
     s.addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ') && s.hasAttribute('data-side')){ e.preventDefault(); scrollToStep(i); } });
   });
 
-  /* mobil: mjuk snap vid släppt scroll + horisontell swipe byter steg */
+  /* mobil: mjuk snap med dödzoner + horisontell swipe */
   let snapT = null, touching = false;
   window.addEventListener('scroll', ()=>{
     if(innerWidth >= 940) return;
@@ -1094,10 +1148,10 @@ buildStep1(); buildStep2(); buildStep3();
     snapT = setTimeout(()=>{
       if(touching) return;
       const p = progress();
-      if(p < 0.06 || p > 0.94) return;               /* dödzoner vid in-/utträde */
+      if(p < 0.06 || p > 0.94) return;
       const nearest = Math.round(p * 2);
       const dist = Math.abs(p - nearest / 2);
-      if(dist > 0.006 && dist <= 0.22) scrollToStep(nearest);   /* aldrig långa ryck */
+      if(dist > 0.006 && dist <= 0.22) scrollToStep(nearest);
     }, 190);
   }, {passive:true});
   window.addEventListener('touchstart', ()=>{ touching = true; }, {passive:true});
