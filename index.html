@@ -356,33 +356,63 @@
   .how-head .eyebrow{ margin-bottom:20px; }
   .how-intro{ font-size:clamp(1rem,.5vw + .85rem,1.15rem); color:var(--body); max-width:44ch; justify-self:end; padding-bottom:6px; }
 
-  .how-cards{
+  /* --- desktop: demo-scen + steglista --- */
+  .demo{
     margin-top:clamp(40px,5vw,64px); max-width:1480px;
-    display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(18px,2.6vw,34px);
+    display:grid; grid-template-columns:minmax(0,600px) 1fr;
+    gap:clamp(36px,4.5vw,88px); align-items:center;
   }
-  .hs-card{
-    border:1px solid var(--line); border-radius:20px; background:#fff; overflow:hidden;
-    box-shadow:0 2px 6px rgba(20,22,27,.05), 0 22px 48px -20px rgba(20,22,27,.16);
-    transition:transform .5s var(--exp), box-shadow .5s var(--exp);
+  .demo-stage{
+    position:relative; aspect-ratio:1/1; overflow:hidden;
+    background:#f7f9fb; border:1px solid var(--line);
+    border-radius:20px;
+    box-shadow:0 2px 6px rgba(20,22,27,.05), 0 26px 56px -24px rgba(20,22,27,.18);
   }
-  .hs-card:hover{ transform:translateY(-4px); box-shadow:0 4px 10px rgba(20,22,27,.06), 0 30px 60px -22px rgba(20,22,27,.22); }
-  .hs-img{ position:relative; aspect-ratio:1/1; background:#fff; overflow:hidden; }
-  .sfade .sf{
-    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-    opacity:0; transition:opacity .9s var(--ease);
+  .ds-frames{ position:absolute; inset:0; opacity:0; transition:opacity .6s var(--ease); pointer-events:none; }
+  .ds-frames.on{ opacity:1; }
+  .df{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:contain; opacity:0; transition:opacity .6s var(--ease);
   }
-  .sfade .sf.on{ opacity:1; }
-  .chip{
-    position:absolute; top:14px; left:14px; z-index:2;
-    font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ink);
-    padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.85);
-    border:1px solid var(--line); backdrop-filter:blur(6px);
+  .df.on{ opacity:1; }
+  .demo-steps{ position:relative; padding-left:34px; display:flex; flex-direction:column; gap:clamp(22px,2.6vw,38px); }
+  .ds-line{ position:absolute; left:5px; top:14px; bottom:14px; width:2px; background:var(--line); border-radius:2px; }
+  .ds-line i{
+    position:absolute; left:0; top:0; width:100%; height:0;
+    background:linear-gradient(180deg, var(--teal), var(--azure), var(--violet));
+    border-radius:2px; transition:height .6s var(--exp);
   }
-  .hs-body{ padding:6px 26px 30px; }
-  .hc-icon{ width:64px; height:64px; margin-bottom:10px; }
-  .hs-body h3{ font-size:1.32rem; margin-bottom:10px; }
-  .hs-body p{ font-size:14.5px; color:var(--body); }
-  .hs-dots, .hs-hint{ display:none; }
+  .dstep{
+    position:relative; display:block; text-align:left; background:none; border:none; padding:0;
+    cursor:pointer; opacity:.42; transition:opacity .4s var(--ease);
+  }
+  .dstep:hover{ opacity:.7; }
+  .dstep.active{ opacity:1; }
+  .dstep:focus-visible{ outline:2px solid var(--azure); outline-offset:6px; border-radius:10px; }
+  .ds-node{
+    position:absolute; left:-34px; top:14px; width:12px; height:12px; border-radius:50%;
+    background:var(--paper); border:2px solid var(--faint); transition:border-color .3s, background .3s;
+  }
+  .dstep.active .ds-node{ border-color:var(--azure); background:var(--azure); box-shadow:0 0 0 4px rgba(61,126,255,.14); }
+  .ds-row{ display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+  .ds-ic{ width:42px; height:42px; flex:none; }
+  .ds-label{
+    font-size:12.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+  }
+  .dstep.active .ds-label{ color:var(--azure); }
+  .ds-benefit{ display:block; font-family:'Readex Pro'; font-weight:600; font-size:clamp(1.1rem,1vw + .7rem,1.4rem); color:var(--ink); letter-spacing:-.015em; margin-bottom:8px; }
+  .ds-body{ display:block; font-size:14.5px; line-height:1.55; color:var(--body); max-width:46ch; }
+  .how-cards{ display:none; }
+
+  /* --- gemensam flödesindikator (mobilkorten) --- */
+  .flow{ display:flex; align-items:center; gap:0; margin-top:18px; }
+  .flow .fn{
+    flex:none; width:10px; height:10px; border-radius:50%; padding:0; border:2px solid var(--line);
+    background:#fff; cursor:pointer;
+  }
+  .flow .fn.fill{ border-color:var(--azure); background:var(--azure); }
+  .flow .fs{ flex:1; height:2px; background:var(--line); border-radius:2px; }
+  .flow .fs.fill{ background:linear-gradient(90deg, var(--teal), var(--azure), var(--violet)); }
 
   .how-trust{
     margin-top:clamp(48px,6vw,84px); max-width:1480px;
@@ -396,25 +426,29 @@
   @media (max-width:860px){
     .how-head{ grid-template-columns:1fr; align-items:start; }
     .how-intro{ justify-self:start; padding-bottom:0; }
+    .demo{ display:none; }
     .how-cards{
       display:flex; gap:14px; margin-top:34px;
       overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
       scrollbar-width:none;
       margin-left:calc(-1 * var(--gutter)); margin-right:calc(-1 * var(--gutter));
-      padding:4px var(--gutter) 14px;
+      padding:4px 20px 14px;
     }
     .how-cards::-webkit-scrollbar{ display:none; }
-    .hs-card{ flex:0 0 82%; scroll-snap-align:center; }
-    .hs-body{ padding:4px 20px 24px; }
-    .hc-icon{ width:54px; height:54px; }
-    .hs-body h3{ font-size:1.2rem; margin-bottom:8px; }
-    .hs-body p{ font-size:14px; }
-    .hs-dots{ display:flex; justify-content:center; gap:8px; margin-top:14px; }
-    .hs-dots span{ width:7px; height:7px; border-radius:999px; background:var(--line); transition:all .35s var(--exp); cursor:pointer; }
-    .hs-dots span.active{ width:22px; background:var(--azure); }
-    .hs-hint{ display:block; text-align:center; margin-top:12px; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
-    .how-trust{ display:grid; grid-template-columns:1fr 1fr; }
+    .hs-card{
+      flex:0 0 calc(100% - 32px); scroll-snap-align:center;
+      border:1px solid var(--line); border-radius:20px; background:#fff; overflow:hidden;
+      box-shadow:0 2px 6px rgba(20,22,27,.05), 0 22px 48px -20px rgba(20,22,27,.16);
+    }
+    .hs-img{ position:relative; aspect-ratio:1/1; background:#f7f9fb; overflow:hidden; border-radius:20px 20px 0 0; }
+    .hs-body{ padding:18px 20px 22px; }
+    .step-row{ display:flex; align-items:center; gap:11px; margin-bottom:10px; }
+    .step-row .ds-ic{ width:36px; height:36px; }
+    .hs-body h3{ font-size:1.18rem; margin-bottom:8px; }
+    .hs-body p{ font-size:14px; color:var(--body); }
   }
+  @media (max-width:560px){ .how-trust{ grid-template-columns:1fr; } }
+  @media (max-width:860px){ .how-trust{ display:grid; grid-template-columns:1fr 1fr; } }
   @media (max-width:560px){ .how-trust{ grid-template-columns:1fr; } }
 
   /* ---------- REFERENSCASE ---------- */
@@ -614,51 +648,66 @@
         <p class="how-intro reveal rd1">Tre steg. Ett sammanhängande arbetsflöde – från analys av verkliga planförutsättningar till byggbara alternativ och beslut som alla förstår.</p>
       </div>
 
-      <!-- Stegkort — grid på desktop, svep på mobil -->
+      <!-- Desktop: produktdemo — stor bildscen + steglista -->
+      <div class="demo reveal rd1">
+        <div class="demo-stage" id="demoStage" aria-live="polite">
+          <div class="ds-frames on" data-step="0"><img class="df on" src="media/step-a1.jpg" alt="Analysera — steg 01" fetchpriority="high" width="1080" height="1080"><img class="df" src="media/step-a2.jpg" alt="" loading="lazy" width="1080" height="1080"></div>
+          <div class="ds-frames" data-step="1"><img class="df on" src="media/step-f1.jpg" alt="Forma — steg 02" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-f2.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-f3.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-f4.jpg" alt="" loading="lazy" width="1080" height="1080"></div>
+          <div class="ds-frames" data-step="2"><img class="df on" src="media/step-v1.jpg" alt="Visualisera — steg 03" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-v2.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-v3.jpg" alt="" loading="lazy" width="1080" height="1080"></div>
+        </div>
+        <div class="demo-steps" id="demoSteps" role="tablist" aria-label="Så fungerar SODAREA — tre steg">
+          <span class="ds-line" aria-hidden="true"><i id="dsFill"></i></span>
+          <button class="dstep active" role="tab" aria-selected="true" aria-label="Steg 01: Analysera" data-step="0">
+            <span class="ds-node" aria-hidden="true"></span>
+            <span class="ds-row"><img class="ds-ic" src="media/icon-1.png" alt=""><span class="ds-label">01 · Analysera</span></span>
+            <span class="ds-benefit">Förstå platsens förutsättningar.</span>
+            <span class="ds-body">Ladda upp planunderlag och låt SODAREA analysera detaljplaner, GIS-data och bestämmelser. Byggbara ramar identifieras och struktureras automatiskt.</span>
+          </button>
+          <button class="dstep" role="tab" aria-selected="false" aria-label="Steg 02: Forma" data-step="1">
+            <span class="ds-node" aria-hidden="true"></span>
+            <span class="ds-row"><img class="ds-ic" src="media/icon-2.png" alt=""><span class="ds-label">02 · Forma</span></span>
+            <span class="ds-benefit">Utveckla byggbara alternativ.</span>
+            <span class="ds-body">Flytta volymer, justera våningsantal och testa olika lösningar. Jämför konsekvenser direkt – alltid inom detaljplanens ramar.</span>
+          </button>
+          <button class="dstep" role="tab" aria-selected="false" aria-label="Steg 03: Visualisera" data-step="2">
+            <span class="ds-node" aria-hidden="true"></span>
+            <span class="ds-row"><img class="ds-ic" src="media/icon-3.png" alt=""><span class="ds-label">03 · Visualisera</span></span>
+            <span class="ds-benefit">Skapa samsyn kring framtida platser.</span>
+            <span class="ds-body">Omvandla byggbara alternativ till realistiska miljöbilder och filmer som gör framtida platser enkla att förstå och lättare att fatta beslut kring.</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobil: svepbar sekvens -->
       <div class="how-cards reveal rd1" id="howSwipe">
-        <article class="hs-card">
-          <div class="hs-img sfade">
-            <img class="sf on" src="media/step-a1.jpg" alt="Planunderlag analyseras i lager" loading="lazy">
-            <img class="sf" src="media/step-a2.jpg" alt="" loading="lazy">
-            <span class="chip">01 · Analysera</span>
-          </div>
+        <article class="hs-card" data-step="0">
+          <div class="hs-img"><img class="df on" src="media/step-a1.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-a2.jpg" alt="" loading="lazy" width="1080" height="1080"></div>
           <div class="hs-body">
-            <img class="hc-icon" src="media/icon-1.png" alt="">
-            <h3>Analysera</h3>
+            <div class="step-row"><img class="ds-ic" src="media/icon-1.png" alt=""><span class="ds-label">01 · Analysera</span></div>
+            <h3>Förstå platsens förutsättningar.</h3>
             <p>Ladda upp planunderlag och låt SODAREA analysera detaljplaner, GIS-data och bestämmelser. Byggbara ramar identifieras och struktureras automatiskt.</p>
+            <div class="flow" role="group" aria-label="Steg i flödet"><button class="fn fill" data-goto="0" aria-label="Gå till steg 01"></button><i class="fs"></i><button class="fn" data-goto="1" aria-label="Gå till steg 02"></button><i class="fs"></i><button class="fn" data-goto="2" aria-label="Gå till steg 03"></button></div>
           </div>
         </article>
-        <article class="hs-card">
-          <div class="hs-img sfade">
-            <img class="sf on" src="media/step-f1.jpg" alt="Volymstudie inom byggrättens ramar" loading="lazy">
-            <img class="sf" src="media/step-f2.jpg" alt="" loading="lazy">
-            <img class="sf" src="media/step-f3.jpg" alt="" loading="lazy">
-            <img class="sf" src="media/step-f4.jpg" alt="" loading="lazy">
-            <span class="chip">02 · Forma</span>
-          </div>
+        <article class="hs-card" data-step="1">
+          <div class="hs-img"><img class="df on" src="media/step-f1.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-f2.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-f3.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-f4.jpg" alt="" loading="lazy" width="1080" height="1080"></div>
           <div class="hs-body">
-            <img class="hc-icon" src="media/icon-2.png" alt="">
-            <h3>Forma</h3>
-            <p>Utveckla byggbara alternativ. Flytta volymer, justera våningsantal, testa olika lösningar och jämför konsekvenser – alltid inom detaljplanens ramar.</p>
+            <div class="step-row"><img class="ds-ic" src="media/icon-2.png" alt=""><span class="ds-label">02 · Forma</span></div>
+            <h3>Utveckla byggbara alternativ.</h3>
+            <p>Flytta volymer, justera våningsantal och testa olika lösningar. Jämför konsekvenser direkt – alltid inom detaljplanens ramar.</p>
+            <div class="flow" role="group" aria-label="Steg i flödet"><button class="fn fill" data-goto="0" aria-label="Gå till steg 01"></button><i class="fs fill"></i><button class="fn fill" data-goto="1" aria-label="Gå till steg 02"></button><i class="fs"></i><button class="fn" data-goto="2" aria-label="Gå till steg 03"></button></div>
           </div>
         </article>
-        <article class="hs-card">
-          <div class="hs-img sfade">
-            <img class="sf on" src="media/step-v1.jpg" alt="Fotorealistisk vy över färdig stadsmiljö" loading="lazy">
-            <img class="sf" src="media/step-v2.jpg" alt="" loading="lazy">
-            <img class="sf" src="media/step-v3.jpg" alt="" loading="lazy">
-            <span class="chip">03 · Visualisera</span>
-          </div>
+        <article class="hs-card" data-step="2">
+          <div class="hs-img"><img class="df on" src="media/step-v1.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-v2.jpg" alt="" loading="lazy" width="1080" height="1080"><img class="df" src="media/step-v3.jpg" alt="" loading="lazy" width="1080" height="1080"></div>
           <div class="hs-body">
-            <img class="hc-icon" src="media/icon-3.png" alt="">
-            <h3>Visualisera</h3>
-            <p>Skapa realistiska miljöbilder och filmer som gör framtida platser enkla att förstå och lättare att fatta beslut kring.</p>
+            <div class="step-row"><img class="ds-ic" src="media/icon-3.png" alt=""><span class="ds-label">03 · Visualisera</span></div>
+            <h3>Skapa samsyn kring framtida platser.</h3>
+            <p>Omvandla byggbara alternativ till realistiska miljöbilder och filmer som gör framtida platser enkla att förstå och lättare att fatta beslut kring.</p>
+            <div class="flow" role="group" aria-label="Steg i flödet"><button class="fn fill" data-goto="0" aria-label="Gå till steg 01"></button><i class="fs fill"></i><button class="fn fill" data-goto="1" aria-label="Gå till steg 02"></button><i class="fs fill"></i><button class="fn fill" data-goto="2" aria-label="Gå till steg 03"></button></div>
           </div>
         </article>
       </div>
-
-      <div class="hs-dots" id="hsDots" aria-hidden="true"><span class="active"></span><span></span><span></span></div>
-      <div class="hs-hint">Svep för att se stegen</div>
 
       <div class="how-trust reveal rd2">
         <div class="ht"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-2.9 7.6-7 9-4.1-1.4-7-4.6-7-9V6z"/><path d="M9.2 12l2 2 3.6-3.8"/></svg> Alltid inom planens ramar</div>
@@ -941,42 +990,90 @@ function startTrustCols(){
 
 buildStep1(); buildStep2(); buildStep3();
 
-/* stegbildernas frames: mjuk dissolve varannan sekund, ingen rörelse */
+/* Så fungerar-flödet: aktivt steg, bildrotation (4s/600ms), paus vid hover/dold flik */
 (function(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  document.querySelectorAll('.sfade').forEach((box, bi)=>{
-    const fr = box.querySelectorAll('.sf');
-    if(fr.length < 2) return;
-    let i = 0;
-    setTimeout(()=>{
-      setInterval(()=>{
-        fr[i].classList.remove('on');
-        i = (i + 1) % fr.length;
-        fr[i].classList.add('on');
-      }, 2000);
-    }, (bi % 3) * 500);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = document.getElementById('demoStage');
+  const stepsWrap = document.getElementById('demoSteps');
+  const swipe = document.getElementById('howSwipe');
+  if(!stage && !swipe) return;
+
+  const groups = stage ? [...stage.querySelectorAll('.ds-frames')] : [];
+  const buttons = stepsWrap ? [...stepsWrap.querySelectorAll('.dstep')] : [];
+  const fill = document.getElementById('dsFill');
+  const cards = swipe ? [...swipe.querySelectorAll('.hs-card')] : [];
+  let active = 0;          /* aktivt steg (desktop) */
+  let mobileActive = 0;    /* centrerat kort (mobil) */
+  let hovering = false;
+
+  function setActive(i){
+    active = i;
+    groups.forEach((g,gi)=> g.classList.toggle('on', gi===i));
+    buttons.forEach((b,bi)=>{
+      b.classList.toggle('active', bi===i);
+      b.setAttribute('aria-selected', String(bi===i));
+    });
+    if(fill && buttons[i]){
+      const node = buttons[i].querySelector('.ds-node');
+      const top = buttons[i].offsetTop + node.offsetTop + 6;
+      fill.style.height = top + 'px';
+    }
+  }
+  buttons.forEach((b,bi)=>{
+    b.addEventListener('click', ()=> setActive(bi));
+    b.addEventListener('keydown', e=>{
+      if(e.key==='ArrowDown'||e.key==='ArrowRight'){ e.preventDefault(); buttons[(bi+1)%3].focus(); setActive((bi+1)%3); }
+      if(e.key==='ArrowUp'||e.key==='ArrowLeft'){ e.preventDefault(); buttons[(bi+2)%3].focus(); setActive((bi+2)%3); }
+    });
   });
+  if(buttons.length) setActive(0);
+
+  if(stage){
+    stage.addEventListener('mouseenter', ()=> hovering=true);
+    stage.addEventListener('mouseleave', ()=> hovering=false);
+  }
+
+  /* mobil: vilket kort är centrerat + flow-noder scrollar */
+  if(swipe){
+    let t=false;
+    function updCard(){
+      const x = swipe.scrollLeft + swipe.clientWidth/2;
+      let idx=0, best=Infinity;
+      cards.forEach((c,i)=>{ const d=Math.abs(c.offsetLeft+c.offsetWidth/2-x); if(d<best){best=d; idx=i;} });
+      mobileActive = idx;
+      t=false;
+    }
+    swipe.addEventListener('scroll', ()=>{ if(!t){ requestAnimationFrame(updCard); t=true; } }, {passive:true});
+    swipe.querySelectorAll('.fn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const k=+btn.dataset.goto;
+        cards[k].scrollIntoView({behavior: reduce?'auto':'smooth', inline:'center', block:'nearest'});
+      });
+    });
+    updCard();
+  }
+
+  function rotate(container){
+    const frames = [...container.querySelectorAll('.df')];
+    if(frames.length < 2) return;
+    let cur = frames.findIndex(f=> f.classList.contains('on'));
+    if(cur < 0) cur = 0;
+    frames[cur].classList.remove('on');
+    frames[(cur + 1) % frames.length].classList.add('on');
+  }
+  if(!reduce){
+    setInterval(()=>{
+      if(document.hidden) return;
+      const desktop = window.innerWidth > 860;
+      if(desktop){
+        if(!hovering && groups[active]) rotate(groups[active]);
+      } else if(cards[mobileActive]){
+        rotate(cards[mobileActive].querySelector('.hs-img'));
+      }
+    }, 4000);
+  }
 })();
 
-/* mobil stegkarusell: dots följer swipen, tap på dot scrollar */
-(function(){
-  const wrap = document.getElementById('howSwipe');
-  const dots = document.querySelectorAll('#hsDots span');
-  if(!wrap || !dots.length) return;
-  const cards = wrap.querySelectorAll('.hs-card');
-  function upd(){
-    const x = wrap.scrollLeft + wrap.clientWidth / 2;
-    let idx = 0, best = Infinity;
-    cards.forEach((c, i)=>{
-      const d = Math.abs(c.offsetLeft + c.offsetWidth/2 - x);
-      if(d < best){ best = d; idx = i; }
-    });
-    dots.forEach((d, i)=> d.classList.toggle('active', i === idx));
-  }
-  wrap.addEventListener('scroll', ()=> requestAnimationFrame(upd), {passive:true});
-  dots.forEach((d, i)=> d.addEventListener('click', ()=> cards[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'})));
-  upd();
-})();
 document.querySelectorAll('.case-cover').forEach(c=> buildCaseCover(c, parseInt(c.dataset.scene,10)));
 
 /* ---- nav + reveal + hero rotate ---- */
