@@ -239,15 +239,14 @@
     .hero-inner{ padding-top:56px; padding-bottom:32px; }
     .hero-grid{ flex-direction:column; align-items:stretch; gap:0; justify-content:flex-start; }
     .hero h1{ letter-spacing:-.03em; }
-    .hero-media{ order:-1; flex:none; margin:-20px calc(-1 * var(--gutter)) 0; display:block; }
-    .hero-media img{ width:125vw; max-width:none; height:auto; margin-left:-26.1vw; }
+    .hero-media{ order:-1; flex:none; margin:-14px calc(-1 * var(--gutter)) 0; display:block; }
+    .hero-media img{ width:100%; max-width:none; height:auto; }
     .hero-copy{ position:relative; z-index:2; margin-top:-60px; }
     .hero-actions{ margin-top:16px; }
     .hero-eyebrow{ display:none; }
   }
   @media (max-width:939px) and (max-height:700px){
     .hero-inner{ padding-top:60px; }
-    .hero-media img{ width:112vw; margin-left:-18.2vw; }
     .hero-copy{ margin-top:-40px; }
     .hero h1{ font-size:2.05rem; }
     .hero-sub{ font-size:.98rem; margin-top:12px; }
@@ -596,7 +595,10 @@
           </div>
         </div>
         <div class="hero-media reveal in rd2 cin" id="heroMedia">
-          <img src="media/hero-bg.jpg" alt="Lagervisualisering — från detaljplan, via analys och volymstudier, till färdig stadsmiljö" width="2000" height="1728" fetchpriority="high">
+          <picture>
+            <source media="(max-width:939px)" srcset="media/hero-mobil.jpg" width="1201" height="1400">
+            <img src="media/hero-bg.jpg" alt="Lagervisualisering — från detaljplan, via analys och volymstudier, till färdig stadsmiljö" width="2000" height="1728" fetchpriority="high">
+          </picture>
         </div>
       </div>
       <div class="hero-actions reveal in rd3 cin">
