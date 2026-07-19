@@ -359,9 +359,12 @@
     margin-top:clamp(40px,5vw,64px); display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
     max-width:1480px; border-radius:20px; overflow:hidden;
   }
-  .hb{ position:relative; margin:0; aspect-ratio:1/1; overflow:hidden; background:var(--panel); }
-  .hb img{ width:100%; height:100%; object-fit:cover; transition:transform .8s var(--exp); }
-  .hb:hover img{ transform:scale(1.045); }
+  .hb{ position:relative; margin:0; aspect-ratio:1/1; overflow:hidden; background:#fff; }
+  .sfade .sf{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0; transition:opacity .9s var(--ease);
+  }
+  .sfade .sf.on{ opacity:1; }
   .chip{
     position:absolute; top:14px; left:14px; z-index:2;
     font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ink);
@@ -407,8 +410,7 @@
       flex:0 0 82%; scroll-snap-align:center; border:1px solid var(--line); border-radius:18px;
       background:#fff; box-shadow:var(--shadow-sm); overflow:hidden;
     }
-    .hs-img{ background:var(--panel); }
-    .hs-img img{ width:100%; height:auto; display:block; }
+    .hs-img{ background:#fff; position:relative; aspect-ratio:1/1; overflow:hidden; }
     .hs-body{ padding:18px 20px 22px; }
     .hs-body .schip{ display:inline-block; font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--azure); margin-bottom:8px; }
     .hs-body h3{ font-size:1.2rem; margin-bottom:8px; }
@@ -620,9 +622,24 @@
 
       <!-- Desktop: bildband + tidslinje-kolumner -->
       <div class="how-band reveal rd1">
-        <figure class="hb"><img src="media/how-1.jpg" alt="Detaljplan med markerade byggbara områden" loading="lazy"><figcaption class="chip">01 · Analysera</figcaption></figure>
-        <figure class="hb"><img src="media/how-2.jpg" alt="Volymstudie med markerad byggnadsvolym" loading="lazy"><figcaption class="chip">02 · Iterera</figcaption></figure>
-        <figure class="hb"><img src="media/how-3.jpg" alt="Fotorealistisk vy över färdig stadsmiljö" loading="lazy"><figcaption class="chip">03 · Visualisera</figcaption></figure>
+        <figure class="hb sfade">
+          <img class="sf on" src="media/step-a1.jpg" alt="Planunderlag analyseras i lager" loading="lazy">
+          <img class="sf" src="media/step-a2.jpg" alt="" loading="lazy">
+          <figcaption class="chip">01 · Analysera</figcaption>
+        </figure>
+        <figure class="hb sfade">
+          <img class="sf on" src="media/step-f1.jpg" alt="Volymstudie inom byggrättens ramar" loading="lazy">
+          <img class="sf" src="media/step-f2.jpg" alt="" loading="lazy">
+          <img class="sf" src="media/step-f3.jpg" alt="" loading="lazy">
+          <img class="sf" src="media/step-f4.jpg" alt="" loading="lazy">
+          <figcaption class="chip">02 · Iterera</figcaption>
+        </figure>
+        <figure class="hb sfade">
+          <img class="sf on" src="media/step-v1.jpg" alt="Fotorealistisk vy över färdig stadsmiljö" loading="lazy">
+          <img class="sf" src="media/step-v2.jpg" alt="" loading="lazy">
+          <img class="sf" src="media/step-v3.jpg" alt="" loading="lazy">
+          <figcaption class="chip">03 · Visualisera</figcaption>
+        </figure>
       </div>
       <div class="how-cols">
         <div class="hc reveal">
@@ -648,7 +665,7 @@
       <!-- Mobil: svepbara stegkort -->
       <div class="how-swipe reveal" id="howSwipe">
         <article class="hs-card">
-          <div class="hs-img"><img src="media/how-iso-1.jpg" alt="" loading="lazy"></div>
+          <div class="hs-img sfade"><img class="sf on" src="media/step-a1.jpg" alt="" loading="lazy"><img class="sf" src="media/step-a2.jpg" alt="" loading="lazy"></div>
           <div class="hs-body">
             <span class="schip">01 · Analysera</span>
             <h3>Analysera</h3>
@@ -656,7 +673,7 @@
           </div>
         </article>
         <article class="hs-card">
-          <div class="hs-img"><img src="media/how-iso-2.jpg" alt="" loading="lazy"></div>
+          <div class="hs-img sfade"><img class="sf on" src="media/step-f1.jpg" alt="" loading="lazy"><img class="sf" src="media/step-f2.jpg" alt="" loading="lazy"><img class="sf" src="media/step-f3.jpg" alt="" loading="lazy"><img class="sf" src="media/step-f4.jpg" alt="" loading="lazy"></div>
           <div class="hs-body">
             <span class="schip">02 · Iterera</span>
             <h3>Iterera</h3>
@@ -664,7 +681,7 @@
           </div>
         </article>
         <article class="hs-card">
-          <div class="hs-img"><img src="media/how-iso-3.jpg" alt="" loading="lazy"></div>
+          <div class="hs-img sfade"><img class="sf on" src="media/step-v1.jpg" alt="" loading="lazy"><img class="sf" src="media/step-v2.jpg" alt="" loading="lazy"><img class="sf" src="media/step-v3.jpg" alt="" loading="lazy"></div>
           <div class="hs-body">
             <span class="schip">03 · Visualisera</span>
             <h3>Visualisera</h3>
@@ -955,6 +972,23 @@ function startTrustCols(){
 }
 
 buildStep1(); buildStep2(); buildStep3();
+
+/* stegbildernas frames: mjuk dissolve varannan sekund, ingen rörelse */
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.sfade').forEach((box, bi)=>{
+    const fr = box.querySelectorAll('.sf');
+    if(fr.length < 2) return;
+    let i = 0;
+    setTimeout(()=>{
+      setInterval(()=>{
+        fr[i].classList.remove('on');
+        i = (i + 1) % fr.length;
+        fr[i].classList.add('on');
+      }, 2000);
+    }, (bi % 3) * 500);
+  });
+})();
 
 /* mobil stegkarusell: dots följer swipen, tap på dot scrollar */
 (function(){
