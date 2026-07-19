@@ -386,7 +386,11 @@
   .story-head h2 .hl{ padding-bottom:.07em; margin-bottom:-.03em; }
   .story-head p{ font-size:15px; line-height:1.6; color:var(--body); max-width:38ch; }
 
-  .story-stage{ position:relative; height:100%; }
+  .story-stage{
+    position:relative; height:100%;
+    perspective:2000px; perspective-origin:50% 44%;
+    transform-style:preserve-3d;
+  }
   .story-glow{
     position:absolute; top:44%; left:50%; width:min(46vw,760px); aspect-ratio:1.15/1;
     transform:translate(-50%,-50%); border-radius:50%; pointer-events:none; z-index:0;
@@ -1117,8 +1121,13 @@ buildStep1(); buildStep2(); buildStep3();
         const eI = clamp01(E * 1.6 - i * 0.3);                 /* Analys hälsar först, sen Forma, sen Visualisera */
         const entryX = Math.pow(1 - eI, 1.5) * (46 + i * 8);
         const off = (sideX(d) + entryX) / 100 * stageW;
-        s.style.transform = `translate(calc(-50% + ${off.toFixed(1)}px), calc(-50% + ${((1 - w) * 12).toFixed(1)}px)) scale(${k.toFixed(3)})`;
-        s.style.zIndex = String(20 - Math.round(x * 6) + (w > .5 ? 10 : 0));
+        /* fysisk passage: kontinuerligt djup — det förflutna glider UNDER,
+           det kommande ÖVER; lätt vinkling när korten snuddar förbi varandra */
+        const pass = Math.max(0, 1 - Math.abs(x - .5) * 2);   /* toppar mitt i passagen */
+        const zDepth = w * 60 + (d < 0 ? -16 : 0);
+        const tilt = (d < 0 ? 5.5 : -5.5) * pass;
+        s.style.transform = `translate(calc(-50% + ${off.toFixed(1)}px), calc(-50% + ${((1 - w) * 12).toFixed(1)}px)) translateZ(${zDepth.toFixed(1)}px) rotateY(${tilt.toFixed(2)}deg) scale(${k.toFixed(3)})`;
+        s.style.zIndex = String(20 + Math.round(w * 20) + (d > 0 ? 2 : 0));
         s.style.filter = `saturate(${(.7 + .3 * w).toFixed(2)})`;
         s.style.opacity = (eI * (.6 + .4 * F)).toFixed(3);     /* fas 1: helt osynliga */
         if(veil) veil.style.opacity = Math.min(.85, (.5 + (fog * .5 - .5) * F)).toFixed(3);
