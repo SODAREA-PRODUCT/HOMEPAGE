@@ -1082,6 +1082,11 @@ buildStep1(); buildStep2(); buildStep3();
     const p = progress();
     const mobile = innerWidth < 940;
     const {E, F, f, ring} = phases(p);
+    /* exit-dissolve: när sektionen lämnas tonar hela scenen bort istället
+       för att åka upp skarp — och tonar in igen vid scroll tillbaka */
+    const sr = story.getBoundingClientRect();
+    const exit = clamp01((innerHeight - sr.bottom) / (innerHeight * 0.45));
+    stick.style.opacity = (1 - exit).toFixed(3);
     const fm = mobile ? p * 2 : f;                              /* mobilen behåller sin resa */
     const stageW = stage.clientWidth;
 
