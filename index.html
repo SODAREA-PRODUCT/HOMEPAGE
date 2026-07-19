@@ -358,7 +358,7 @@
   .how-intro{ font-size:clamp(1rem,.5vw + .85rem,1.15rem); color:var(--body); max-width:44ch; justify-self:end; padding-bottom:6px; }
   @media (min-width:940px){ #hur > .wrap:first-child .how-head{ display:none; } }
 
-  .story{ position:relative; height:360vh; margin-top:clamp(8px,1.5vw,24px); }
+  .story{ position:relative; height:400vh; margin-top:clamp(8px,1.5vw,24px); }
   .story-stick{
     position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden;
     display:grid; grid-template-columns:minmax(260px, 360px) 1fr;
@@ -366,13 +366,19 @@
     padding-left:max(var(--gutter), env(safe-area-inset-left));
     padding-right:max(var(--gutter), env(safe-area-inset-right));
   }
-  .story-head{ position:relative; z-index:3; transform-origin:left center; }
+  .story-head{ position:relative; z-index:3; transform-origin:left center; width:clamp(300px, 36vw, 540px); }
+  .story-head .eyebrow.plain{ justify-content:center; }
+  .story-head h2 .hl{ display:block; }
+  .story-head.centered{ text-align:center; }
+  .story-head.centered p{ margin-inline:auto; }
+  .story-head.centered .eyebrow{ justify-content:center; width:100%; }
+  .story-head:not(.centered) .eyebrow{ justify-content:flex-start; }
   .story-head::before{
     content:''; position:absolute; inset:-32px -72px -32px -48px; z-index:-1;
     background:linear-gradient(90deg, var(--paper) 58%, rgba(252,252,251,0));
   }
   .story-head .eyebrow{ margin-bottom:18px; }
-  .story-head h2{ font-size:clamp(1.7rem, 2.2vw + .6rem, 2.7rem); line-height:1.1; margin-bottom:18px; }
+  .story-head h2{ font-size:clamp(2rem, 2.6vw + .7rem, 3.2rem); line-height:1.08; margin-bottom:18px; }
   .story-head p{ font-size:15px; line-height:1.6; color:var(--body); max-width:38ch; }
 
   .story-stage{ position:relative; height:100%; }
@@ -678,9 +684,9 @@
       <!-- Showroom: statisk berättarkolumn + tre premiumkort på en scen -->
       <div class="story" id="howStory">
         <div class="story-stick">
-          <div class="story-head" aria-hidden="true">
-            <div class="eyebrow"><span class="dot"></span> Så fungerar SODAREA</div>
-            <h2>Från planunderlag<br><span class="grad-text">till byggbara beslut.</span></h2>
+          <div class="story-head centered" aria-hidden="true">
+            <div class="eyebrow plain">Så fungerar SODAREA</div>
+            <h2><span class="hl">Från planunderlag</span><span class="hl grad-text">till byggbara beslut.</span></h2>
             <p>Tre steg. Ett sammanhängande arbetsflöde – från analys av verkliga planförutsättningar till byggbara alternativ och beslut som alla förstår.</p>
           </div>
           <div class="story-stage" id="storyStage">
@@ -1015,7 +1021,7 @@ buildStep1(); buildStep2(); buildStep3();
   const pnodes = [...story.querySelectorAll('.story-prog .pnode')];
   const head = story.querySelector('.story-head');
   const stick = story.querySelector('.story-stick');
-  const headParts = head ? [head.querySelector('.eyebrow'), head.querySelector('h2'), head.querySelector('p')] : [];
+  const headParts = head ? [head.querySelector('.eyebrow'), ...head.querySelectorAll('h2 .hl'), head.querySelector('p')] : [];
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let ticking = false;
 
@@ -1033,7 +1039,7 @@ buildStep1(); buildStep2(); buildStep3();
   }
 
   /* fasgränser (andel av sektionens scroll) */
-  const P_SCENE = 0.14, P_SCENE_END = 0.34, P_FOCUS = 0.46, P_HOLD_END = 0.60;
+  const P_SCENE = 0.26, P_SCENE_END = 0.44, P_FOCUS = 0.54, P_HOLD_END = 0.66;
 
   function phases(p){
     const E = ramp(p, P_SCENE, P_SCENE_END);                    /* scenbygge */
@@ -1055,15 +1061,17 @@ buildStep1(); buildStep2(); buildStep3();
     /* fas 1: rubriken byggs CENTRERAD på scenen — fas 2: den dansar ut till
        sin kolumn i synk med att korten kliver in */
     if(head && !mobile){
+      /* sekvens: eyebrow → rubrikrad 1 → rad 2 → ingress → kort vila */
       headParts.forEach((el, i)=>{
         if(!el) return;
-        const o = ramp(p, [0.00, 0.03, 0.07][i], [0.05, 0.105, 0.16][i]);
+        const o = ramp(p, [0.00, 0.045, 0.085, 0.145][i], [0.04, 0.105, 0.145, 0.21][i]);
         el.style.opacity = o.toFixed(3);
-        el.style.transform = `translateY(${((1 - o) * 14).toFixed(1)}px)`;
+        el.style.transform = `translateY(${((1 - o) * 16).toFixed(1)}px)`;
       });
       const Ee = E * E * (3 - 2 * E);                       /* smoothstep — tung, fysisk */
+      head.classList.toggle('centered', Ee < 0.32);         /* vänsterställs mitt i rörelsen */
       const cx = stick.clientWidth / 2 - (head.offsetLeft + head.offsetWidth / 2);
-      head.style.transform = `translate(${(cx * (1 - Ee)).toFixed(1)}px, ${(-18 * Ee).toFixed(1)}px) scale(${(1.06 - .13 * Ee).toFixed(3)})`;
+      head.style.transform = `translate(${(cx * (1 - Ee)).toFixed(1)}px, ${(-18 * Ee).toFixed(1)}px) scale(${(1.12 - .26 * Ee).toFixed(3)})`;
     } else if(head){
       headParts.forEach(el=>{ if(el){ el.style.opacity = ''; el.style.transform = ''; } });
       head.style.transform = '';
@@ -1086,7 +1094,7 @@ buildStep1(); buildStep2(); buildStep3();
         s.style.zIndex = String(20 - Math.round(x * 6) + (w > .5 ? 10 : 0));
         s.style.filter = `saturate(${(.7 + .3 * w).toFixed(2)})`;
         s.style.opacity = '1';
-        if(veil) veil.style.opacity = Math.min(.8, (.35 + (fog * .5 - .35) * F) + (1 - E) * .4).toFixed(3);
+        if(veil) veil.style.opacity = Math.min(.85, (.5 + (fog * .5 - .5) * F) + (1 - E) * .35).toFixed(3);
         s.style.boxShadow = `0 2px 6px rgba(20,22,27,${(.05 * w).toFixed(3)}), 0 26px 52px -22px rgba(20,22,27,${(.20 * w).toFixed(3)})`;
         if(desc){
           const dw = Math.max(0, 1 - x * 1.6) * F;
