@@ -532,7 +532,8 @@
        kort tippar bakåt (halv backflip) och parkerar liggande högst upp. */
     .story{ height:440vh; }
     #hur.band{ padding-bottom:0; }
-    .story{ margin-bottom:-58vh; }   /* nästa sektion glider upp medan sista kortet lägger sig */
+    .story{ margin-bottom:-26vh; }   /* nästa sektion glider upp lagom sent, utan att täcka sista kortet */
+    body.scene-lock header{ transform:translateY(-100%) !important; }  /* headern vilar under installationen */
     #case{ position:relative; z-index:2; }
     .story-stick{
       position:sticky; top:0; height:100vh; height:var(--appvh, 100dvh);
@@ -540,7 +541,7 @@
     }
     .story-head{
       display:block; position:absolute; top:0; left:0; right:0; z-index:40; transform:none;
-      padding:calc(16px + env(safe-area-inset-top)) 0 0; max-width:none;
+      padding:calc(16px + env(safe-area-inset-top)) 0 0; width:auto; max-width:none;
       text-align:center; will-change:transform;
     }
     .story-head::before{ display:none; }
@@ -568,7 +569,14 @@
       background:linear-gradient(180deg, #e3e7ec 0%, #c9cfd8 100%);
     }
     .ss-plate{ min-height:0; padding:14px 18px 18px; }
-    .ss-plate p{ max-width:none; opacity:1 !important; transform:none !important; filter:none !important; }
+    .ss-plate p{
+      max-width:none; opacity:1 !important; transform:none !important; filter:none !important;
+      overflow:hidden; max-height:110px;
+      transition:max-height .5s var(--exp), opacity .35s var(--ease) !important;
+    }
+    /* nedfällda/parkerade kort: rubrik + siffra syns, brödtexten träder fram
+       först när kortet är halvvägs uppfällt — liggande kort blir kortare */
+    .sstep.ss-min .ss-plate p{ max-height:0; opacity:0 !important; }
     .ss-name{ font-size:1.3rem; }
     .story.static{ height:auto; }
     .story.static .story-stage{ grid-template-columns:1fr; }
@@ -1401,7 +1409,7 @@ buildStep1(); buildStep2(); buildStep3();
   function applyMobile(p){
     if(!story.classList.contains('m3d')){
       story.classList.add('m3d');
-      if(head){ head.style.transform = ''; head.classList.remove('centered'); }
+      if(head){ head.style.transform = ''; head.classList.add('centered'); }
       headParts.forEach(el=>{ if(el){ el.style.opacity = ''; el.style.transform = ''; } });
       steps.forEach(s=>{
         ['.ss-plate p','.ss-img','.ss-fog','.ss-ring'].forEach(sel=>{
@@ -1423,35 +1431,45 @@ buildStep1(); buildStep2(); buildStep3();
     const ebH = eb ? eb.offsetHeight : 20;
     const headPad = head ? parseFloat(getComputedStyle(head).paddingTop) : 16;
 
-    /* passform: kortbredden anpassas så hela scenen ryms inom viewporten */
+    /* passform: kortbredden anpassas så hela scenen ryms inom viewporten.
+       Höjderna mäts i båda lägena (utfälld/infälld brödtext) och cachas —
+       geometrin får aldrig bero på höjder mitt i en pågående utfällning. */
     const fitKey = stageH + 'x' + innerWidth;
     if(story._fitKey !== fitKey){
       story._fitKey = fitKey;
-      let w = Math.min(Math.round(innerWidth * .84), 400);
+      /* stäng av utfällnings-transitionen under mätningen — annars mäts gamla höjder */
+      const ps = steps.map(s=> s.querySelector('.ss-plate p')).filter(Boolean);
+      ps.forEach(pel=> pel.style.setProperty('transition','none','important'));
+      let w = Math.min(Math.round(innerWidth * .92), 460);
       for(let k = 0; k < 3; k++){
-        steps.forEach(s=>{ s.style.width = w + 'px'; });
-        const h = steps[0].offsetHeight;
-        const bp = h * Math.cos(M.PARK*RAD) * .8 + 14;
-        const avt = headPad + ebH + 14 + (2*30 + bp) + 18;
-        const maxH = stageH - avt - 58;
+        steps.forEach(s=>{ s.style.width = w + 'px'; s.classList.remove('ss-min'); });
+        const h = Math.max(...steps.map(s=> s.offsetHeight));
+        const hc = h - 50;
+        const bp = hc * Math.cos(M.PARK*RAD) * .8 + 14;
+        const avt = headPad + ebH + 10 + (2*30 + bp) + 14;
+        const maxH = stageH - avt - 54;
         if(h <= maxH) break;
         w = Math.max(248, w - Math.ceil(h - maxH));
       }
+      story._hFull = steps.map(s=> s.offsetHeight);
+      steps.forEach(s=> s.classList.add('ss-min'));
+      story._hColl = steps.map(s=> s.offsetHeight);
+      ps.forEach(pel=> pel.style.removeProperty('transition'));
     }
-
-    const cardH = steps[0].offsetHeight;
-    const band = cardH * Math.cos(M.LIE*RAD) + 24;   /* liggande korts visuella höjd, ca */
-    const lift = (cardH - band) / 2;                 /* visuell topp → translateY-anker */
+    const hF = story._hFull, hC = story._hColl;
+    const hMin = Math.min(...hC), hAct = Math.max(...hF);
     const PS = 30;                                   /* helt jämn parkerings-spacing */
-    const bandPark = cardH * Math.cos(M.PARK*RAD) * .8 + 14;
-    const liftPark = (cardH - bandPark) / 2;
+    const bandParkRef = hMin * Math.cos(M.PARK*RAD) * .8 + 14;
     const ebBottom = headPad + ebH;                  /* eyebrown är scenens fasta rubrik */
-    const parkVisTop = ebBottom + 14;
-    const activeY = parkVisTop + (2*PS + bandPark) + 18;  /* konsekvent avstånd under eyebrow */
-    const QG = band * .62;                           /* väntehögen: mer komprimerad */
-    const pileH = 2*QG + band;
-    const vtRest = Math.max(ebBottom + 150, (stageH - pileH) / 2 + 40);
-    const vtBelow = activeY + cardH + 16;            /* högens topp när ett kort är aktivt */
+    const parkVisTop = ebBottom + 10;
+    const activeY = parkVisTop + (2*PS + bandParkRef) + 14; /* konsekvent avstånd under eyebrow */
+    const bandRef = hMin * Math.cos(M.LIE*RAD) + 24;
+    const QG = bandRef * .62;                        /* väntehögen: komprimerad */
+    const pileH = 2*QG + bandRef;
+    const introShift = stageH * .16;
+    const vtRest = Math.max(headPad + (head ? head.offsetHeight : 120) + introShift + 26,
+                            (stageH - pileH) / 2 + 40);
+    const vtBelow = activeY + hAct + 16;             /* högens topp när ett kort är aktivt */
     const sm = x=> x*x*(3-2*x);
     const R = M.seg.map(([a,b])=> sm(clamp01((p-a)/(b-a))));
     const f = R[0] + R[1] + R[2];
@@ -1464,9 +1482,9 @@ buildStep1(); buildStep2(); buildStep3();
 
     /* intro: stor rubrik; vid scroll lämnar den mjukt scenen medan
        eyebrown lyfts till toppen och blir scenens fasta rubrik */
+    document.body.classList.toggle('scene-lock', p > 0.04 && exit < 0.85);
     if(head){
       const e = sm(clamp01((p - 0.02) / 0.14));
-      const introShift = stageH * .16;
       head.style.transform = `translateY(${((1 - e) * introShift).toFixed(1)}px)`;
       const h2 = head.querySelector('h2');
       if(h2){
@@ -1482,27 +1500,34 @@ buildStep1(); buildStep2(); buildStep3();
       const t = i < 2 ? R[i+1] : sm(clamp01((p - M.TIP3[0]) / (M.TIP3[1] - M.TIP3[0])));
       const back = s.querySelector('.ss-back');
       const ringEl = s.querySelector('.ss-ring');
+      /* liggande/parkerade kort är infällda (utan brödtext) och därmed kortare */
+      s.classList.toggle('ss-min', r < .5 || t > .15);
+      const hI = hC[i];                             /* liggande lägen utgår från infälld höjd */
+      const bandI = hI * Math.cos(M.LIE*RAD) + 24;
+      const liftI = (hI - bandI) / 2;
+      const bandPI = hI * Math.cos(M.PARK*RAD) * .8 + 14;
+      const liftPI = (hI - bandPI) / 2;
       let y, rot, sc, z, zd = 0, showBack = false, ringT = null;
       if(r <= 0){                                     /* vilar nästan platt i högen */
-        y = queueTop + (i - f) * QG - lift;
+        y = queueTop + (i - f) * QG - liftI;
         rot = M.LIE; sc = .97; z = 20 - i;
       } else if(t <= 0 && r < 1){                     /* väcks: reser sig till frontalt */
-        const from = (i === 0 ? vtRest : vtBelow) - lift;
+        const from = (i === 0 ? vtRest : vtBelow) - liftI;
         y = from + (activeY - from) * r;
         rot = M.LIE * (1 - r); sc = .97 + .03 * r; z = 30;
       } else if(t <= 0){                              /* aktivt — läsläge med färgad ring */
         y = activeY; rot = 0; sc = 1; z = 30;
-        const hs = M.seg[i][1], he = i < 2 ? M.seg[i+1][0] : M.TIP3[0];
-        ringT = clamp01((p - hs) / (he - hs));
+        const hstart = M.seg[i][1], hend = i < 2 ? M.seg[i+1][0] : M.TIP3[0];
+        ringT = clamp01((p - hstart) / (hend - hstart));
       } else if(t < 1){                               /* halv backflip: lägger sig på rygg */
-        const parkY = parkVisTop + i * PS - liftPark;
+        const parkY = parkVisTop + i * PS - liftPI;
         y = activeY + (parkY - activeY) * t;
         rot = t < .5 ? -(t * 2) * 90 : 90 - (t - .5) * 2 * (90 - M.PARK);
         sc = 1 - .05 * t; z = t < .55 ? 31 : 10 + i;
         zd = M.ZPARK * t;                             /* tillbaka in i rummet */
-        showBack = t >= .5;                           /* efter lodrätt: baksidan upp */
+        showBack = t >= .4;                           /* täck framsidan innan spegelvända frames hinner synas */
       } else {                                        /* vilar med baksidan upp, jämn spacing */
-        y = parkVisTop + i * PS - liftPark; rot = M.PARK; sc = .94; z = 10 + i;
+        y = parkVisTop + i * PS - liftPI; rot = M.PARK; sc = .94; z = 10 + i;
         zd = M.ZPARK; showBack = true;
       }
       if(back) back.style.opacity = showBack ? '1' : '0';
@@ -1523,6 +1548,7 @@ buildStep1(); buildStep2(); buildStep3();
     if(mobile){ applyMobile(progress()); ticking = false; return; }
     story.classList.remove('m3d');
     stick.style.transform = '';
+    document.body.classList.remove('scene-lock');
     const p = progress();
     const {E, F, f, ring} = phases(p);
     /* exit-dissolve: när sektionen lämnas tonar hela scenen bort istället
