@@ -305,7 +305,8 @@
   /* ---------- DATA (planförutsättningar) — sticky lock-bildspel ---------- */
   .data{ position:relative; padding:0; height:240vh; background:#0c0e16; }  /* medvetet vh, inte dvh: dvh ändras när iOS-verktygsfältet döljs och fick allt nedanför att hoppa */
   .data-stick{
-    position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden;
+    position:sticky; top:var(--vvt, 0px);
+    height:100vh; height:100dvh; height:var(--vvh, 100dvh); overflow:hidden;
     display:flex; flex-direction:column; justify-content:center;
   }
   .plan-slides{ position:absolute; inset:-9% 0; z-index:0; pointer-events:none; background:#0c0e16; will-change:transform; }
@@ -536,7 +537,8 @@
     body.scene-lock header{ transform:translateY(-100%) !important; }  /* headern vilar under installationen */
     #case{ position:relative; z-index:2; }
     .story-stick{
-      position:sticky; top:0; height:100vh; height:100dvh;
+      position:sticky; top:var(--vvt, 0px);
+      height:100vh; height:100dvh; height:var(--vvh, 100dvh);
       overflow:hidden; display:block; padding:0;
     }
     .story-head{
@@ -1119,18 +1121,22 @@
 <script>
 /* verklig viewporthöjd — svh/lvh/dvh spretar mellan Safari/Chrome på iOS */
 (function(){
-  /* uppdatera bara vid breddändring — höjdändringar på mobil är oftast bara
-     verktygsfältet som glider in/ut, och att följa dem får sidan att skaka */
-  let lastW = 0;
-  function setVH(force){
-    if(window.innerHeight <= 0) return;
-    if(!force && window.innerWidth === lastW) return;
-    lastW = window.innerWidth;
-    document.documentElement.style.setProperty('--appvh', window.innerHeight + 'px');
+  /* Chrome på iOS håller layoutviewporten förskjuten mot den synliga ytan när
+     verktygsfältet glider (och dvh följer inte). visualViewport ger sann synlig
+     höjd (--vvh) och förskjutning (--vvt) som sticky-scenerna kompenserar med. */
+  const vv = window.visualViewport;
+  if(!vv) return;
+  const doc = document.documentElement.style;
+  let lastH = 0, lastT = 0;
+  function upd(){
+    const h = Math.round(vv.height), t = Math.max(0, Math.round(vv.offsetTop));
+    if(h > 0 && h !== lastH){ lastH = h; doc.setProperty('--vvh', h + 'px'); }
+    if(t !== lastT){ lastT = t; doc.setProperty('--vvt', t + 'px'); }
   }
-  setVH(true);
-  window.addEventListener('resize', ()=>setVH(false), {passive:true});
-  window.addEventListener('orientationchange', ()=>setTimeout(()=>setVH(true), 250));
+  upd();
+  vv.addEventListener('resize', upd);
+  vv.addEventListener('scroll', upd);
+  window.addEventListener('orientationchange', ()=> setTimeout(upd, 250));
 })();
 
 const NS = 'http://www.w3.org/2000/svg';
