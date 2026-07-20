@@ -52,16 +52,33 @@
 
   /* 1. HERO — statement, inte företagspresentation */
   .hero{
+    /* Östabadet — plattformens eget resultat som fond; skiktade scrims
+       håller texten läsbar till vänster och låter hopptornet lysa till höger */
     background:
-      radial-gradient(ellipse 55% 50% at 14% 20%, rgba(32,211,180,.08), transparent 60%),
-      radial-gradient(ellipse 50% 46% at 82% 85%, rgba(145,89,255,.08), transparent 62%),
-      linear-gradient(180deg, #0a0e1b 0%, #0f1428 60%, #0a0e1b 100%);
+      linear-gradient(180deg, rgba(9,12,22,.60) 0%, rgba(9,12,22,.16) 26%, rgba(9,12,22,0) 46%),
+      linear-gradient(90deg, rgba(9,12,22,.90) 0%, rgba(9,12,22,.62) 42%, rgba(9,12,22,.16) 76%, rgba(9,12,22,.04) 100%),
+      linear-gradient(180deg, rgba(9,12,22,0) 62%, rgba(9,12,22,.52) 100%),
+      url('media/om-hero.jpg') center 58% / cover no-repeat #0a0e1b;
     color:#fff;
   }
-  .hero .wrap{ padding-top:calc(100px + 5vw); padding-bottom:clamp(72px,9vw,130px); }
-  .hero .eyebrow{ color:var(--dmuted); }
-  .hero h1{ font-size:clamp(2.2rem,4vw + .6rem,4rem); line-height:1.08; margin-top:16px; max-width:17ch; }
-  .hero p{ margin-top:24px; font-size:clamp(1.05rem,.5vw + .92rem,1.25rem); line-height:1.7; color:var(--dbody); max-width:44ch; }
+  .hero .wrap{
+    min-height:min(78vh, 760px);
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top:calc(88px + 2vw); padding-bottom:clamp(64px,8vw,110px);
+  }
+  .hero .eyebrow{ color:rgba(255,255,255,.6); }
+  .hero h1{ font-size:clamp(2.2rem,4vw + .6rem,4rem); line-height:1.08; margin-top:16px; max-width:17ch;
+    text-shadow:0 1px 24px rgba(9,12,22,.45); }
+  .hero p{ margin-top:24px; font-size:clamp(1.05rem,.5vw + .92rem,1.25rem); line-height:1.7; color:rgba(255,255,255,.85); max-width:44ch;
+    text-shadow:0 1px 18px rgba(9,12,22,.5); }
+  @media (max-width:860px){
+    .hero{
+      background:
+        linear-gradient(180deg, rgba(9,12,22,.66) 0%, rgba(9,12,22,.30) 30%, rgba(9,12,22,.38) 70%, rgba(9,12,22,.62) 100%),
+        url('media/om-hero.jpg') 62% 55% / cover no-repeat #0a0e1b;
+    }
+    .hero .wrap{ min-height:min(64vh, 560px); }
+  }
 
   /* sektionsbas */
   .sec .wrap{ padding-top:clamp(64px,8vw,116px); padding-bottom:clamp(64px,8vw,116px); }
