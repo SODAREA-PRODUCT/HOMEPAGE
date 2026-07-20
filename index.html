@@ -1140,15 +1140,19 @@
   const vv = window.visualViewport;
   if(!vv) return;
   const doc = document.documentElement.style;
-  let lastH = 0, lastT = 0, timer = null;
+  let lastW = 0, maxH = 0, lastT = 0, timer = null;
   function commit(){
-    const h = Math.round(vv.height), t = Math.max(0, Math.round(vv.offsetTop));
-    if(h > 0 && Math.abs(h - lastH) > 4){ lastH = h; doc.setProperty('--vvh', h + 'px'); }
+    const w = Math.round(vv.width);
+    const h = Math.round(vv.height);
+    const t = Math.max(0, Math.round(vv.offsetTop));
+    if(w !== lastW){ lastW = w; maxH = 0; }        /* rotation/riktig resize: börja om */
+    /* höjden är monoton: lås mot största synliga ytan (verktygsfältet dolt).
+       När fältet tillfälligt kommer tillbaka täcker det scenens målade
+       110px-förlängning istället för att layouten trycks ihop. */
+    if(h > maxH + 4){ maxH = h; doc.setProperty('--vvh', h + 'px'); }
     if(Math.abs(t - lastT) > 2){ lastT = t; doc.setProperty('--vvt', t + 'px'); }
   }
   function upd(){
-    /* vänta tills verktygsfältets glid stannat — kontinuerliga uppdateringar
-       mitt i sveper får scenerna att skaka vid snabb scroll */
     clearTimeout(timer);
     timer = setTimeout(commit, 130);
   }
