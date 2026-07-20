@@ -125,11 +125,22 @@
     .team-text{ padding-left:max(var(--gutter), env(safe-area-inset-left)); }
   }
 
-  /* 6. avslut — ljust som startsidans CTA */
-  .cta-b{ background:var(--paper); border-top:1px solid var(--line); text-align:center; }
+  /* 6. mic drop — stor, ljus, ensam */
+  .drop{ background:var(--paper); border-top:1px solid var(--line); text-align:center; }
+  .drop .wrap{ padding-top:clamp(88px,11vw,150px); padding-bottom:clamp(88px,11vw,150px); }
+  .drop h2{ font-size:clamp(1.9rem,3.2vw + .6rem,3.4rem); line-height:1.16; max-width:22ch; margin:0 auto; text-wrap:balance; }
+
+  /* 7. avslut — mörkt band */
+  .cta-b{
+    background:
+      radial-gradient(34% 60% at 25% 50%, rgba(32,211,180,.08), transparent 70%),
+      radial-gradient(36% 62% at 75% 50%, rgba(145,89,255,.08), transparent 70%),
+      linear-gradient(180deg, #0a0e1b, #090c16);
+    color:#fff; text-align:center;
+  }
   .cta-b .wrap{ padding-top:clamp(72px,9vw,120px); padding-bottom:clamp(72px,9vw,120px); }
   .cta-b h2{ font-size:clamp(1.8rem,2.6vw + .6rem,2.8rem); }
-  .cta-b p{ margin:16px auto 0; color:var(--body); font-size:15.5px; line-height:1.7; max-width:50ch; }
+  .cta-b p{ margin:16px auto 0; color:var(--dbody); font-size:15.5px; line-height:1.7; max-width:50ch; }
   .btn{ display:inline-flex; align-items:center; gap:9px; margin-top:28px; padding:14px 24px; border-radius:999px;
     font-weight:600; font-size:14.5px; color:#fff;
     background:linear-gradient(90deg,var(--teal),var(--azure),var(--violet));
@@ -167,7 +178,7 @@
     <div class="wrap">
       <div class="eyebrow rv in">Om SODAREA</div>
       <h1 class="rv in d1">De tidiga skedena avgör <span class="grad">vad som blir byggt</span></h1>
-      <p class="rv in d2">Ändå fattas de största besluten ofta på det minsta underlaget. SODAREA läser platsens planförutsättningar och gör dem till byggbara förslag — som går att se, jämföra och besluta om.</p>
+      <p class="rv in d2">Ändå fattas de största besluten ofta på det minsta underlaget. SODAREA läser planförutsättningarna och gör dem till byggbara förslag att se, jämföra och besluta om.</p>
     </div>
   </section>
 
@@ -176,8 +187,8 @@
     <div class="wrap">
       <div class="eyebrow rv">Varför SODAREA finns</div>
       <h2 class="rv d1">Platsens möjligheter står redan <span class="grad">i underlaget</span></h2>
-      <p class="rv d2">Byggrätter, planbestämmelser, GIS-data, bullerkrav, siktlinjer. Allt som avgör vad en plats klarar finns dokumenterat — utspritt över detaljplaner och planbeskrivningar som få hinner läsa, och ännu färre kan se framför sig.</p>
-      <p class="rv d2">SODAREA läser underlaget och gör det till en modell av platsen. Där kan du analysera förutsättningarna, utforska AI-genererade alternativ, forma egna förslag och visualisera dem. På minuter, inte veckor.</p>
+      <p class="rv d2">Byggrätter, planbestämmelser, GIS-data, bullerkrav, siktlinjer. Allt finns dokumenterat — utspritt över detaljplaner och planbeskrivningar som få hinner läsa, och ännu färre kan se framför sig.</p>
+      <p class="rv d2">SODAREA läser underlaget och bygger en modell av platsen. Analysera förutsättningarna, utforska AI-genererade alternativ, forma egna och visualisera dem. På minuter, inte veckor.</p>
     </div>
   </section>
 
@@ -186,7 +197,7 @@
     <div class="wrap">
       <div class="eyebrow rv">Så är det möjligt</div>
       <h2 class="rv d1">Förslagen börjar i förutsättningarna — <span class="grad">inte i bilden</span></h2>
-      <p class="rv d2">De flesta AI-verktyg genererar bilder som ser övertygande ut men inte går att bygga. SODAREA arbetar i omvänd ordning: plattformen strukturerar först detaljplanens bestämmelser, byggrätterna och platsens data till ramar — och genererar sedan förslag inom dem. Det som ser byggbart ut är det också.</p>
+      <p class="rv d2">De flesta AI-verktyg börjar med bilden. SODAREA börjar med att analysera detaljplanens bestämmelser, byggrätterna och platsens GIS-data — och genererar sedan förslag inom de ramarna. Det som ser byggbart ut är det också.</p>
     </div>
   </section>
 
@@ -198,19 +209,19 @@
       <div class="diff-grid rv d2">
         <div class="cell">
           <h3>Byggd för besluten före projektering</h3>
-          <p>Riktningen sätts innan CAD och projektering. SODAREA är byggd för det skedet — där frågan är vad som ska byggas, inte hur.</p>
+          <p>Riktningen sätts före projekteringen. SODAREA är byggd för skedet där frågan är vad — inte hur.</p>
         </div>
         <div class="cell">
-          <h3>Förslag som bygger på platsens förutsättningar</h3>
+          <h3>Förslag som utgår från platsens verkliga förutsättningar</h3>
           <p>Varje förslag genereras inom detaljplanens bestämmelser och byggrätter. Ingenting föreslås som inte får plats.</p>
         </div>
         <div class="cell">
           <h3>Fler alternativ, tidigare</h3>
-          <p>Utforska AI-genererade alternativ eller forma egna. Att pröva en idé till kostar minuter, inte möten.</p>
+          <p>Utforska AI-genererade alternativ eller forma egna. En idé till kostar minuter, inte möten.</p>
         </div>
         <div class="cell">
           <h3>Bilder som håller för beslut</h3>
-          <p>Realistiska visualiseringar av förslag inom platsens ramar. Alla ser samma sak — och det alla ser går att bygga.</p>
+          <p>Realistiska bilder och filmer av förslag inom platsens ramar. Alla ser samma sak — och det går att bygga.</p>
         </div>
       </div>
     </div>
@@ -222,7 +233,7 @@
     <div class="team-text">
       <div class="eyebrow rv">Teamet bakom produkten</div>
       <h2 class="rv d1">Utvecklad där besluten <span class="grad">faktiskt fattas</span></h2>
-      <p class="rv d2">SODAREA har vuxit fram i pågående stadsutvecklingsprojekt, tillsammans med kommuner, exploatörer och konsulter — utvecklad av ett team med erfarenhet från både AI och stadsutveckling.</p>
+      <p class="rv d2">SODAREA har vuxit fram i pågående projekt med kommuner, exploatörer och konsulter — byggd av ett team med erfarenhet från både AI och stadsutveckling.</p>
       <div class="person rv d2">
         <h3>Johan Baettig</h3>
         <div class="roll">Creative Director &amp; Konceptutvecklare</div>
@@ -240,7 +251,14 @@
     </div>
   </section>
 
-  <!-- 6. Avslut -->
+  <!-- 6. Mic drop -->
+  <section class="drop">
+    <div class="wrap">
+      <h2 class="rv">SODAREA börjar inte med en bild.<br>Den börjar med <span class="grad">platsens förutsättningar</span>.</h2>
+    </div>
+  </section>
+
+  <!-- 7. Avslut -->
   <section class="cta-b">
     <div class="wrap">
       <h2 class="rv">Se er nästa plats <span class="grad">innan den finns</span></h2>
