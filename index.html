@@ -119,6 +119,7 @@
 
   .ebar{ display:inline-block; width:1px; height:.95em; background:currentColor; opacity:.35; margin:0 10px; vertical-align:-.14em; }
   .ss-back{ display:none; }
+  .ss-edge{ display:none; }
 
   /* ---------- reveal / motion (Eir-style: ease in on enter, ease out on leave) ---------- */
   .reveal{
@@ -518,36 +519,42 @@
        Kön ligger nedfälld nedanför, det aktiva kortet står frontalt, färdiga
        kort tippar bakåt (halv backflip) och parkerar liggande högst upp. */
     .story{ height:440vh; }
+    #hur.band{ padding-bottom:0; }
+    .story{ margin-bottom:-58vh; }   /* nästa sektion glider upp medan sista kortet lägger sig */
+    #case{ position:relative; z-index:2; }
     .story-stick{
       position:sticky; top:0; height:100vh; height:var(--appvh, 100dvh);
-      overflow:hidden; display:flex; flex-direction:column; padding:0;
+      overflow:hidden; display:block; padding:0;
     }
     .story-head{
-      display:block; position:relative; z-index:40; transform:none;
-      padding:calc(70px + env(safe-area-inset-top)) 0 8px; max-width:none;
-      text-align:center; transform-origin:50% 0%; will-change:transform;
+      display:block; position:absolute; top:0; left:0; right:0; z-index:40; transform:none;
+      padding:calc(16px + env(safe-area-inset-top)) 0 0; max-width:none;
+      text-align:center; will-change:transform;
     }
     .story-head::before{ display:none; }
-    .story-head h2{ font-size:clamp(1.9rem, 7.4vw, 2.4rem); margin-bottom:0; line-height:1.12; }
+    .story-head h2{ font-size:clamp(1.9rem, 7.4vw, 2.4rem); margin:14px 0 0; line-height:1.12; }
     .story-head p{ display:none; }
     .story-stage{
-      flex:1; height:auto;
+      position:absolute; inset:0; height:auto;
       perspective:1300px; perspective-origin:50% 10%; transform-style:preserve-3d;
     }
     .story-glow{ display:none; }
     .story-prog{ display:none; }
     .sstep{ width:min(84vw, 400px); top:0; transform-origin:50% 50%; transform-style:preserve-3d; }
-    .ss-fog, .ss-ring{ display:none; }
-    /* baksidan: designad, ton-i-ton — som exklusiva spelkort */
+    .ss-fog{ display:none; }
+    /* baksidan: helt vit — ljus och skugga får skapa djupet */
     .ss-back{
-      position:absolute; inset:0; z-index:8; border-radius:inherit; pointer-events:none;
-      display:grid; place-items:center;
-      background:
-        radial-gradient(80% 70% at 50% 42%, #ffffff 0%, #f6f8fa 100%);
-      box-shadow:inset 0 0 0 1px var(--line), inset 0 0 0 7px #fff, inset 0 0 0 8px var(--line);
+      display:block; position:absolute; inset:0; z-index:8; border-radius:inherit; pointer-events:none;
+      background:linear-gradient(180deg, #ffffff 0%, #fafbfc 62%, #f3f5f8 100%);
+      box-shadow:inset 0 0 0 1px rgba(20,22,27,.05), inset 0 -14px 24px -18px rgba(20,22,27,.18);
       opacity:0; transition:opacity .16s linear;
     }
-    .ss-back svg{ width:32%; height:auto; opacity:.14; }
+    /* ~2px fysisk tjocklek längs närmaste kanten */
+    .ss-edge{
+      display:block; position:absolute; left:2px; right:2px; bottom:-2.5px; height:3px;
+      border-radius:0 0 3px 3px; z-index:9; pointer-events:none;
+      background:linear-gradient(180deg, #e3e7ec 0%, #c9cfd8 100%);
+    }
     .ss-plate{ min-height:0; padding:14px 18px 18px; }
     .ss-plate p{ max-width:none; opacity:1 !important; transform:none !important; filter:none !important; }
     .ss-name{ font-size:1.3rem; }
@@ -1378,7 +1385,7 @@ buildStep1(); buildStep2(); buildStep3();
 
   /* mobil: tre fysiska kort på ett bord. Kö nedanför (liggande), aktivt kort
      frontalt, färdiga kort gör en halv backflip och parkerar liggande överst. */
-  const M = { LIE:82, PARK:82, ZPARK:-140, seg:[[0.05,0.26],[0.36,0.57],[0.66,0.86]] };
+  const M = { LIE:82, PARK:82, ZPARK:-140, seg:[[0.05,0.26],[0.36,0.57],[0.66,0.86]], TIP3:[0.92,1] };
   function applyMobile(p){
     if(!story.classList.contains('m3d')){
       story.classList.add('m3d');
@@ -1392,26 +1399,47 @@ buildStep1(); buildStep2(); buildStep3();
         s.removeAttribute('data-side'); s.setAttribute('tabindex','-1');
         if(!s.querySelector('.ss-back')){
           const b = document.createElement('div'); b.className = 'ss-back';
-          const ic = s.querySelector('.ss-badge svg');
-          if(ic) b.appendChild(ic.cloneNode(true));
           s.appendChild(b);
+          const eg = document.createElement('div'); eg.className = 'ss-edge';
+          s.appendChild(eg);
         }
       });
     }
     const RAD = Math.PI/180;
     const stageH = stage.clientHeight;
+    const eb = head ? head.querySelector('.eyebrow') : null;
+    const ebH = eb ? eb.offsetHeight : 20;
+    const headPad = head ? parseFloat(getComputedStyle(head).paddingTop) : 16;
+
+    /* passform: kortbredden anpassas så hela scenen ryms inom viewporten */
+    const fitKey = stageH + 'x' + innerWidth;
+    if(story._fitKey !== fitKey){
+      story._fitKey = fitKey;
+      let w = Math.min(Math.round(innerWidth * .84), 400);
+      for(let k = 0; k < 3; k++){
+        steps.forEach(s=>{ s.style.width = w + 'px'; });
+        const h = steps[0].offsetHeight;
+        const bp = h * Math.cos(M.PARK*RAD) * .8 + 14;
+        const avt = headPad + ebH + 14 + (2*30 + bp) + 18;
+        const maxH = stageH - avt - 58;
+        if(h <= maxH) break;
+        w = Math.max(248, w - Math.ceil(h - maxH));
+      }
+    }
+
     const cardH = steps[0].offsetHeight;
     const band = cardH * Math.cos(M.LIE*RAD) + 24;   /* liggande korts visuella höjd, ca */
     const lift = (cardH - band) / 2;                 /* visuell topp → translateY-anker */
-    const PT = 8, PG = 20;                           /* parkerade högens peek överst */
-    const bandPark = cardH * Math.cos(M.PARK*RAD) * .8 + 18;   /* platt + Z-skjuten */
+    const PS = 30;                                   /* helt jämn parkerings-spacing */
+    const bandPark = cardH * Math.cos(M.PARK*RAD) * .8 + 14;
     const liftPark = (cardH - bandPark) / 2;
-    const parkedBottom = PT + 2*PG + bandPark;
-    const activeY = Math.max((stageH - cardH) / 2 - 6, parkedBottom + 16);
-    const QG = band + 14;                            /* högen: tätt, tunna streck */
+    const ebBottom = headPad + ebH;                  /* eyebrown är scenens fasta rubrik */
+    const parkVisTop = ebBottom + 14;
+    const activeY = parkVisTop + (2*PS + bandPark) + 18;  /* konsekvent avstånd under eyebrow */
+    const QG = band * .62;                           /* väntehögen: mer komprimerad */
     const pileH = 2*QG + band;
-    const vtRest = Math.max(12, (stageH - pileH) / 2 - 14);  /* högen centrerad i vila */
-    const vtBelow = activeY + cardH + 24;            /* högens topp när ett kort är aktivt */
+    const vtRest = Math.max(ebBottom + 150, (stageH - pileH) / 2 + 40);
+    const vtBelow = activeY + cardH + 16;            /* högens topp när ett kort är aktivt */
     const sm = x=> x*x*(3-2*x);
     const R = M.seg.map(([a,b])=> sm(clamp01((p-a)/(b-a))));
     const f = R[0] + R[1] + R[2];
@@ -1422,19 +1450,27 @@ buildStep1(); buildStep2(); buildStep3();
     stick.style.opacity = (1 - exit).toFixed(3);
     stick.style.transform = exit > 0 ? `scale(${(1 - exit * .04).toFixed(4)})` : '';
 
-    /* intro: rubriken stor och självsäker, krymper och lyfts mot toppen vid scroll */
+    /* intro: stor rubrik; vid scroll lämnar den mjukt scenen medan
+       eyebrown lyfts till toppen och blir scenens fasta rubrik */
     if(head){
-      const e = sm(clamp01((p - 0.02) / 0.16));
-      head.style.transform = `translateY(${((1 - e) * 22).toFixed(1)}px) scale(${(1.13 - .13 * e).toFixed(4)})`;
+      const e = sm(clamp01((p - 0.02) / 0.14));
+      const introShift = stageH * .16;
+      head.style.transform = `translateY(${((1 - e) * introShift).toFixed(1)}px)`;
+      const h2 = head.querySelector('h2');
+      if(h2){
+        h2.style.opacity = (1 - e).toFixed(3);
+        h2.style.transform = `translateY(${(-12 * e).toFixed(1)}px) scale(${(1 - .05 * e).toFixed(3)})`;
+      }
     }
 
     const queueTop = vtRest + (vtBelow - vtRest) * R[0]; /* högen glider ned när kort 1 reser sig */
 
     steps.forEach((s, i)=>{
       const r = R[i];
-      const t = i < 2 ? R[i+1] : sm(clamp01((p - .92) / .08)); /* sista kortet lägger sig också */
+      const t = i < 2 ? R[i+1] : sm(clamp01((p - M.TIP3[0]) / (M.TIP3[1] - M.TIP3[0])));
       const back = s.querySelector('.ss-back');
-      let y, rot, sc, z, zd = 0, showBack = false;
+      const ringEl = s.querySelector('.ss-ring');
+      let y, rot, sc, z, zd = 0, showBack = false, ringT = null;
       if(r <= 0){                                     /* vilar nästan platt i högen */
         y = queueTop + (i - f) * QG - lift;
         rot = M.LIE; sc = .97; z = 20 - i;
@@ -1442,20 +1478,28 @@ buildStep1(); buildStep2(); buildStep3();
         const from = (i === 0 ? vtRest : vtBelow) - lift;
         y = from + (activeY - from) * r;
         rot = M.LIE * (1 - r); sc = .97 + .03 * r; z = 30;
-      } else if(t <= 0){                              /* aktivt — läsläge */
+      } else if(t <= 0){                              /* aktivt — läsläge med färgad ring */
         y = activeY; rot = 0; sc = 1; z = 30;
+        const hs = M.seg[i][1], he = i < 2 ? M.seg[i+1][0] : M.TIP3[0];
+        ringT = clamp01((p - hs) / (he - hs));
       } else if(t < 1){                               /* halv backflip: lägger sig på rygg */
-        const parkY = PT + i * PG - liftPark;
+        const parkY = parkVisTop + i * PS - liftPark;
         y = activeY + (parkY - activeY) * t;
         rot = t < .5 ? -(t * 2) * 90 : 90 - (t - .5) * 2 * (90 - M.PARK);
         sc = 1 - .05 * t; z = t < .55 ? 31 : 10 + i;
         zd = M.ZPARK * t;                             /* tillbaka in i rummet */
         showBack = t >= .5;                           /* efter lodrätt: baksidan upp */
-      } else {                                        /* vilar med baksidan upp, överst */
-        y = PT + i * PG - liftPark; rot = M.PARK; sc = .94; z = 10 + i;
+      } else {                                        /* vilar med baksidan upp, jämn spacing */
+        y = parkVisTop + i * PS - liftPark; rot = M.PARK; sc = .94; z = 10 + i;
         zd = M.ZPARK; showBack = true;
       }
       if(back) back.style.opacity = showBack ? '1' : '0';
+      if(ringEl){
+        if(ringT !== null){
+          ringEl.style.opacity = (Math.min(1, ringT / .12, (1 - ringT) / .15) * .9).toFixed(3);
+          ringEl.style.setProperty('--a', ((ringT * 360) - 90).toFixed(1));
+        } else ringEl.style.opacity = '0';
+      }
       const flat = Math.abs(Math.cos(rot * RAD));
       s.style.transform = `translate(-50%, ${y.toFixed(1)}px) translateZ(${zd.toFixed(1)}px) rotateX(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       s.style.zIndex = String(z);
