@@ -510,24 +510,34 @@
   .story.static .story-glow, .story.static .story-prog{ display:none; }
 
   @media (max-width:939px){
-    .how-head{ grid-template-columns:1fr; align-items:start; }
-    .how-intro{ justify-self:start; padding-bottom:0; }
-    /* mobil: inga sticky-akter — tre hela kort i ett vertikalt flöde */
-    .story{ height:auto; }
-    .story-stick{ position:static; height:auto; overflow:visible; display:block; padding:0; }
-    .story-head{ display:none; }
-    .story-stage{ height:auto; perspective:none; display:grid; grid-template-columns:1fr; gap:24px; padding:10px 0 4px; justify-items:center; }
+    .how-head{ display:none; }
+    /* mobil: tre fysiska kort i ett 3D-rum — scrollen väcker ett kort i taget.
+       Kön ligger nedfälld nedanför, det aktiva kortet står frontalt, färdiga
+       kort tippar bakåt (halv backflip) och parkerar liggande högst upp. */
+    .story{ height:440vh; }
+    .story-stick{
+      position:sticky; top:0; height:100vh; height:var(--appvh, 100dvh);
+      overflow:hidden; display:flex; flex-direction:column; padding:0;
+    }
+    .story-head{
+      display:block; position:relative; z-index:40; transform:none;
+      padding:calc(72px + env(safe-area-inset-top)) 0 8px; max-width:none;
+    }
+    .story-head::before{ display:none; }
+    .story-head h2{ font-size:clamp(1.65rem, 6.2vw, 2.1rem); margin-bottom:0; }
+    .story-head p{ display:none; }
+    .story-stage{
+      flex:1; height:auto;
+      perspective:1300px; perspective-origin:50% 10%; transform-style:preserve-3d;
+    }
     .story-glow{ display:none; }
     .story-prog{ display:none; }
-    .sstep{ position:relative; left:auto; top:auto; width:min(100%, 460px);
-      opacity:0; transform:translateY(28px);
-      transition:opacity .8s var(--exp), transform .8s var(--exp);
-      box-shadow:0 2px 6px rgba(20,22,27,.05), 0 22px 48px -20px rgba(20,22,27,.14); }
-    .sstep.m-in{ opacity:1; transform:none; }
+    .sstep{ width:min(78vw, 380px); top:0; transform-origin:50% 50%; }
     .ss-fog, .ss-ring{ display:none; }
-    .ss-plate{ min-height:0; padding:16px 20px 20px; }
-    .ss-plate p{ max-width:none; }
-    .ss-name{ font-size:1.35rem; }
+    .ss-plate{ min-height:0; padding:14px 18px 18px; }
+    .ss-plate p{ max-width:none; opacity:1 !important; transform:none !important; filter:none !important; }
+    .ss-name{ font-size:1.3rem; }
+    .story.static{ height:auto; }
     .story.static .story-stage{ grid-template-columns:1fr; }
     .how-trust{ display:grid; grid-template-columns:1fr 1fr; }
   }
@@ -890,7 +900,7 @@
       <!-- Showroom: statisk berättarkolumn + tre premiumkort på en scen -->
       <div class="story" id="howStory">
         <div class="story-stick">
-          <div class="story-head centered" aria-hidden="true">
+          <div class="story-head centered">
             <div class="eyebrow plain">Så fungerar SODAREA</div>
             <h2><span class="hl">Från planunderlag</span><span class="hl grad-text">till byggbara beslut.</span></h2>
             <p>Tre steg. Ett sammanhängande arbetsflöde – från analys av verkliga planförutsättningar till byggbara alternativ och beslut som alla förstår.</p>
@@ -1354,26 +1364,78 @@ buildStep1(); buildStep2(); buildStep3();
     return {E, F, f, ring};
   }
 
-  function clearMobileStyles(){
-    stick.style.opacity = '';
-    if(head){ head.style.transform = ''; head.classList.remove('centered'); }
-    headParts.forEach(el=>{ if(el){ el.style.opacity = ''; el.style.transform = ''; } });
-    steps.forEach(s=>{
-      s.removeAttribute('style');
-      s.removeAttribute('data-side');
-      s.removeAttribute('tabindex');
-      ['.ss-plate p','.ss-img','.ss-fog','.ss-ring'].forEach(sel=>{
-        const el = s.querySelector(sel); if(el) el.removeAttribute('style');
+  /* mobil: tre fysiska kort på ett bord. Kö nedanför (liggande), aktivt kort
+     frontalt, färdiga kort gör en halv backflip och parkerar liggande överst. */
+  const M = { LIE:62, PARK:76, ZPARK:-150, seg:[[0.02,0.24],[0.35,0.57],[0.68,0.90]] };
+  function applyMobile(p){
+    if(!story.classList.contains('m3d')){
+      story.classList.add('m3d');
+      if(head){ head.style.transform = ''; head.classList.remove('centered'); }
+      headParts.forEach(el=>{ if(el){ el.style.opacity = ''; el.style.transform = ''; } });
+      steps.forEach(s=>{
+        ['.ss-plate p','.ss-img','.ss-fog','.ss-ring'].forEach(sel=>{
+          const el = s.querySelector(sel); if(el) el.removeAttribute('style');
+        });
+        s.style.opacity = '1'; s.style.filter = '';
+        s.removeAttribute('data-side'); s.setAttribute('tabindex','-1');
       });
+    }
+    const RAD = Math.PI/180;
+    const stageH = stage.clientHeight;
+    const cardH = steps[0].offsetHeight;
+    const band = cardH * Math.cos(M.LIE*RAD) + 24;   /* liggande korts visuella höjd, ca */
+    const lift = (cardH - band) / 2;                 /* visuell topp → translateY-anker */
+    const PT = 2, PG = 26;                           /* parkerade kortens peek överst */
+    const bandPark = cardH * Math.cos(M.PARK*RAD) * .78 + 20;  /* flatare + Z-skjutet */
+    const liftPark = (cardH - bandPark) / 2;
+    const parkedBottom = PT + 2*PG + bandPark;
+    const activeY = Math.max((stageH - cardH) / 2 - 6, parkedBottom + 16);
+    const QG = band + 26;
+    const vtQ0 = 16;                                 /* köns topp i vila */
+    const vtBelow = activeY + cardH + 26;            /* köns topp när ett kort är aktivt */
+    const sm = x=> x*x*(3-2*x);
+    const R = M.seg.map(([a,b])=> sm(clamp01((p-a)/(b-a))));
+    const f = R[0] + R[1] + R[2];
+
+    const sr = story.getBoundingClientRect();
+    const exit = clamp01((innerHeight - sr.bottom) / (innerHeight * 0.45));
+    stick.style.opacity = (1 - exit).toFixed(3);
+
+    const queueTop = vtQ0 + (vtBelow - vtQ0) * R[0]; /* kön skjuts ned när kort 1 reser sig */
+
+    steps.forEach((s, i)=>{
+      const r = R[i];
+      const t = i < 2 ? R[i+1] : 0;
+      let y, rot, sc, z, zd = 0;
+      if(r <= 0){                                     /* väntar liggande i kön */
+        y = queueTop + (i - f) * QG - lift;
+        rot = M.LIE; sc = .97; z = 20 - i;
+      } else if(t <= 0 && r < 1){                     /* reser sig till frontalt */
+        const from = (i === 0 ? vtQ0 : vtBelow) - lift;
+        y = from + (activeY - from) * r;
+        rot = M.LIE * (1 - r); sc = .97 + .03 * r; z = 30;
+      } else if(t <= 0){                              /* aktivt — läsläge */
+        y = activeY; rot = 0; sc = 1; z = 30;
+      } else if(t < 1){                               /* halv backflip mot parkering */
+        const parkY = PT + i * PG - liftPark;
+        y = activeY + (parkY - activeY) * t;
+        rot = t < .5 ? -(t * 2) * 90 : 90 - (t - .5) * 2 * (90 - M.PARK);
+        sc = 1 - .06 * t; z = t < .55 ? 31 : 10 + i;
+        zd = M.ZPARK * t;                             /* skjuts bakåt i rummet */
+      } else {                                        /* parkerat på rygg överst */
+        y = PT + i * PG - liftPark; rot = M.PARK; sc = .94; z = 10 + i;
+        zd = M.ZPARK;
+      }
+      const flat = Math.abs(Math.cos(rot * RAD));
+      s.style.transform = `translate(-50%, ${y.toFixed(1)}px) translateZ(${zd.toFixed(1)}px) rotateX(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+      s.style.zIndex = String(z);
+      s.style.boxShadow = `0 ${(10 + 22 * flat).toFixed(0)}px ${(34 + 26 * flat).toFixed(0)}px ${(-16 - 8 * flat).toFixed(0)}px rgba(20,22,27,${(.16 + .14 * flat).toFixed(2)})`;
     });
   }
   function apply(){
     const mobile = innerWidth < 940;
-    if(mobile){
-      if(!story.classList.contains('m-flow')){ story.classList.add('m-flow'); clearMobileStyles(); }
-      ticking = false; return;
-    }
-    story.classList.remove('m-flow');
+    if(mobile){ applyMobile(progress()); ticking = false; return; }
+    story.classList.remove('m3d');
     const p = progress();
     const {E, F, f, ring} = phases(p);
     /* exit-dissolve: när sektionen lämnas tonar hela scenen bort istället
@@ -1500,11 +1562,7 @@ buildStep1(); buildStep2(); buildStep3();
     s.addEventListener('keydown', e=>{ if((e.key==='Enter'||e.key===' ') && s.hasAttribute('data-side')){ e.preventDefault(); scrollToStep(i); } });
   });
 
-  /* mobil: kortens entré i flödet — ett i taget, en gång */
-  const mio = new IntersectionObserver(es=>{
-    es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('m-in'); mio.unobserve(en.target); } });
-  }, {threshold:.15, rootMargin:'0px 0px -4% 0px'});
-  steps.forEach(s=> mio.observe(s));
+
 
   /* alla kort andas alltid: oberoende eviga klockor, fasförskjutna */
   steps.forEach((s, i)=>{
