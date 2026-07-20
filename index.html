@@ -308,6 +308,11 @@
     position:sticky; top:var(--vvt, 0px);
     height:100vh; height:100dvh; height:var(--vvh, 100dvh); overflow:hidden;
     display:flex; flex-direction:column; justify-content:center;
+    transition:height .35s var(--ease), top .35s var(--ease);
+  }
+  @media (max-width:939px){
+    /* måla även zonen där browserns verktygsfält glider undan — full screen utan glapp */
+    .data-stick{ height:calc(var(--vvh, 100dvh) + 110px); padding-bottom:110px; }
   }
   .plan-slides{ position:absolute; inset:-9% 0; z-index:0; pointer-events:none; background:#0c0e16; will-change:transform; }
   .pslide{
@@ -538,8 +543,10 @@
     #case{ position:relative; z-index:2; }
     .story-stick{
       position:sticky; top:var(--vvt, 0px);
-      height:100vh; height:100dvh; height:var(--vvh, 100dvh);
+      height:100vh; height:100dvh; height:calc(var(--vvh, 100dvh) + 110px);
       overflow:hidden; display:block; padding:0;
+      background:var(--paper);
+      transition:height .35s var(--ease), top .35s var(--ease);
     }
     .story-head{
       display:block; position:absolute; top:0; left:0; right:0; z-index:40; transform:none;
@@ -557,7 +564,7 @@
     .m-on .story-head .eyebrow{ opacity:1; transform:none; }
     .m-on .story-head h2{ opacity:1; transform:none; transition-delay:.15s; }
     .story-stage{
-      position:absolute; inset:0; height:auto;
+      position:absolute; inset:0 0 110px 0; height:auto;   /* geometrin utgår från synliga ytan */
       perspective:1300px; perspective-origin:50% 10%; transform-style:preserve-3d;
       opacity:0; transform:translateY(36px) scale(.955);
       transition:opacity .7s var(--ease), transform .85s cubic-bezier(.3,1.4,.44,1);
@@ -1127,16 +1134,22 @@
   const vv = window.visualViewport;
   if(!vv) return;
   const doc = document.documentElement.style;
-  let lastH = 0, lastT = 0;
-  function upd(){
+  let lastH = 0, lastT = 0, timer = null;
+  function commit(){
     const h = Math.round(vv.height), t = Math.max(0, Math.round(vv.offsetTop));
-    if(h > 0 && h !== lastH){ lastH = h; doc.setProperty('--vvh', h + 'px'); }
-    if(t !== lastT){ lastT = t; doc.setProperty('--vvt', t + 'px'); }
+    if(h > 0 && Math.abs(h - lastH) > 4){ lastH = h; doc.setProperty('--vvh', h + 'px'); }
+    if(Math.abs(t - lastT) > 2){ lastT = t; doc.setProperty('--vvt', t + 'px'); }
   }
-  upd();
+  function upd(){
+    /* vänta tills verktygsfältets glid stannat — kontinuerliga uppdateringar
+       mitt i sveper får scenerna att skaka vid snabb scroll */
+    clearTimeout(timer);
+    timer = setTimeout(commit, 130);
+  }
+  commit();
   vv.addEventListener('resize', upd);
   vv.addEventListener('scroll', upd);
-  window.addEventListener('orientationchange', ()=> setTimeout(upd, 250));
+  window.addEventListener('orientationchange', ()=> setTimeout(commit, 300));
 })();
 
 const NS = 'http://www.w3.org/2000/svg';
