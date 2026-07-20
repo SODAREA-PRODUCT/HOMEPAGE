@@ -305,7 +305,7 @@
   /* ---------- DATA (planförutsättningar) — sticky lock-bildspel ---------- */
   .data{ position:relative; padding:0; height:240vh; background:#0c0e16; }  /* medvetet vh, inte dvh: dvh ändras när iOS-verktygsfältet döljs och fick allt nedanför att hoppa */
   .data-stick{
-    position:sticky; top:0; height:100vh; height:100dvh; height:var(--appvh, 100dvh); overflow:hidden;
+    position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden;
     display:flex; flex-direction:column; justify-content:center;
   }
   .plan-slides{ position:absolute; inset:-9% 0; z-index:0; pointer-events:none; background:#0c0e16; will-change:transform; }
@@ -536,7 +536,7 @@
     body.scene-lock header{ transform:translateY(-100%) !important; }  /* headern vilar under installationen */
     #case{ position:relative; z-index:2; }
     .story-stick{
-      position:sticky; top:0; height:100vh; height:var(--appvh, 100dvh);
+      position:sticky; top:0; height:100vh; height:100dvh;
       overflow:hidden; display:block; padding:0;
     }
     .story-head{
@@ -547,10 +547,20 @@
     .story-head::before{ display:none; }
     .story-head h2{ font-size:clamp(1.9rem, 7.4vw, 2.4rem); margin:14px 0 0; line-height:1.12; }
     .story-head p{ display:none; }
+    /* startvyn byggs fram: eyebrow, sedan rubriken, sedan korten med mjuk studs */
+    .story-head .eyebrow, .story-head h2{
+      opacity:0; transform:translateY(14px);
+      transition:opacity .6s var(--exp), transform .6s var(--exp);
+    }
+    .m-on .story-head .eyebrow{ opacity:1; transform:none; }
+    .m-on .story-head h2{ opacity:1; transform:none; transition-delay:.15s; }
     .story-stage{
       position:absolute; inset:0; height:auto;
       perspective:1300px; perspective-origin:50% 10%; transform-style:preserve-3d;
+      opacity:0; transform:translateY(36px) scale(.955);
+      transition:opacity .7s var(--ease), transform .85s cubic-bezier(.3,1.4,.44,1);
     }
+    .m-on .story-stage{ opacity:1; transform:none; transition-delay:.34s; }
     .story-glow{ display:none; }
     .story-prog{ display:none; }
     .sstep{ width:min(84vw, 400px); top:0; transform-origin:50% 50%; transform-style:preserve-3d; }
@@ -1434,7 +1444,7 @@ buildStep1(); buildStep2(); buildStep3();
     /* passform: kortbredden anpassas så hela scenen ryms inom viewporten.
        Höjderna mäts i båda lägena (utfälld/infälld brödtext) och cachas —
        geometrin får aldrig bero på höjder mitt i en pågående utfällning. */
-    const fitKey = stageH + 'x' + innerWidth;
+    const fitKey = innerWidth + ':' + Math.round(stageH / 110);  /* verktygsfältets glid ska inte trigga ompassning */
     if(story._fitKey !== fitKey){
       story._fitKey = fitKey;
       /* stäng av utfällnings-transitionen under mätningen — annars mäts gamla höjder */
@@ -1488,8 +1498,10 @@ buildStep1(); buildStep2(); buildStep3();
       head.style.transform = `translateY(${((1 - e) * introShift).toFixed(1)}px)`;
       const h2 = head.querySelector('h2');
       if(h2){
-        h2.style.opacity = (1 - e).toFixed(3);
-        h2.style.transform = `translateY(${(-12 * e).toFixed(1)}px) scale(${(1 - .05 * e).toFixed(3)})`;
+        if(e > 0.001){
+          h2.style.opacity = (1 - e).toFixed(3);
+          h2.style.transform = `translateY(${(-12 * e).toFixed(1)}px) scale(${(1 - .05 * e).toFixed(3)})`;
+        } else { h2.style.opacity = ''; h2.style.transform = ''; }
       }
     }
 
@@ -1510,11 +1522,14 @@ buildStep1(); buildStep2(); buildStep3();
       let y, rot, sc, z, zd = 0, showBack = false, ringT = null;
       if(r <= 0){                                     /* vilar nästan platt i högen */
         y = queueTop + (i - f) * QG - liftI;
-        rot = M.LIE; sc = .97; z = 20 - i;
+        /* ju längre ner i kön (och ju mer nedtryckt), desto plattare */
+        rot = Math.min(88, M.LIE + 3 * (i - f) + 5 * Math.min(1, f));
+        sc = .97; z = 20 - i;
       } else if(t <= 0 && r < 1){                     /* väcks: reser sig till frontalt */
         const from = (i === 0 ? vtRest : vtBelow) - liftI;
         y = from + (activeY - from) * r;
-        rot = M.LIE * (1 - r); sc = .97 + .03 * r; z = 30;
+        const baseLie = Math.min(88, M.LIE + 5 * Math.min(1, f - r));
+        rot = baseLie * (1 - r); sc = .97 + .03 * r; z = 30;
       } else if(t <= 0){                              /* aktivt — läsläge med färgad ring */
         y = activeY; rot = 0; sc = 1; z = 30;
         const hstart = M.seg[i][1], hend = i < 2 ? M.seg[i+1][0] : M.TIP3[0];
@@ -1657,6 +1672,12 @@ buildStep1(); buildStep2(); buildStep3();
   window.addEventListener('scroll', onS, {passive:true});
   window.addEventListener('resize', onS, {passive:true});
   apply();
+
+  /* mobil: startvyn byggs fram första gången scenen kommer i vy */
+  const enterIO = new IntersectionObserver(es=>{
+    es.forEach(en=>{ if(en.isIntersecting){ story.classList.add('m-on'); enterIO.disconnect(); } });
+  }, {threshold:.2});
+  enterIO.observe(stick);
 
   /* klick: desktop siktar på fasernas progresspunkter, mobilen på halvor */
   const P_TARGETS = [ (B.focusIn + B.h0) / 2, (B.t1 + B.h1) / 2, (B.t2 + 1) / 2 ];
