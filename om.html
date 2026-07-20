@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Om SODAREA</title>
-<meta name="description" content="SODAREA gör det enklare att analysera, utforska och kommunicera byggbara alternativ — utvecklat i verkliga stadsutvecklingsprojekt.">
+<meta name="description" content="SODAREA är en AI-plattform för tidiga skeden i stadsutveckling — byggd i verkliga projekt, på verkliga planförutsättningar.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -27,9 +27,8 @@
 
   .rv{ opacity:0; transform:translateY(24px); transition:opacity .8s var(--exp), transform .9s var(--exp); }
   .rv.in{ opacity:1; transform:none; }
-  .rv.d1{ transition-delay:.1s; } .rv.d2{ transition-delay:.2s; }
+  .rv.d1{ transition-delay:.1s; } .rv.d2{ transition-delay:.2s; } .rv.d3{ transition-delay:.3s; }
 
-  /* header: som startsidan — logga ute vid vänsterkanten, nav till höger */
   header{
     position:fixed; top:0; left:0; right:0; z-index:100; padding:16px 0;
     background:rgba(10,13,22,.6); backdrop-filter:saturate(1.4) blur(16px); -webkit-backdrop-filter:saturate(1.4) blur(16px);
@@ -51,84 +50,94 @@
   .btn-line:hover{ background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.7); }
   @media (max-width:860px){ .nav-links a.link{ display:none; } }
 
-  /* 1. HERO — mörk, text vänster / foto utfallande höger halva */
+  /* 1. HERO — statement, inte företagspresentation */
   .hero{
     background:
-      radial-gradient(ellipse 55% 50% at 12% 15%, rgba(32,211,180,.08), transparent 60%),
-      radial-gradient(ellipse 50% 46% at 45% 90%, rgba(145,89,255,.08), transparent 62%),
+      radial-gradient(ellipse 55% 50% at 14% 20%, rgba(32,211,180,.08), transparent 60%),
+      radial-gradient(ellipse 50% 46% at 82% 85%, rgba(145,89,255,.08), transparent 62%),
       linear-gradient(180deg, #0a0e1b 0%, #0f1428 60%, #0a0e1b 100%);
     color:#fff;
-    display:grid; grid-template-columns:1fr 1fr; align-items:stretch;
   }
-  .hero-text{ padding:calc(96px + 6vw) 0 clamp(64px,7vw,110px); padding-left:max(var(--gutter), env(safe-area-inset-left)); padding-right:clamp(28px,4vw,72px); align-self:center; }
-  .hero-text .eyebrow{ color:var(--dmuted); }
-  .hero-text h1{ font-size:clamp(2.1rem,3.4vw + .6rem,3.5rem); line-height:1.08; margin-top:16px; max-width:14ch; }
-  .hero-text p{ margin-top:22px; font-size:clamp(1rem,.4vw + .9rem,1.14rem); line-height:1.75; color:var(--dbody); max-width:48ch; }
-  .hero-img{ min-height:100%; background:url('media/om-grundarna.jpg') center 30%/cover no-repeat; }
-  @media (max-width:860px){
-    .hero{ grid-template-columns:1fr; }
-    .hero-img{ order:-1; min-height:min(72vw, 420px); margin-top:57px; }
-    .hero-text{ padding-top:34px; padding-right:max(var(--gutter), env(safe-area-inset-right)); }
-  }
+  .hero .wrap{ padding-top:calc(100px + 5vw); padding-bottom:clamp(72px,9vw,130px); }
+  .hero .eyebrow{ color:var(--dmuted); }
+  .hero h1{ font-size:clamp(2.2rem,4vw + .6rem,4rem); line-height:1.08; margin-top:16px; max-width:17ch; }
+  .hero p{ margin-top:24px; font-size:clamp(1.05rem,.5vw + .92rem,1.25rem); line-height:1.7; color:var(--dbody); max-width:44ch; }
 
-  /* 2. MISSION — ljus, vänsterställd */
-  .mission{ background:var(--paper); }
-  .mission .wrap{ padding-top:clamp(64px,8vw,120px); padding-bottom:clamp(64px,8vw,120px); }
-  .mission .eyebrow{ color:var(--muted); }
-  .stmt-h{ font-size:clamp(1.9rem,3vw + .6rem,3.2rem); line-height:1.12; margin-top:14px; max-width:22ch; }
-  .stmt-p{ margin-top:20px; font-size:15.5px; line-height:1.8; color:var(--body); max-width:56ch; }
+  /* sektionsbas */
+  .sec .wrap{ padding-top:clamp(64px,8vw,116px); padding-bottom:clamp(64px,8vw,116px); }
+  .sec .eyebrow{ color:var(--muted); }
+  .sec h2{ font-size:clamp(1.8rem,2.6vw + .6rem,2.9rem); line-height:1.14; margin-top:14px; max-width:24ch; }
+  .sec p{ margin-top:18px; font-size:15.5px; line-height:1.8; color:var(--body); max-width:56ch; }
+  .sec.dark{ color:#fff; }
+  .sec.dark .eyebrow{ color:var(--dmuted); }
+  .sec.dark p{ color:var(--dbody); }
 
-  /* 3. VISION — mörk, högerställd */
-  .vision-b{
+  /* 2. varför (ljus) */
+  .why{ background:var(--paper); }
+
+  /* 3. byggd i verkliga projekt (mörk, högerställd) */
+  .built{
     background:
-      radial-gradient(ellipse 50% 55% at 85% 30%, rgba(61,126,255,.08), transparent 62%),
+      radial-gradient(ellipse 50% 55% at 85% 25%, rgba(61,126,255,.08), transparent 62%),
       linear-gradient(180deg, #0a0e1b 0%, #101731 55%, #090c16 100%);
-    color:#fff;
   }
-  .vision-b .wrap{ padding-top:clamp(64px,8vw,120px); padding-bottom:clamp(64px,8vw,120px);
-    display:flex; flex-direction:column; align-items:flex-end; text-align:right; }
-  .vision-b .eyebrow{ color:var(--dmuted); }
-  .vision-b .stmt-p{ color:var(--dbody); }
-  @media (max-width:860px){ .vision-b .wrap{ align-items:flex-start; text-align:left; } }
+  .built .wrap{ display:flex; flex-direction:column; align-items:flex-end; text-align:right; }
+  .built p{ margin-left:auto; }
+  @media (max-width:860px){ .built .wrap{ align-items:flex-start; text-align:left; } .built p{ margin-left:0; } }
 
-  /* 4. TEAMET — ljus, skarpa kort */
-  .team{ background:var(--paper); border-bottom:1px solid var(--line); }
-  .team .wrap{ padding-top:clamp(64px,8vw,120px); padding-bottom:clamp(56px,7vw,96px); }
-  .team .eyebrow{ color:var(--muted); }
-  .team h2{ font-size:clamp(1.7rem,2.2vw + .6rem,2.5rem); margin-top:14px; }
-  .founders{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,3vw,40px); margin-top:clamp(30px,4vw,48px); }
-  .fcard{ border:1px solid var(--line); background:#fff; padding:30px 30px 32px; }
-  .fcard::before{ content:''; display:block; width:44px; height:3px; margin-bottom:22px;
+  /* 4. annorlunda: skarpt 2x2-rutnät med hairlines */
+  .diff{ background:var(--paper); border-top:1px solid var(--line); }
+  .diff-grid{
+    margin-top:clamp(30px,4vw,48px);
+    display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line);
+    border:1px solid var(--line);
+  }
+  .cell{ background:#fff; padding:clamp(24px,3vw,38px); }
+  .cell h3{ font-size:1.1rem; }
+  .cell h3::before{ content:''; display:block; width:36px; height:3px; margin-bottom:16px;
     background:linear-gradient(90deg,var(--teal),var(--azure),var(--violet)); }
-  .fcard h3{ font-size:1.25rem; }
-  .fcard .roll{ margin-top:5px; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; font-weight:600;
-    background:linear-gradient(90deg,var(--teal),var(--azure)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .fcard p{ margin-top:16px; font-size:14.5px; line-height:1.75; color:var(--body); }
-  .refs-row{ margin-top:clamp(36px,5vw,56px); border-top:1px solid var(--line); padding-top:24px;
-    display:flex; flex-wrap:wrap; gap:10px 26px; align-items:baseline; }
-  .refs-label{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:600; }
-  .refs-row span:not(.refs-label){ font-size:13px; color:var(--body); }
-  @media (max-width:700px){ .founders{ grid-template-columns:1fr; } }
+  .cell p{ margin-top:10px; font-size:14.5px; line-height:1.7; color:var(--body); }
+  @media (max-width:700px){ .diff-grid{ grid-template-columns:1fr; } }
 
-  /* 5. CTA — mörkt band */
-  .cta-b{
-    background:
-      radial-gradient(34% 60% at 25% 50%, rgba(32,211,180,.09), transparent 70%),
-      radial-gradient(36% 62% at 75% 50%, rgba(145,89,255,.09), transparent 70%),
-      linear-gradient(180deg, #0a0e1b, #090c16);
-    color:#fff; text-align:center;
+  /* 5. teamet: trovärdighet — foto vänster halva, kompakta bios höger */
+  .team{
+    background:linear-gradient(180deg, #0a0e1b 0%, #0f1428 55%, #090c16 100%);
+    color:#fff;
+    display:grid; grid-template-columns:1fr 1.1fr; align-items:stretch;
   }
+  .team-img{ min-height:100%; background:url('media/om-grundarna.jpg') center 30%/cover no-repeat; }
+  .team-text{ padding:clamp(56px,7vw,100px) max(var(--gutter), env(safe-area-inset-right)) clamp(56px,7vw,100px) clamp(28px,4vw,72px); }
+  .team-text .eyebrow{ color:var(--dmuted); }
+  .team-text h2{ font-size:clamp(1.7rem,2.2vw + .6rem,2.5rem); margin-top:14px; }
+  .team-text > p{ margin-top:16px; font-size:15.5px; line-height:1.75; color:var(--dbody); max-width:50ch; }
+  .person{ margin-top:26px; border-top:1px solid var(--dline); padding-top:22px; }
+  .person h3{ font-size:1.1rem; }
+  .person .roll{ margin-top:3px; font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:600;
+    background:linear-gradient(90deg,var(--teal),var(--azure)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .person p{ margin-top:9px; font-size:14px; line-height:1.7; color:var(--dbody); max-width:52ch; }
+  .refs-row{ margin-top:30px; border-top:1px solid var(--dline); padding-top:20px;
+    display:flex; flex-wrap:wrap; gap:8px 22px; align-items:baseline; }
+  .refs-label{ font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--dmuted); font-weight:600; }
+  .refs-row span:not(.refs-label){ font-size:12.5px; color:rgba(255,255,255,.55); }
+  @media (max-width:860px){
+    .team{ grid-template-columns:1fr; }
+    .team-img{ min-height:min(72vw, 420px); }
+    .team-text{ padding-left:max(var(--gutter), env(safe-area-inset-left)); }
+  }
+
+  /* 6. avslut — ljust som startsidans CTA */
+  .cta-b{ background:var(--paper); border-top:1px solid var(--line); text-align:center; }
   .cta-b .wrap{ padding-top:clamp(72px,9vw,120px); padding-bottom:clamp(72px,9vw,120px); }
-  .cta-b h2{ font-size:clamp(1.7rem,2.4vw + .6rem,2.6rem); }
-  .cta-b p{ margin:16px auto 0; color:var(--dbody); font-size:15.5px; line-height:1.7; max-width:52ch; }
+  .cta-b h2{ font-size:clamp(1.8rem,2.6vw + .6rem,2.8rem); }
+  .cta-b p{ margin:16px auto 0; color:var(--body); font-size:15.5px; line-height:1.7; max-width:50ch; }
   .btn{ display:inline-flex; align-items:center; gap:9px; margin-top:28px; padding:14px 24px; border-radius:999px;
     font-weight:600; font-size:14.5px; color:#fff;
     background:linear-gradient(90deg,var(--teal),var(--azure),var(--violet));
-    box-shadow:0 14px 34px -12px rgba(61,126,255,.5); transition:transform .25s var(--ease), box-shadow .25s var(--ease); }
-  .btn:hover{ transform:translateY(-2px); box-shadow:0 20px 44px -12px rgba(61,126,255,.6); }
+    box-shadow:0 14px 34px -12px rgba(61,126,255,.4); transition:transform .25s var(--ease), box-shadow .25s var(--ease); }
+  .btn:hover{ transform:translateY(-2px); box-shadow:0 20px 44px -12px rgba(61,126,255,.5); }
   .btn svg{ width:15px; height:15px; }
 
-  footer{ background:#090c16; border-top:1px solid var(--dline); }
+  footer{ background:#090c16; }
   .fb{ display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; padding-top:28px; padding-bottom:28px; }
   footer span, footer a{ font-size:12.5px; color:rgba(255,255,255,.38); }
   footer a:hover{ color:rgba(255,255,255,.75); }
@@ -153,57 +162,88 @@
   </nav>
 </header>
 <main>
+  <!-- 1. Statement: varför SODAREA finns -->
   <section class="hero">
-    <div class="hero-text">
+    <div class="wrap">
       <div class="eyebrow rv in">Om SODAREA</div>
-      <h1 class="rv in d1">Vi gör det enklare att se <span class="grad">samma framtid</span></h1>
-      <p class="rv in d2">SODAREA hjälper kommuner, exploatörer och arkitekter att gå från planunderlag till byggbara beslut — med AI-driven analys, formbara volymer och realistiska visualiseringar som skapar samsyn tidigt i processen.</p>
-    </div>
-    <div class="hero-img" role="img" aria-label="Johan Baettig och Ben Grubert, grundare av SODAREA"></div>
-  </section>
-
-  <section class="mission">
-    <div class="wrap">
-      <div class="eyebrow rv">Vår mission</div>
-      <h2 class="stmt-h rv d1">Vi hjälper beslutsfattare skapa <span class="grad">tydlig riktning</span></h2>
-      <p class="stmt-p rv d2">Inom stads- och samhällsplaneringen fastnar komplexa utvecklingsprojekt ofta i ofärdiga dokument och enkla ritningar. SODAREA skapar samordning och framtidstro — genom att göra det byggbara synligt för alla som ska besluta om det.</p>
+      <h1 class="rv in d1">De tidiga skedena avgör <span class="grad">vad som blir byggt</span></h1>
+      <p class="rv in d2">Ändå fattas de största besluten ofta på det minsta underlaget. SODAREA finns för att ändra på det.</p>
     </div>
   </section>
 
-  <section class="vision-b">
+  <!-- 2. Problemet och vad SODAREA är -->
+  <section class="sec why">
     <div class="wrap">
-      <div class="eyebrow rv">Vår vision</div>
-      <h2 class="stmt-h rv d1">Strategi, analys och <span class="grad">AI-driven stadsutveckling</span></h2>
-      <p class="stmt-p rv d2">Vi kombinerar strategi, analys och AI-driven stadsutveckling för att snabbt konkretisera visioner — i text, bild och film — så att fler kan förstå, enas och agera mot samma mål.</p>
+      <div class="eyebrow rv">Varför SODAREA finns</div>
+      <h2 class="rv d1">Svaren finns redan — men de är <span class="grad">svåra att se</span></h2>
+      <p class="rv d2">Vad får byggas? Vad ryms? Hur kan det se ut? Svaren finns i detaljplaner, GIS-data och bestämmelser — utspridda över dokument som få hinner läsa och ännu färre kan se framför sig.</p>
+      <p class="rv d2">SODAREA är en AI-plattform för tidiga skeden i stadsutveckling. Den läser platsens planförutsättningar och gör dem till något man kan analysera, utforska, forma och visa — på minuter istället för veckor.</p>
     </div>
   </section>
 
-  <section class="team">
+  <!-- 3. Trovärdighet: byggd i verkliga projekt -->
+  <section class="sec dark built">
     <div class="wrap">
-      <div class="eyebrow rv">Vilka vi är</div>
-      <h2 class="rv d1">Teamet bakom <span class="grad">SODAREA</span></h2>
-      <div class="founders">
-        <div class="fcard rv d1">
-          <h3>Johan Baettig</h3>
-          <div class="roll">Creative Director &amp; Konceptutvecklare</div>
-          <p>Arbetar i gränslandet mellan strategi, design och kommunikation. Specialiserad på att konkretisera riktning, paketera komplexa frågor och göra framtida lösningar begripliga och engagerande — genom koncept, berättelser, visualiseringar och film.</p>
+      <div class="eyebrow rv">Ursprunget</div>
+      <h2 class="rv d1">Byggd i <span class="grad">verkliga projekt</span></h2>
+      <p class="rv d2">SODAREA har utvecklats tillsammans med kommuner, exploatörer och konsulter i pågående stadsutvecklingsprojekt. Arbetsflödet — analysera, forma, visualisera — är inte en idé från ett kontor. Det är så arbetet faktiskt behöver gå till.</p>
+    </div>
+  </section>
+
+  <!-- 4. Differentiering -->
+  <section class="sec diff">
+    <div class="wrap">
+      <div class="eyebrow rv">Skillnaden</div>
+      <h2 class="rv d1">Vad som gör SODAREA <span class="grad">annorlunda</span></h2>
+      <div class="diff-grid rv d2">
+        <div class="cell">
+          <h3>Inte ett CAD-verktyg</h3>
+          <p>SODAREA ersätter inte projektering. Den gör skedet före begripligt — när riktningen sätts och de största besluten fattas.</p>
         </div>
-        <div class="fcard rv d2">
-          <h3>Ben Grubert</h3>
-          <div class="roll">Arkitekt &amp; Stadsplanerare</div>
-          <p>Arkitekt SAR/MSA med bred kompetens inom stadsplanering, arkitektur och genomförbarhet. Arbetar från övergripande struktur till detalj, med god kompetens inom PBL och BBR. Certifierad sakkunnig inom tillgänglighet (TIL 2).</p>
+        <div class="cell">
+          <h3>Verkliga planförutsättningar</h3>
+          <p>Varje förslag utgår från detaljplan, GIS-data och bestämmelser. Det som ser byggbart ut är det också.</p>
+        </div>
+        <div class="cell">
+          <h3>Utforska och forma</h3>
+          <p>Utgå från AI-genererade alternativ eller forma egna förslag — enkelt, och alltid inom platsens ramar.</p>
+        </div>
+        <div class="cell">
+          <h3>Samsyn genom visualisering</h3>
+          <p>Realistiska bilder och filmer gör att alla runt bordet ser samma sak. Lika mycket beslutsstöd som visualisering.</p>
         </div>
       </div>
-      <div class="refs-row rv">
-        <span class="refs-label">Föreläsningar &amp; projekt — referenser</span>
+    </div>
+  </section>
+
+  <!-- 5. Teamet: trovärdighet, inte huvudbudskap -->
+  <section class="team">
+    <div class="team-img" role="img" aria-label="Johan Baettig och Ben Grubert, grundare av SODAREA"></div>
+    <div class="team-text">
+      <div class="eyebrow rv">Teamet bakom produkten</div>
+      <h2 class="rv d1">Erfarenhet från både <span class="grad">AI och stadsutveckling</span></h2>
+      <p class="rv d2">SODAREA utvecklas av ett litet team som själva arbetat i de skeden plattformen är byggd för.</p>
+      <div class="person rv d2">
+        <h3>Johan Baettig</h3>
+        <div class="roll">Creative Director &amp; Konceptutvecklare</div>
+        <p>Arbetar i gränslandet mellan strategi, design och AI — och gör komplexa frågor begripliga genom koncept, visualiseringar och film.</p>
+      </div>
+      <div class="person rv d3">
+        <h3>Ben Grubert</h3>
+        <div class="roll">Arkitekt &amp; Stadsplanerare</div>
+        <p>Arkitekt SAR/MSA med djup kunskap i stadsplanering, genomförbarhet, PBL och BBR. Certifierad sakkunnig inom tillgänglighet.</p>
+      </div>
+      <div class="refs-row rv d3">
+        <span class="refs-label">Projekt &amp; föreläsningar</span>
         <span>NCC</span><span>Strängnäs kommun</span><span>Stockholms stad</span><span>Domstolsverket</span><span>Nacka kommun</span><span>Svensk Byggtjänst</span><span>Täby kommun</span>
       </div>
     </div>
   </section>
 
+  <!-- 6. Avslut -->
   <section class="cta-b">
     <div class="wrap">
-      <h2 class="rv">Vill ni utforska <span class="grad">med oss?</span></h2>
+      <h2 class="rv">Se er nästa plats <span class="grad">innan den finns</span></h2>
       <p class="rv d1">Under 2026 tar vi in ett begränsat antal pilotpartners som formar plattformen tillsammans med oss.</p>
       <a class="btn rv d2" href="./#kontakt">Ansök om pilotplats
         <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
