@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex">
-<title>Integritetspolicy — SODAREA</title>
+<title>Om SODAREA</title>
+<meta name="description" content="SODAREA gör det enklare att analysera, utforska och kommunicera byggbara alternativ — utvecklat i verkliga stadsutvecklingsprojekt.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,6 +13,7 @@
     --teal:#20d3b4; --azure:#3d7eff; --violet:#9159ff;
     --ink:#14161b; --paper:#fcfcfb; --line:#e7eaee; --muted:#8a93a0; --body:#4a5560;
     --gutter:clamp(18px,3.4vw,64px);
+    --exp:cubic-bezier(.16,1,.3,1);
   }
   *{ margin:0; padding:0; box-sizing:border-box; }
   body{ font-family:'Inter',system-ui,sans-serif; background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased; }
@@ -24,15 +25,32 @@
   .logo img.word{ height:15px; }
   .back{ font-size:14px; color:var(--body); text-decoration:none; }
   .back:hover{ color:var(--ink); }
-  main{ max-width:760px; margin:0 auto; padding:clamp(56px,7vw,96px) var(--gutter) clamp(72px,8vw,120px); }
-  h1{ font-family:'Readex Pro',sans-serif; font-weight:600; letter-spacing:-.02em; font-size:clamp(1.9rem,3vw + .6rem,2.9rem); line-height:1.12; }
-  .updated{ margin-top:14px; font-size:13px; color:var(--muted); }
-  .rule{ height:1px; background:linear-gradient(90deg,var(--teal),var(--azure),var(--violet)); opacity:.5; margin:34px 0 10px; border:0; }
-  h2{ font-family:'Readex Pro',sans-serif; font-weight:600; letter-spacing:-.015em; font-size:1.15rem; margin:38px 0 12px; }
-  p, li{ font-size:15.5px; line-height:1.75; color:var(--body); }
+  main{ max-width:880px; margin:0 auto; padding:clamp(52px,6vw,88px) var(--gutter) clamp(72px,8vw,120px); }
+  .eyebrow{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  h1{ font-family:'Readex Pro',sans-serif; font-weight:600; letter-spacing:-.02em; font-size:clamp(2rem,3.4vw + .6rem,3.1rem); line-height:1.1; margin-top:14px; }
+  h1 .grad{ background:linear-gradient(90deg,var(--teal),var(--azure),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .lede{ margin-top:20px; font-size:clamp(1.02rem,.5vw + .9rem,1.18rem); line-height:1.7; color:var(--body); max-width:62ch; }
+  .founders-photo{ margin:clamp(36px,5vw,56px) 0 0; border-radius:22px; overflow:hidden; background:#eef1f4;
+    box-shadow:0 2px 6px rgba(20,22,27,.05), 0 26px 60px -24px rgba(20,22,27,.18); }
+  .founders-photo img{ display:block; width:100%; height:auto; }
+  .founders-photo figcaption{ padding:12px 4px 0; font-size:12.5px; color:var(--muted); }
+  h2{ font-family:'Readex Pro',sans-serif; font-weight:600; letter-spacing:-.015em; font-size:clamp(1.3rem,1.4vw + .7rem,1.7rem); margin:clamp(44px,6vw,64px) 0 14px; }
+  p{ font-size:15.5px; line-height:1.75; color:var(--body); max-width:66ch; }
   p + p{ margin-top:12px; }
-  ul{ padding-left:1.2em; display:grid; gap:6px; margin:8px 0 14px; }
-  main a{ color:var(--ink); text-decoration:underline; text-underline-offset:2px; }
+  .founders{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,4vw,48px); margin-top:26px; }
+  @media (max-width:640px){ .founders{ grid-template-columns:1fr; } }
+  .fcard{ border:1px solid var(--line); border-radius:18px; padding:24px 24px 26px; background:#fff; }
+  .fcard h3{ font-family:'Readex Pro',sans-serif; font-weight:600; font-size:1.12rem; }
+  .fcard .roll{ margin-top:3px; font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:600;
+    background:linear-gradient(90deg,var(--teal),var(--azure)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .fcard p{ margin-top:12px; font-size:14.5px; }
+  .om-cta{ margin-top:clamp(48px,7vw,72px); padding:clamp(28px,4vw,40px); border-radius:22px; text-align:center;
+    background:linear-gradient(180deg,#f6f8fa,#fcfcfb); border:1px solid var(--line); }
+  .om-cta p{ margin:0 auto; }
+  .btn{ display:inline-flex; align-items:center; gap:9px; margin-top:20px; padding:13px 22px; border-radius:999px;
+    font-weight:600; font-size:14.5px; color:#fff; text-decoration:none;
+    background:linear-gradient(90deg,var(--teal),var(--azure),var(--violet)); }
+  .btn svg{ width:15px; height:15px; }
   footer{ background:linear-gradient(180deg,#0a0e1b,#090c16); padding:30px var(--gutter); }
   .fb{ max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; }
   footer span, footer a{ font-size:12.5px; color:rgba(255,255,255,.38); text-decoration:none; }
@@ -48,53 +66,46 @@
   </div>
 </header>
 <main>
-  <h1>Integritetspolicy</h1>
-  <p class="updated">Senast uppdaterad: 19 juli 2026</p>
-  <hr class="rule">
+  <div class="eyebrow">Om SODAREA</div>
+  <h1>Vi gör det enklare att se <span class="grad">samma framtid</span></h1>
+  <p class="lede">SODAREA hjälper kommuner, exploatörer och arkitekter att gå från planunderlag till byggbara beslut — med AI-driven analys, formbara volymer och realistiska visualiseringar som skapar samsyn tidigt i processen.</p>
 
-  <h2>1. Vem vi är</h2>
-  <p>SODAREA ("vi") är personuppgiftsansvarig för behandlingen av personuppgifter som beskrivs i den här policyn. Har du frågor når du oss på <a href="mailto:info@sodarea.se">info@sodarea.se</a>.</p>
+  <figure class="founders-photo">
+    <img src="media/om-grundarna.jpg" alt="Johan Baettig och Ben Grubert, grundare av SODAREA" width="2016" height="1512">
+    <figcaption>Johan Baettig och Ben Grubert — grundare av SODAREA.</figcaption>
+  </figure>
 
-  <h2>2. Vilka uppgifter vi behandlar</h2>
-  <p>När du ansöker om en pilotplats eller kontaktar oss behandlar vi de uppgifter du själv lämnar:</p>
-  <ul>
-    <li>namn och e-postadress</li>
-    <li>organisation och roll</li>
-    <li>innehållet i ditt meddelande</li>
-  </ul>
-  <p>Vi samlar inte in några andra personuppgifter om dig, och webbplatsen använder inga spårnings- eller marknadsföringscookies.</p>
+  <h2>Varför SODAREA finns</h2>
+  <p>Tidiga skeden i stadsutveckling är fulla av frågor: Vad får byggas? Vad ryms? Hur skulle det kunna se ut? Svaren finns utspridda i detaljplaner, GIS-data och bestämmelser — men att sätta ihop dem till något man kan diskutera kräver idag veckor av manuellt arbete.</p>
+  <p>SODAREA föddes ur verkliga stadsutvecklingsprojekt, där vi såg hur mycket enklare besluten blev när alla runt bordet kunde se samma byggbara framtid. Det arbetsflödet — analysera, forma, visualisera — har vi förvandlat till en plattform.</p>
 
-  <h2>3. Varför och med vilket stöd</h2>
-  <ul>
-    <li><strong>Besvara din förfrågan och administrera pilotprogrammet</strong> — behandlingen är nödvändig för åtgärder som föregår ett eventuellt avtal, samt vårt berättigade intresse av att hantera inkomna förfrågningar.</li>
-    <li><strong>Kontakta dig via e-post om SODAREA och pilotprogrammet</strong> — med stöd av det godkännande du lämnar när du skickar din ansökan. Du kan när som helst tacka nej till fortsatta utskick genom att mejla oss.</li>
-  </ul>
+  <h2>Vilka vi är</h2>
+  <div class="founders">
+    <div class="fcard">
+      <h3>Johan Baettig</h3>
+      <div class="roll">Grundare</div>
+      <p>Driver SODAREA:s affär, marknad och partnerskap. Johan har lång erfarenhet av att bygga bolag och ta nya produkter till marknaden, och arbetar nära kommunerna och exploatörerna i pilotprogrammet.</p>
+    </div>
+    <div class="fcard">
+      <h3>Ben Grubert</h3>
+      <div class="roll">Medgrundare</div>
+      <p>Ansvarar för varumärke och distribution. Ben har mångårig erfarenhet av att bygga varumärken och nå rätt målgrupper, och formar hur SODAREA berättas, upplevs och sprids.</p>
+    </div>
+  </div>
 
-  <h2>4. Hur länge vi sparar uppgifterna</h2>
-  <p>Vi sparar dina uppgifter så länge dialogen eller pilotsamarbetet pågår. Därefter raderar vi dem, senast 24 månader efter vår senaste kontakt, om vi inte enligt lag behöver spara dem längre.</p>
-
-  <h2>5. Vilka vi delar uppgifterna med</h2>
-  <p>Vi säljer aldrig dina uppgifter. De kan behandlas av de leverantörer vi använder för drift av webbplats och e-post (till exempel vår hostingleverantör), som då behandlar uppgifterna för vår räkning och enligt våra instruktioner. Om uppgifter överförs utanför EU/EES sker det med lagliga skyddsåtgärder, till exempel EU-kommissionens standardavtalsklausuler.</p>
-
-  <h2>6. Dina rättigheter</h2>
-  <p>Enligt dataskyddsförordningen (GDPR) har du rätt att:</p>
-  <ul>
-    <li>få tillgång till de uppgifter vi har om dig</li>
-    <li>få felaktiga uppgifter rättade</li>
-    <li>få dina uppgifter raderade</li>
-    <li>invända mot eller begära begränsning av behandlingen</li>
-    <li>få ut dina uppgifter i ett maskinläsbart format (dataportabilitet)</li>
-  </ul>
-  <p>Kontakta oss på <a href="mailto:info@sodarea.se">info@sodarea.se</a> så hjälper vi dig. Du har också rätt att lämna klagomål till Integritetsskyddsmyndigheten (<a href="https://www.imy.se" target="_blank" rel="noopener">imy.se</a>).</p>
-
-  <h2>7. Ändringar</h2>
-  <p>Vi kan uppdatera den här policyn vid behov. Den senaste versionen finns alltid på den här sidan.</p>
-
+  <div class="om-cta">
+    <h2 style="margin-top:0">Vill ni utforska med oss?</h2>
+    <p>Under 2026 tar vi in ett begränsat antal pilotpartners som formar plattformen tillsammans med oss.</p>
+    <a class="btn" href="./#kontakt">Ansök om pilotplats
+      <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
 </main>
 <footer>
   <div class="fb">
     <span>© 2026 SODAREA</span>
     <nav>
+      <a href="om.html">Om SODAREA</a>
       <a href="integritetspolicy.html">Integritetspolicy</a>
       <a href="villkor.html">Villkor</a>
     </nav>
