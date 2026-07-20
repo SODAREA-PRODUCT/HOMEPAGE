@@ -388,6 +388,12 @@
     .tcat{ margin-bottom:5px; font-size:11px; }
     .tkw{ font-size:1.3rem; height:1.5em; }
   }
+  @media (max-width:939px){
+    /* rubriken en rubrikrad upp; klustret in i synliga ytan (stickens 110px-
+       förlängning ligger under browserns verktygsfält) och närmare rubriken */
+    .data-stick > .wrap{ transform:translateY(clamp(-56px, -11vw, -40px)); }
+    .trust{ bottom:calc(110px + clamp(96px, 15vh, 150px)); }
+  }
 
   /* ---------- SÅ FUNGERAR SODAREA — premiumkort på scen ---------- */
   .how-head{ display:grid; grid-template-columns:1.25fr 1fr; gap:clamp(28px,5vw,90px); align-items:end; }
