@@ -344,6 +344,7 @@
     .hero-media img{ width:100%; height:100%; object-fit:contain; object-position:center right; }
   }
   @media (max-width:939px){
+    .hero-tagline{ font-weight:700; filter:saturate(1.3) brightness(.94); }
     .hero-inner{ padding-top:34px; padding-bottom:54px; }
     .hero-grid{ flex-direction:column; align-items:stretch; gap:0; justify-content:flex-start; }
     .hero h1{ letter-spacing:-.03em; }
@@ -415,6 +416,7 @@
     color:#fff;
     filter:drop-shadow(0 2px 16px rgba(8,12,20,.5)) drop-shadow(0 0 44px rgba(8,12,20,.38));
   }
+  .data h2 .l2 .gw{ animation-delay:-1.7s; }   /* ordgruppens senare ord ligger längre fram i flödet */
   .data h2 .gw{
     font-style:normal;
     /* 25% uppljusade brandfärger — läsbarhet mot mörk fotobakgrund */
@@ -636,7 +638,7 @@
       text-align:center; will-change:transform;
     }
     .story-head::before{ display:none; }
-    .story-head h2{ font-size:clamp(1.9rem, 7.4vw, 2.4rem); margin:14px 0 0; line-height:1.12; }
+    .story-head h2{ font-size:clamp(1.9rem, 7.4vw, 2.4rem); margin:0; line-height:1.12; transform-origin:50% 0; }
     .story-head p{ display:none; }
     /* startvyn byggs fram: eyebrow, sedan rubriken, sedan korten med mjuk studs */
     .story-head .eyebrow, .story-head h2{
@@ -821,6 +823,9 @@
       background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
       animation:rot-grad 7s ease-in-out infinite;
     }
+    /* fasförskjut orden så gradienten läses som ETT flöde genom gruppen */
+    .gphrase .w:nth-of-type(2){ animation-delay:-1.2s; }
+    .gphrase .w:nth-of-type(3){ animation-delay:-2.4s; }
     .vision-grid{ display:block; }
     .v-rule{ width:64px; height:1px; min-height:0; margin:26px 0;
       background:linear-gradient(90deg, rgba(20,22,27,.22), transparent); }
@@ -1063,7 +1068,6 @@
     <div class="wrap">
       <div class="how-head">
         <div class="reveal">
-          <div class="eyebrow"><span class="dot"></span> 3 steg</div>
           <h2><span class="grad-text">Så fungerar SODAREA</span></h2>
         </div>
       </div>
@@ -1072,7 +1076,6 @@
       <div class="story" id="howStory">
         <div class="story-stick">
           <div class="story-head centered">
-            <div class="eyebrow plain">3 steg</div>
             <h2><span class="hl grad-text">Så fungerar SODAREA</span></h2>
           </div>
           <div class="story-stage" id="storyStage">
@@ -1594,8 +1597,8 @@ buildStep1(); buildStep2(); buildStep3();
     }
     const RAD = Math.PI/180;
     const stageH = stage.clientHeight;
-    const eb = head ? head.querySelector('.eyebrow') : null;
-    const ebH = eb ? eb.offsetHeight : 20;
+    const eb = head ? head.querySelector('h2') : null;
+    const ebH = eb ? Math.round(eb.offsetHeight * .5) : 24;   /* krympta titelns höjd */
     const headPad = head ? parseFloat(getComputedStyle(head).paddingTop) : 16;
 
     /* passform: kortbredden anpassas så hela scenen ryms inom viewporten.
@@ -1661,10 +1664,8 @@ buildStep1(); buildStep2(); buildStep3();
       head.style.transform = `translateY(${((1 - e) * introShift).toFixed(1)}px)`;
       const h2 = head.querySelector('h2');
       if(h2){
-        if(e > 0.001){
-          h2.style.opacity = (1 - e).toFixed(3);
-          h2.style.transform = `translateY(${(-12 * e).toFixed(1)}px) scale(${(1 - .05 * e).toFixed(3)})`;
-        } else { h2.style.opacity = ''; h2.style.transform = ''; }
+        /* rubriken krymper och blir scenens kvarvarande titel */
+        h2.style.transform = e > 0.001 ? `scale(${(1 - .5 * e).toFixed(3)})` : '';
       }
     }
 
