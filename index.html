@@ -2023,14 +2023,16 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   /* trösklar i sektionens resa genom viewporten (0 = toppen vid underkanten,
      1 = botten lämnar överkanten) */
   /* pinnad resa: bilden först, sedan raderna i lästakt, lång vila när allt
-     står klart (p ~.70-.86), sedan upplösning i samma ordning */
+     står klart — och sedan tonar HELA textgruppen bort tillsammans, sakta */
   const G = [
-    { ws:words[0], tin:.16, span:.11, tout:.86, ospan:.045 },  /* Fler alternativ. */
-    { ws:words[1], tin:.36, span:.11, tout:.90, ospan:.045 },  /* Bättre beslutsunderlag. */
-    { ws:words[2], tin:.54, span:.15, tout:.935, ospan:.05 }   /* brödtexten */
+    { ws:words[0], tin:.16, span:.11 },   /* Fler alternativ. */
+    { ws:words[1], tin:.36, span:.11 },   /* Bättre beslutsunderlag. */
+    { ws:words[2], tin:.54, span:.15 }    /* brödtexten */
   ];
   const IMG_IN = .02, IMG_OUT = .985;
+  const OUT_START = .87, OUT_SPAN = .11;  /* gruppens gemensamma utdissolve */
   const stick = sec.querySelector('.alt-stick');
+  const copy = sec.querySelector('.alt-copy');
   let i = 0, timer = null, mediaOn = false, ticking = false;
   function start(){
     if(timer) return;
@@ -2056,11 +2058,13 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     G.forEach(g=>{
       const n = Math.max(1, g.ws.length - 1);
       g.ws.forEach((w, k)=>{
-        const tin  = g.tin  + g.span  * (k / n);
-        const tout = g.tout + g.ospan * (k / n);
-        w.classList.toggle('on', p >= tin && p < tout);
+        w.classList.toggle('on', p >= g.tin + g.span * (k / n));
       });
     });
+    /* hela stycket lämnar som en grupp — mjukt scrubbat mot slutet */
+    const out = Math.max(0, Math.min(1, (p - OUT_START) / OUT_SPAN));
+    copy.style.opacity = (1 - out).toFixed(3);
+    copy.style.transform = `translateY(${(-16 * out).toFixed(1)}px)`;
   }
   const onS = ()=>{ if(!ticking){ requestAnimationFrame(scrub); ticking = true; } };
   addEventListener('scroll', onS, {passive:true});
