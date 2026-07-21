@@ -66,6 +66,10 @@
   p.hero-tagline{
     font-family:'Readex Pro',sans-serif; font-weight:600;
     font-size:clamp(1.02rem, 1vw + .78rem, 1.45rem); letter-spacing:.012em;
+  }
+  /* gradienten bor i en inre span — boot-kaskadens animation på .cin
+     skriver annars över rot-grad (animation är en shorthand) */
+  .hero-tagline .tg{
     background:linear-gradient(90deg,
       var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
     background-size:340% 100%;
@@ -1022,7 +1026,7 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <h1 class="reveal in cin">Visuella byggnadsförslag</h1>
-          <p class="hero-sub hero-tagline reveal in rd1 cin">Planenliga&ensp;|&ensp;Justerbara&ensp;|&ensp;Fotorealistiska</p>
+          <p class="hero-sub hero-tagline reveal in rd1 cin"><span class="tg">Planenliga&ensp;|&ensp;Justerbara&ensp;|&ensp;Fotorealistiska</span></p>
         </div>
         <div class="hero-media reveal in rd2 cin" id="heroMedia">
           <picture>
