@@ -122,7 +122,7 @@
   .ss-edge{ display:none; }
 
   /* ---------- BRYGGA: fler alternativ (lugn breaker mellan vad och hur) ---------- */
-  .alt-break{ position:relative; height:235vh; }   /* scrollbana: scenen pinnas medan koreografin spelar */
+  .alt-break{ position:relative; height:205vh; }   /* scrollbana: scenen pinnas medan koreografin spelar */
   .alt-stick{
     position:sticky; top:var(--vvt, 0px);
     height:100vh; height:100dvh; height:var(--vvh, 100dvh);
@@ -2022,17 +2022,26 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   }
   /* trösklar i sektionens resa genom viewporten (0 = toppen vid underkanten,
      1 = botten lämnar överkanten) */
-  /* pinnad resa: bilden först, sedan raderna i lästakt, lång vila när allt
-     står klart — och sedan tonar HELA textgruppen bort tillsammans, sakta */
-  const G = [
-    { ws:words[0], tin:.16, span:.11 },   /* Fler alternativ. */
-    { ws:words[1], tin:.36, span:.11 },   /* Bättre beslutsunderlag. */
-    { ws:words[2], tin:.54, span:.15 }    /* brödtexten */
-  ];
+  /* ett scrollsteg in i scenen triggar hela textresan som EN lugn animation
+     (~2s, med pauser mellan raderna); texten står sedan kvar tills gruppen
+     tonar bort scrubbat mot slutet av den pinnade resan */
   const IMG_IN = .02, IMG_OUT = .985;
-  const OUT_START = .87, OUT_SPAN = .11;  /* gruppens gemensamma utdissolve */
+  const REVEAL_AT = .10, RESET_AT = .04;
+  const OUT_START = .85, OUT_SPAN = .12;  /* gruppens gemensamma utdissolve */
   const stick = sec.querySelector('.alt-stick');
   const copy = sec.querySelector('.alt-copy');
+  let played = false, pending = [];
+  function playText(){
+    let t = 120;
+    [[0, 160, 380], [1, 160, 380], [2, 55, 0]].forEach(([gi, pace, pause])=>{
+      words[gi].forEach(w=>{ pending.push(setTimeout(()=> w.classList.add('on'), t)); t += pace; });
+      t += pause;
+    });
+  }
+  function resetText(){
+    pending.forEach(clearTimeout); pending = [];
+    all.forEach(w=> w.classList.remove('on'));
+  }
   let i = 0, timer = null, mediaOn = false, ticking = false;
   function start(){
     if(timer) return;
@@ -2055,12 +2064,8 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
       if(mOn){ sec.classList.add('alt-on'); imgs[i].classList.add('on'); start(); }
       else { imgs.forEach(im=> im.classList.remove('on')); stop(); }
     }
-    G.forEach(g=>{
-      const n = Math.max(1, g.ws.length - 1);
-      g.ws.forEach((w, k)=>{
-        w.classList.toggle('on', p >= g.tin + g.span * (k / n));
-      });
-    });
+    if(!played && p >= REVEAL_AT){ played = true; playText(); }
+    else if(played && p < RESET_AT){ played = false; resetText(); }
     /* hela stycket lämnar som en grupp — mjukt scrubbat mot slutet */
     const out = Math.max(0, Math.min(1, (p - OUT_START) / OUT_SPAN));
     copy.style.opacity = (1 - out).toFixed(3);
