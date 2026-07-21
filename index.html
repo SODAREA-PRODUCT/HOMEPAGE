@@ -154,12 +154,11 @@
      opacity/transform på en förfader isolerar mix-blend och visar vitrutan) —
      all rörelse ligger på bilderna själva, där egen opacity/transform är ofarlig */
   .alt-media{ position:relative; aspect-ratio:1/1; }
-  .alt-copy h2, .alt-copy p{
-    opacity:0; transform:translateY(22px);
-    transition:opacity .8s var(--exp), transform .95s var(--exp);
+  .alt-copy .w{
+    display:inline-block; opacity:0; transform:translateY(10px);
+    transition:opacity .55s var(--ease), transform .55s var(--ease);
   }
-  .alt-on .alt-copy h2{ opacity:1; transform:none; transition-delay:.4s; }
-  .alt-on .alt-copy p{ opacity:1; transform:none; transition-delay:.75s; }
+  .alt-copy .w.on{ opacity:1; transform:none; }
   .alt-on .alt-media img{ animation:alt-float 10s ease-in-out infinite alternate; }
   @keyframes alt-float{ from{ transform:translateY(0); } to{ transform:translateY(-10px); } }
   .alt-media img{
@@ -1009,8 +1008,8 @@
         <img src="media/step-f4.jpg" alt="" loading="lazy">
       </figure>
       <div class="alt-copy">
-        <h2>Fler alternativ.<br><span class="grad-text">Bättre beslutsunderlag.</span></h2>
-        <p>Ta fram planenliga byggnadsförslag på minuter istället för månader.</p>
+        <h2><span class="w" data-g="1">Fler</span> <span class="w" data-g="1">alternativ.</span><br><span class="gphrase"><span class="w" data-g="2">Bättre</span> <span class="w" data-g="2">beslutsunderlag.</span></span></h2>
+        <p><span class="w" data-g="3">Ta</span> <span class="w" data-g="3">fram</span> <span class="w" data-g="3">planenliga</span> <span class="w" data-g="3">byggnadsförslag</span> <span class="w" data-g="3">på</span> <span class="w" data-g="3">minuter</span> <span class="w" data-g="3">istället</span> <span class="w" data-g="3">för</span> <span class="w" data-g="3">månader.</span></p>
       </div>
     </div>
   </section>
@@ -2004,7 +2003,13 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   if(!sec) return;
   const imgs = [...sec.querySelectorAll('.alt-media img')];
   if(imgs.length < 2) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const words = [1,2,3].map(g=> [...sec.querySelectorAll(`.alt-copy .w[data-g="${g}"]`)]);
+  const all = words.flat();
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    imgs[0].classList.add('on');
+    all.forEach(w=> w.classList.add('on'));
+    return;
+  }
   let i = 0, timer = null;
   function start(){
     if(timer) return;
@@ -2026,6 +2031,34 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     });
   }, {threshold:.25});
   io.observe(sec);
+
+  /* texterna skrivs fram i läsrytm: rad 1 -> paus -> rad 2 -> paus -> brödtext.
+     Tidsschemat styr vid långsam läsning; scrollpositionen sätter ett golv så
+     snabb scroll skriver fram texten i motsvarande takt. */
+  const times = [];
+  let t = 300;
+  [[0,180,540],[1,180,540],[2,48,0]].forEach(([gi, pace, pause])=>{
+    words[gi].forEach(()=>{ times.push(t); t += pace; });
+    t += pause;
+  });
+  let startAt = 0, shown = 0, wiv = null;
+  function wupd(){
+    const r = sec.getBoundingClientRect();
+    if(!startAt){
+      if(r.top < innerHeight * .8) startAt = performance.now();
+      else return;
+    }
+    const el = performance.now() - startAt;
+    let nT = 0; while(nT < times.length && times[nT] <= el) nT++;
+    const enter = Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight * .8)));
+    const nS = Math.floor(enter * all.length * 1.3);
+    const n = Math.max(nT, nS);
+    while(shown < n && shown < all.length){ all[shown].classList.add('on'); shown++; }
+    if(shown >= all.length){ clearInterval(wiv); removeEventListener('scroll', wupd); }
+  }
+  wiv = setInterval(wupd, 90);
+  addEventListener('scroll', wupd, {passive:true});
+  wupd();
 })();
 </script>
 <script>
