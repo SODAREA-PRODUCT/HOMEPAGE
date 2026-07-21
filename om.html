@@ -31,9 +31,14 @@
 
   header{
     position:fixed; top:0; left:0; right:0; z-index:100; padding:16px 0;
-    background:rgba(10,13,22,.6); backdrop-filter:saturate(1.4) blur(16px); -webkit-backdrop-filter:saturate(1.4) blur(16px);
+    background:transparent;
+    transition:background .4s var(--ease), box-shadow .4s var(--ease), backdrop-filter .4s var(--ease), transform .5s var(--exp);
+  }
+  header.scrolled{
+    background:rgba(10,13,22,.65); backdrop-filter:saturate(1.4) blur(16px); -webkit-backdrop-filter:saturate(1.4) blur(16px);
     box-shadow:0 1px 0 var(--dline);
   }
+  header.hide{ transform:translateY(-100%); }
   header nav{ display:flex; align-items:center; justify-content:space-between; gap:20px; }
   .logo{ display:inline-flex; align-items:center; gap:11px; }
   .logo img.cube{ height:25px; width:25px; }
@@ -48,7 +53,41 @@
     background:transparent; white-space:nowrap; transition:background .2s, border-color .2s;
   }
   .btn-line:hover{ background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.7); }
-  @media (max-width:860px){ .nav-links a.link{ display:none; } }
+  .menu-btn{
+    display:none; width:42px; height:42px; padding:0; background:none; border:none;
+    cursor:pointer; position:relative; z-index:210; flex:none;
+  }
+  .menu-btn span{
+    display:block; width:22px; height:2px; background:#fff; margin:5px auto;
+    border-radius:2px; transition:transform .35s var(--exp), opacity .25s var(--ease);
+  }
+  .menu-btn.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .menu-btn.open span:nth-child(2){ opacity:0; }
+  .menu-btn.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  #omMenu{
+    position:fixed; inset:0; z-index:200; opacity:0; pointer-events:none; transition:opacity .4s var(--exp);
+  }
+  #omMenu.open{ opacity:1; pointer-events:auto; }
+  #omMenu .mm-back{ position:absolute; inset:0; background:rgba(5,7,14,.5); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+  #omMenu .mm-sheet{
+    position:absolute; top:0; left:0; right:0;
+    background:rgba(12,16,30,.97); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-radius:0 0 26px 26px; box-shadow:0 30px 80px -30px rgba(0,0,0,.6);
+    padding:calc(74px + env(safe-area-inset-top)) max(22px, env(safe-area-inset-left)) 24px max(22px, env(safe-area-inset-right));
+    transform:translateY(-14px); transition:transform .45s var(--exp);
+  }
+  #omMenu.open .mm-sheet{ transform:none; }
+  #omMenu .mm-sheet a{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    font-family:'Readex Pro',sans-serif; font-weight:600; font-size:1.26rem; letter-spacing:-.015em;
+    color:#fff; padding:16px 2px; border-bottom:1px solid var(--dline);
+  }
+  #omMenu .mm-sheet a:last-child{ border-bottom:none; }
+  body.menu-open{ overflow:hidden; }
+  @media (max-width:860px){
+    .nav-links a.link, .nav-links .btn-line{ display:none; }
+    .menu-btn{ display:block; }
+  }
 
   /* 1. HERO — statement, inte företagspresentation */
   .hero{
@@ -132,6 +171,7 @@
   .person .roll{ margin-top:3px; font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:600;
     background:linear-gradient(90deg,var(--teal),var(--azure)); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .person p{ margin-top:9px; font-size:14px; line-height:1.7; color:var(--dbody); max-width:52ch; }
+  .fkontakt{ margin-top:14px; }
   .refs-row{ margin-top:30px; border-top:1px solid var(--dline); padding-top:20px;
     display:flex; flex-wrap:wrap; gap:8px 22px; align-items:baseline; }
   .refs-label{ font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--dmuted); font-weight:600; }
@@ -187,8 +227,21 @@
       <a href="om.html" class="link aktiv">Om SODAREA</a>
       <a class="btn-line" href="./#kontakt">Kontakt</a>
     </div>
+    <button class="menu-btn" id="omMenuBtn" aria-label="Meny" aria-expanded="false" aria-controls="omMenu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 </header>
+<div id="omMenu" aria-hidden="true">
+  <div class="mm-back" data-close></div>
+  <div class="mm-sheet">
+    <a href="./#planforutsattningar">Underlag</a>
+    <a href="./#hur">Så fungerar SODAREA</a>
+    <a href="./#case">Projekt</a>
+    <a href="om.html">Om SODAREA</a>
+    <a href="./#kontakt">Kontakt</a>
+  </div>
+</div>
 <main>
   <!-- 1. Statement: varför SODAREA finns -->
   <section class="hero">
@@ -233,14 +286,16 @@
       <h2 class="rv d1">Utvecklad där besluten <span class="grad">faktiskt fattas</span></h2>
       <p class="rv d2">SODAREA har vuxit fram i pågående projekt med kommuner, exploatörer och konsulter, byggd av ett team med erfarenhet från både AI och stadsutveckling.</p>
       <div class="person rv d2">
-        <h3>Johan Baettig</h3>
-        <div class="roll">Creative Director &amp; Konceptutvecklare</div>
-        <p>Strategi, design och AI. Gör komplexa planfrågor begripliga i koncept, bild och film.</p>
-      </div>
-      <div class="person rv d3">
         <h3>Ben Grubert</h3>
         <div class="roll">Arkitekt &amp; Stadsplanerare</div>
         <p>Arkitekt SAR/MSA. Djup kunskap i genomförbarhet, PBL och BBR. Certifierad sakkunnig inom tillgänglighet.</p>
+        <a class="btn-line fkontakt" href="mailto:info@sodarea.se?subject=Till%20Ben%20Grubert">Kontakta Ben</a>
+      </div>
+      <div class="person rv d3">
+        <h3>Johan Baettig</h3>
+        <div class="roll">Creative Director &amp; Konceptutvecklare</div>
+        <p>Strategi, design och AI. Gör komplexa planfrågor begripliga i koncept, bild och film.</p>
+        <a class="btn-line fkontakt" href="mailto:info@sodarea.se?subject=Till%20Johan%20Baettig">Kontakta Johan</a>
       </div>
       <div class="refs-row rv d3">
         <span class="refs-label">Projekt &amp; föreläsningar</span>
@@ -278,6 +333,34 @@
   </div>
 </footer>
 <script>
+  /* header som startsidan: transparent i toppen, göms nedåt, bricka uppåt */
+  (function(){
+    const h = document.querySelector('header');
+    let last = scrollY;
+    addEventListener('scroll', ()=>{
+      const y = scrollY;
+      h.classList.toggle('scrolled', y > 24);
+      if(y > last && y > 140) h.classList.add('hide'); else h.classList.remove('hide');
+      last = y;
+    }, {passive:true});
+  })();
+  /* mobilmeny */
+  (function(){
+    const btn = document.getElementById('omMenuBtn');
+    const menu = document.getElementById('omMenu');
+    if(!btn || !menu) return;
+    function toggle(open){
+      const o = open === undefined ? !menu.classList.contains('open') : open;
+      menu.classList.toggle('open', o);
+      btn.classList.toggle('open', o);
+      document.body.classList.toggle('menu-open', o);
+      btn.setAttribute('aria-expanded', String(o));
+      menu.setAttribute('aria-hidden', String(!o));
+    }
+    btn.addEventListener('click', ()=> toggle());
+    menu.querySelectorAll('a, [data-close]').forEach(el=> el.addEventListener('click', ()=> toggle(false)));
+    addEventListener('keydown', e=>{ if(e.key === 'Escape') toggle(false); });
+  })();
   const io = new IntersectionObserver(es=>{
     es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
   }, {threshold:.15, rootMargin:'0px 0px -6% 0px'});

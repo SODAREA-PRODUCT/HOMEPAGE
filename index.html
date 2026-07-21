@@ -545,7 +545,7 @@
        kort tippar bakåt (halv backflip) och parkerar liggande högst upp. */
     .story{ height:440vh; }
     #hur.band{ padding-bottom:0; }
-    .story{ margin-bottom:-26vh; }   /* nästa sektion glider upp lagom sent, utan att täcka sista kortet */
+    .story{ margin-bottom:-18vh; }   /* nästa sektion glider upp lagom sent, utan att täcka sista kortet */
     body.scene-lock header{ transform:translateY(-100%) !important; }  /* headern vilar under installationen */
     #case{ position:relative; z-index:2; }
     .story-stick{
@@ -634,6 +634,7 @@
   #case .eyebrow{ color:rgba(255,255,255,.55); }
   #case .film-caption{ color:rgba(255,255,255,.48); }
   .case-om{
+    grid-column:1; grid-row:2; justify-self:start; align-self:start;
     margin-top:24px; display:inline-flex; align-items:center; gap:8px;
     background:transparent; color:rgba(255,255,255,.85);
     border-color:rgba(255,255,255,.28);
@@ -650,6 +651,7 @@
     .case-copy{ order:1; }
     #case .doc-film{ order:2; }
     #case .film-caption{ order:3; margin-top:0; }
+    .case-om{ order:4; align-self:flex-start; margin-top:6px; }
   }
 
   .doc-film{
@@ -737,6 +739,12 @@
     animation:rot-grad 7s ease-in-out infinite; background-size:220% 100%;
   }
   @media (max-width:860px){
+    /* iOS klipper inte förälderns gradient genom animerade barn — ge orden egen gradient */
+    .gphrase{ background:none; animation:none; color:inherit; }
+    .gphrase .w{
+      background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 55%, var(--violet) 100%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
     .vision-grid{ display:block; }
     .v-rule{ width:64px; height:1px; min-height:0; margin:26px 0;
       background:linear-gradient(90deg, rgba(20,22,27,.22), transparent); }
@@ -762,7 +770,7 @@
   .f-logo{ display:inline-flex; align-items:center; gap:11px; }
   .f-cube{ height:30px; width:30px; }
   .f-word{ height:17px; filter:invert(1); opacity:.95; }
-  .f-tag{ margin:12px 0 0 41px; font-family:'Readex Pro',sans-serif; font-weight:500; font-size:15px; letter-spacing:.04em; color:rgba(255,255,255,.5); line-height:1.5; }
+  .f-tag{ margin:12px 0 0; font-family:'Readex Pro',sans-serif; font-weight:500; font-size:15px; letter-spacing:.04em; color:rgba(255,255,255,.5); line-height:1.5; }
   .f-cols{ display:flex; gap:clamp(44px,7vw,96px); flex-wrap:wrap; }
   .f-col h4{ font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.38); font-weight:600; margin-bottom:14px; }
   .f-col a{ display:inline-flex; align-items:center; gap:9px; font-size:14.5px; color:rgba(255,255,255,.7); transition:color .25s; }
@@ -1032,9 +1040,6 @@
       <div class="shead reveal">
         <h2>Utvecklat i <span class="gwx">verkliga projekt</span></h2>
         <p>SODAREA har utvecklats tillsammans med kommuner, exploatörer och konsulter i verkliga stadsutvecklingsprojekt. Resultatet är ett arbetsflöde som gör det enklare att analysera, utforska och kommunicera byggbara alternativ.</p>
-        <a class="btn-line case-om reveal rd2" href="om.html">Om SODAREA
-          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
       </div>
       </div>
       <figure class="doc-film reveal rd1" id="docFilm">
@@ -1043,6 +1048,9 @@
         <span class="film-project" id="filmProject">Nacka kommun</span>
       </figure>
       <div class="film-caption reveal rd2">Projekt: Nacka kommun — Järlahöjden / Tunnelbaneuppgångar&ensp;|&ensp;Strängnäs kommun — Brobyholm / Stallarholmen&ensp;m.fl.</div>
+      <a class="btn-line case-om reveal rd2" href="om.html">Om SODAREA
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
       </div>
     </div>
   </section>
@@ -1101,8 +1109,8 @@
     <div class="f-bot">
       <span>© 2026 SODAREA</span>
       <nav class="f-legal" aria-label="Juridik">
-        <a href="integritetspolicy.html">Integritetspolicy</a>
-        <a href="villkor.html">Villkor</a>
+        <a href="integritetspolicy.html" target="_blank" rel="noopener">Integritetspolicy</a>
+        <a href="villkor.html" target="_blank" rel="noopener">Villkor</a>
       </nav>
     </div>
   </div>
@@ -1122,7 +1130,7 @@
           <label class="pm-field"><span>Organisation</span><input name="org" type="text" required autocomplete="organization" placeholder="Kommun eller bolag"></label>
           <label class="pm-field"><span>Roll</span>
             <select name="roll">
-              <option>Kommun</option><option>Projektutvecklare</option><option>Fastighetsförvaltare</option><option>Arkitekt</option><option>Annan</option>
+              <option>Mark- och exploateringschef</option><option>Planchef</option><option>Projektutvecklare</option><option>Fastighetsförvaltare</option><option>Arkitekt</option><option>Annan</option>
             </select>
           </label>
         </div>
@@ -1458,7 +1466,7 @@ buildStep1(); buildStep2(); buildStep3();
      AKT 2  0.28-0.50  texten dansar ut, scenen byggs (0.46-0.50 = scenen står klar)
      AKT 3  0.50-0.70  Analys tar fokus (0.58-0.70 = stilla läspaus + ring)
      AKT 4  0.70-1.00  resa → Forma-paus → resa → Visualisera-paus */
-  const B = { scene:0.28, sceneEnd:0.46, focusStart:0.50, focusIn:0.58, h0:0.70, t1:0.78, h1:0.86, t2:0.93 };
+  const B = { scene:0.28, sceneEnd:0.46, focusStart:0.50, focusIn:0.58, h0:0.68, t1:0.75, h1:0.82, t2:0.88 };
 
   function phases(p){
     const E = ramp(p, B.scene, B.sceneEnd);
@@ -1475,7 +1483,7 @@ buildStep1(); buildStep2(); buildStep3();
 
   /* mobil: tre fysiska kort på ett bord. Kö nedanför (liggande), aktivt kort
      frontalt, färdiga kort gör en halv backflip och parkerar liggande överst. */
-  const M = { LIE:82, PARK:82, ZPARK:-140, seg:[[0.05,0.26],[0.36,0.57],[0.66,0.86]], TIP3:[0.92,1] };
+  const M = { LIE:82, PARK:82, ZPARK:-140, seg:[[0.04,0.22],[0.30,0.48],[0.56,0.72]], TIP3:[0.88,1] };
   function applyMobile(p){
     if(!story.classList.contains('m3d')){
       story.classList.add('m3d');
@@ -1552,7 +1560,7 @@ buildStep1(); buildStep2(); buildStep3();
 
     /* hela scenen löses upp när man lämnar installationen */
     const sr = story.getBoundingClientRect();
-    const exit = clamp01((innerHeight - sr.bottom) / (innerHeight * 0.45));
+    const exit = clamp01((innerHeight - sr.bottom) / (innerHeight * 0.62));
     stick.style.opacity = (1 - exit).toFixed(3);
     stick.style.transform = exit > 0 ? `scale(${(1 - exit * .04).toFixed(4)})` : '';
 
@@ -1641,7 +1649,7 @@ buildStep1(); buildStep2(); buildStep3();
     /* exit-dissolve: när sektionen lämnas tonar hela scenen bort istället
        för att åka upp skarp — och tonar in igen vid scroll tillbaka */
     const sr = story.getBoundingClientRect();
-    const exit = clamp01((innerHeight - sr.bottom) / (innerHeight * 0.45));
+    const exit = clamp01((innerHeight - sr.bottom) / (innerHeight * 0.62));
     stick.style.opacity = (1 - exit).toFixed(3);
     const fm = mobile ? p * 2 : f;                              /* mobilen behåller sin resa */
     const stageW = stage.clientWidth;
