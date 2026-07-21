@@ -306,9 +306,11 @@
     .hero-tagline{
       font-family:'Readex Pro',sans-serif; font-weight:600;
       font-size:clamp(1.02rem, 1vw + .78rem, 1.45rem); letter-spacing:.012em;
-      background:linear-gradient(90deg, var(--teal), var(--azure), var(--violet));
-      background-size:220% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
-      animation:rot-grad 7s ease-in-out infinite;
+      /* cykliskt fullspektrum: gruppen vandrar teal -> azure -> violett och tillbaka */
+      background:linear-gradient(90deg,
+        var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
+      background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+      animation:rot-grad 6s ease-in-out infinite;
     }
     .hero-media{
       position:absolute; top:clamp(88px, 11vh, 118px); bottom:36px;
