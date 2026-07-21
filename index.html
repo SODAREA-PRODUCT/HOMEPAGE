@@ -62,7 +62,12 @@
     padding-right:max(var(--gutter), env(safe-area-inset-right));
   }
   section{ position:relative; }
-  .grad-text{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  /* kanonisk SODAREA-gradienttext: fullt spektrum i loopform, flytande skifte */
+  .grad-text{
+    background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
+    background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:rot-grad 7s ease-in-out infinite;
+  }
 
   /* ---------- shared bits ---------- */
   .eyebrow{
@@ -329,7 +334,7 @@
       background:linear-gradient(90deg,
         var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
       background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
-      animation:rot-grad 6s ease-in-out infinite;
+      animation:rot-grad 7s ease-in-out infinite;
     }
     .hero-media{
       position:absolute; top:clamp(88px, 11vh, 118px); bottom:36px;
@@ -413,8 +418,8 @@
   .data h2 .gw{
     font-style:normal;
     /* 25% uppljusade brandfärger — läsbarhet mot mörk fotobakgrund */
-    background:linear-gradient(90deg, #58dec7 0%, #6e9eff 35%, #ad83ff 65%, #6e9eff 85%, #58dec7 100%);
-    background-size:220% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    background:linear-gradient(90deg, #58dec7 0%, #6e9eff 25%, #ad83ff 50%, #6e9eff 75%, #58dec7 100%);
+    background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
     animation:rot-grad 7s ease-in-out infinite;
   }
   .data h2 .l1, .data h2 .l2{
@@ -691,8 +696,8 @@
       linear-gradient(180deg, #0a0e1b 0%, #0f1428 52%, #090c16 100%);
   }
   #case h2 .gwx{
-    background:linear-gradient(90deg, #58dec7 0%, #6e9eff 35%, #ad83ff 65%, #6e9eff 85%, #58dec7 100%);
-    background-size:220% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    background:linear-gradient(90deg, #58dec7 0%, #6e9eff 25%, #ad83ff 50%, #6e9eff 75%, #58dec7 100%);
+    background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
     animation:rot-grad 7s ease-in-out infinite;
   }
   .case-grid{ display:grid; grid-template-columns:minmax(300px, 420px) 1fr; column-gap:clamp(32px,4vw,72px); row-gap:0; align-items:center; }
@@ -804,16 +809,17 @@
   }
   .vision .w.on{ opacity:1; transform:none; }
   .gphrase{
-    background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 45%, var(--violet) 90%);
+    background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
     -webkit-background-clip:text; background-clip:text; color:transparent;
-    animation:rot-grad 7s ease-in-out infinite; background-size:220% 100%;
+    animation:rot-grad 7s ease-in-out infinite; background-size:340% 100%;
   }
   @media (max-width:860px){
     /* iOS klipper inte förälderns gradient genom animerade barn — ge orden egen gradient */
     .gphrase{ background:none; animation:none; color:inherit; }
     .gphrase .w{
-      background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 55%, var(--violet) 100%);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
+      background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
+      background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+      animation:rot-grad 7s ease-in-out infinite;
     }
     .vision-grid{ display:block; }
     .v-rule{ width:64px; height:1px; min-height:0; margin:26px 0;
@@ -1057,8 +1063,8 @@
     <div class="wrap">
       <div class="how-head">
         <div class="reveal">
-          <div class="eyebrow"><span class="dot"></span> Så fungerar SODAREA <span class="ebar" aria-hidden="true"></span> 3 steg</div>
-          <h2>Från planunderlag<br><span class="grad-text">till byggbara beslut</span></h2>
+          <div class="eyebrow"><span class="dot"></span> 3 steg</div>
+          <h2><span class="grad-text">Så fungerar SODAREA</span></h2>
         </div>
       </div>
 
@@ -1066,8 +1072,8 @@
       <div class="story" id="howStory">
         <div class="story-stick">
           <div class="story-head centered">
-            <div class="eyebrow plain">Så fungerar SODAREA <span class="ebar" aria-hidden="true"></span> 3 steg</div>
-            <h2><span class="hl">Från planunderlag</span><span class="hl grad-text">till byggbara beslut</span></h2>
+            <div class="eyebrow plain">3 steg</div>
+            <h2><span class="hl grad-text">Så fungerar SODAREA</span></h2>
           </div>
           <div class="story-stage" id="storyStage">
             <div class="story-glow" id="storyGlow" aria-hidden="true"></div>
