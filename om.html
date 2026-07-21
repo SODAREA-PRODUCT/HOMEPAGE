@@ -117,16 +117,25 @@
     text-shadow:0 1px 18px rgba(9,12,22,.5); }
   .hero-bild{ display:none; }
   @media (max-width:860px){
-    .hero{
-      background:linear-gradient(180deg, #0a0e1b 0%, #0f1428 65%, #0a0e1b 100%);
-    }
-    .hero .wrap{ min-height:0; padding-top:96px; padding-bottom:6px; }
-    .hero h1{ text-shadow:none; }
-    /* herobilden i 4:3, nästan kant till kant */
+    .hero{ position:relative; background:#0a0e1b; }
+    /* bilden i 4:3, nästan kant till kant, direkt under headern */
     .hero-bild{
-      display:block; margin:22px 10px 30px; aspect-ratio:4/3;
+      display:block; position:relative;
+      margin:calc(66px + env(safe-area-inset-top)) 10px 0; aspect-ratio:4/3;
       background:url('media/om-hero.jpg') center 40% / cover no-repeat;
     }
+    .hero-bild::after{
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(90deg, rgba(9,12,22,.55) 0%, rgba(9,12,22,.22) 55%, rgba(9,12,22,.08) 100%);
+    }
+    /* rubriken PÅ bilden: vänsterställd, vertikalt centrerad */
+    .hero .wrap{
+      position:absolute; z-index:2;
+      top:calc(66px + env(safe-area-inset-top)); left:10px; right:10px; bottom:0;
+      min-height:0; padding:0 0 0 18px;
+      display:flex; align-items:center;
+    }
+    .hero h1{ margin:0; }
   }
 
   /* sektionsbas */
