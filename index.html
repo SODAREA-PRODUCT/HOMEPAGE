@@ -122,8 +122,15 @@
   .ss-edge{ display:none; }
 
   /* ---------- BRYGGA: fler alternativ (lugn breaker mellan vad och hur) ---------- */
-  .alt-break{ position:relative; overflow:hidden; background:#f4f6f9; border-top:1px solid var(--line); isolation:isolate; }
-  .alt-break::before{
+  .alt-break{ position:relative; height:235vh; }   /* scrollbana: scenen pinnas medan koreografin spelar */
+  .alt-stick{
+    position:sticky; top:var(--vvt, 0px);
+    height:100vh; height:100dvh; height:var(--vvh, 100dvh);
+    overflow:hidden; isolation:isolate;
+    background:#f4f6f9; border-top:1px solid var(--line);
+    display:flex; align-items:center;
+  }
+  .alt-stick::before{
     /* gradient som flyter omkring */
     content:''; position:absolute; inset:-22%; z-index:-1; pointer-events:none;
     background:
@@ -133,7 +140,7 @@
     filter:blur(70px);
     animation:alt-drift 24s ease-in-out infinite alternate;
   }
-  .alt-break::after{
+  .alt-stick::after{
     /* ljus vit spot som driver över gradienten under bilden — håller den ren */
     content:''; position:absolute; z-index:-1; pointer-events:none;
     left:-14%; top:-12%; width:72%; height:124%;
@@ -144,10 +151,10 @@
   @keyframes alt-drift{ to{ transform:translate(4%, -3%) rotate(3deg) scale(1.07); } }
   @keyframes alt-spot{ to{ transform:translate(7%, 6%) scale(1.1); } }
   .alt-grid{
-    /* ingen egen stacking context — multiply ska blanda mot sektionens gradientlager */
+    /* ingen egen stacking context — multiply ska blanda mot stickens gradientlager */
+    width:100%;
     display:grid; grid-template-columns:minmax(400px, 850px) 1fr;
     gap:clamp(28px, 4vw, 72px); align-items:center;
-    padding-top:clamp(34px, 4vw, 60px); padding-bottom:clamp(34px, 4vw, 60px);
   }
   .alt-copy{ justify-self:start; margin-left:clamp(0px, 2.5vw, 44px); }
   /* intåg i tre takter. OBS: figuren får inte animeras (varje animerad
@@ -1000,6 +1007,7 @@
   <!-- ============ PLANFÖRUTSÄTTNINGAR (data tags) ============ -->
   <!-- ============ BRYGGA: fler alternativ ============ -->
   <section class="alt-break" id="alternativ">
+    <div class="alt-stick">
     <div class="wrap alt-grid">
       <figure class="alt-media" id="altMedia" aria-hidden="true">
         <img src="media/step-f1.jpg" alt="" loading="lazy">
@@ -1011,6 +1019,7 @@
         <h2><span class="w" data-g="1">Fler</span> <span class="w" data-g="1">alternativ.</span><br><span class="gphrase"><span class="w" data-g="2">Bättre</span> <span class="w" data-g="2">beslutsunderlag.</span></span></h2>
         <p><span class="w" data-g="3">Ta</span> <span class="w" data-g="3">fram</span> <span class="w" data-g="3">planenliga</span> <span class="w" data-g="3">byggnadsförslag</span> <span class="w" data-g="3">på</span> <span class="w" data-g="3">minuter</span> <span class="w" data-g="3">istället</span> <span class="w" data-g="3">för</span> <span class="w" data-g="3">månader.</span></p>
       </div>
+    </div>
     </div>
   </section>
 
@@ -2013,12 +2022,15 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   }
   /* trösklar i sektionens resa genom viewporten (0 = toppen vid underkanten,
      1 = botten lämnar överkanten) */
+  /* pinnad resa: bilden först, sedan raderna i lästakt, lång vila när allt
+     står klart (p ~.70-.86), sedan upplösning i samma ordning */
   const G = [
-    { ws:words[0], tin:.34, span:.09, tout:.80, ospan:.05 },   /* Fler alternativ. */
-    { ws:words[1], tin:.47, span:.09, tout:.85, ospan:.05 },   /* Bättre beslutsunderlag. */
-    { ws:words[2], tin:.58, span:.13, tout:.90, ospan:.06 }    /* brödtexten */
+    { ws:words[0], tin:.16, span:.11, tout:.86, ospan:.045 },  /* Fler alternativ. */
+    { ws:words[1], tin:.36, span:.11, tout:.90, ospan:.045 },  /* Bättre beslutsunderlag. */
+    { ws:words[2], tin:.54, span:.15, tout:.935, ospan:.05 }   /* brödtexten */
   ];
-  const IMG_IN = .06, IMG_OUT = .96;
+  const IMG_IN = .02, IMG_OUT = .985;
+  const stick = sec.querySelector('.alt-stick');
   let i = 0, timer = null, mediaOn = false, ticking = false;
   function start(){
     if(timer) return;
@@ -2033,7 +2045,8 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     ticking = false;
     const r = sec.getBoundingClientRect();
     if(r.bottom < -140 || r.top > innerHeight + 140) return;
-    const p = (innerHeight - r.top) / (r.height + innerHeight);
+    const total = r.height - stick.offsetHeight;
+    const p = Math.max(0, Math.min(1, -r.top / Math.max(1, total)));
     const mOn = p > IMG_IN && p < IMG_OUT;
     if(mOn !== mediaOn){
       mediaOn = mOn;
