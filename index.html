@@ -122,10 +122,10 @@
   .ss-edge{ display:none; }
 
   /* ---------- BRYGGA: fler alternativ (lugn breaker mellan vad och hur) ---------- */
-  .alt-break{ position:relative; overflow:hidden; background:#f4f6f9; border-top:1px solid var(--line); }
+  .alt-break{ position:relative; overflow:hidden; background:#f4f6f9; border-top:1px solid var(--line); isolation:isolate; }
   .alt-break::before{
     /* gradient som flyter omkring */
-    content:''; position:absolute; inset:-22%; z-index:0; pointer-events:none;
+    content:''; position:absolute; inset:-22%; z-index:-1; pointer-events:none;
     background:
       radial-gradient(38% 34% at 12% 28%, rgba(61,126,255,.16), transparent 70%),
       radial-gradient(36% 32% at 88% 18%, rgba(32,211,180,.14), transparent 70%),
@@ -135,7 +135,7 @@
   }
   .alt-break::after{
     /* ljus vit spot som driver över gradienten under bilden — håller den ren */
-    content:''; position:absolute; z-index:0; pointer-events:none;
+    content:''; position:absolute; z-index:-1; pointer-events:none;
     left:-14%; top:-12%; width:72%; height:124%;
     background:radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,.92), rgba(255,255,255,0) 70%);
     filter:blur(56px);
@@ -144,10 +144,10 @@
   @keyframes alt-drift{ to{ transform:translate(4%, -3%) rotate(3deg) scale(1.07); } }
   @keyframes alt-spot{ to{ transform:translate(7%, 6%) scale(1.1); } }
   .alt-grid{
-    position:relative; z-index:1;
-    display:grid; grid-template-columns:minmax(340px, 620px) 1fr;
-    gap:clamp(36px, 5vw, 90px); align-items:center;
-    padding-top:clamp(64px, 8vw, 120px); padding-bottom:clamp(64px, 8vw, 120px);
+    /* ingen egen stacking context — multiply ska blanda mot sektionens gradientlager */
+    display:grid; grid-template-columns:minmax(360px, 720px) 1fr;
+    gap:clamp(32px, 4.5vw, 80px); align-items:center;
+    padding-top:clamp(56px, 7vw, 104px); padding-bottom:clamp(56px, 7vw, 104px);
   }
   .alt-media{ position:relative; aspect-ratio:1/1; }
   .alt-media img{
@@ -160,7 +160,7 @@
   .alt-copy p{ margin-top:18px; font-size:clamp(1rem, .5vw + .85rem, 1.18rem); line-height:1.7; color:var(--body); max-width:38ch; }
   @media (max-width:939px){
     .alt-grid{ grid-template-columns:1fr; gap:18px; }
-    .alt-media{ max-width:480px; margin:0 auto; width:100%; }
+    .alt-media{ max-width:520px; margin:0 auto; width:100%; }
   }
 
   /* ---------- reveal / motion (Eir-style: ease in on enter, ease out on leave) ---------- */
