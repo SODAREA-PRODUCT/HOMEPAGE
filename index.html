@@ -72,15 +72,15 @@
   .hero-tagline .tg{
     background:linear-gradient(90deg,
       var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
-    background-size:340% 100%;
+    background-size:750% 100%;
     -webkit-background-clip:text; background-clip:text;
     color:transparent; -webkit-text-fill-color:transparent;
-    animation:rot-grad 7s ease-in-out infinite;
+    animation:rot-grad 9s ease-in-out infinite;
   }
   .grad-text{
     background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
-    background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
-    animation:rot-grad 7s ease-in-out infinite;
+    background-size:750% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:rot-grad 9s ease-in-out infinite;
   }
 
   /* ---------- shared bits ---------- */
@@ -426,8 +426,8 @@
     font-style:normal;
     /* 25% uppljusade brandfärger — läsbarhet mot mörk fotobakgrund */
     background:linear-gradient(90deg, #58dec7 0%, #6e9eff 25%, #ad83ff 50%, #6e9eff 75%, #58dec7 100%);
-    background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
-    animation:rot-grad 7s ease-in-out infinite;
+    background-size:750% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:rot-grad 9s ease-in-out infinite;
   }
   .data h2 .l1, .data h2 .l2{
     display:inline-block; opacity:0; transform:translateY(18px); filter:blur(6px);
@@ -704,8 +704,8 @@
   }
   #case h2 .gwx{
     background:linear-gradient(90deg, #58dec7 0%, #6e9eff 25%, #ad83ff 50%, #6e9eff 75%, #58dec7 100%);
-    background-size:340% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
-    animation:rot-grad 7s ease-in-out infinite;
+    background-size:750% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:rot-grad 9s ease-in-out infinite;
   }
   .case-grid{ display:grid; grid-template-columns:minmax(300px, 420px) 1fr; column-gap:clamp(32px,4vw,72px); row-gap:0; align-items:center; }
   .case-copy .shead{ margin-bottom:0; }
@@ -2139,6 +2139,10 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     if(lastFocus && lastFocus.focus) lastFocus.focus();
   }
   document.querySelectorAll('[data-pilot]').forEach(el=>el.addEventListener('click',e=>{ e.preventDefault(); open(); }));
+  if(location.hash === '#ansok'){
+    const k = document.getElementById('kontakt');
+    setTimeout(()=>{ if(k) k.scrollIntoView(); open(); }, 350);
+  }
   modal.querySelectorAll('[data-pm-close]').forEach(el=>el.addEventListener('click',close));
   addEventListener('keydown',e=>{ if(e.key==='Escape' && !modal.hidden) close(); });
   form.addEventListener('submit',e=>{
