@@ -156,7 +156,7 @@
   .alt-media{ position:relative; aspect-ratio:1/1; }
   .alt-copy .w{
     display:inline-block; opacity:0; transform:translateY(10px);
-    transition:opacity .55s var(--ease), transform .55s var(--ease);
+    transition:opacity .7s var(--ease), transform .7s var(--ease);
   }
   .alt-copy .w.on{ opacity:1; transform:none; }
   .alt-on .alt-media img{ animation:alt-float 10s ease-in-out infinite alternate; }
@@ -1997,7 +1997,8 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
 })();
 </script>
 <script>
-/* bryggan: Forma-sekvensen byter bild varannan sekund — bara när den syns */
+/* bryggan: allt är scroll-scrubbat och dubbelriktat — bakgrundsbilden först,
+   sedan textraderna en i taget; på väg ut löses innehållet upp i samma ordning */
 (function(){
   const sec = document.getElementById('alternativ');
   if(!sec) return;
@@ -2010,7 +2011,15 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     all.forEach(w=> w.classList.add('on'));
     return;
   }
-  let i = 0, timer = null;
+  /* trösklar i sektionens resa genom viewporten (0 = toppen vid underkanten,
+     1 = botten lämnar överkanten) */
+  const G = [
+    { ws:words[0], tin:.34, span:.09, tout:.80, ospan:.05 },   /* Fler alternativ. */
+    { ws:words[1], tin:.47, span:.09, tout:.85, ospan:.05 },   /* Bättre beslutsunderlag. */
+    { ws:words[2], tin:.58, span:.13, tout:.90, ospan:.06 }    /* brödtexten */
+  ];
+  const IMG_IN = .06, IMG_OUT = .96;
+  let i = 0, timer = null, mediaOn = false, ticking = false;
   function start(){
     if(timer) return;
     timer = setInterval(()=>{
@@ -2020,45 +2029,30 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     }, 2000);
   }
   function stop(){ clearInterval(timer); timer = null; }
-  let tand = false;
-  const io = new IntersectionObserver(es=>{
-    es.forEach(e=>{
-      if(e.isIntersecting){
-        sec.classList.add('alt-on');
-        if(!tand){ tand = true; setTimeout(()=> imgs[0].classList.add('on'), 180); }
-        start();
-      } else stop();
-    });
-  }, {threshold:.25});
-  io.observe(sec);
-
-  /* texterna skrivs fram i läsrytm: rad 1 -> paus -> rad 2 -> paus -> brödtext.
-     Tidsschemat styr vid långsam läsning; scrollpositionen sätter ett golv så
-     snabb scroll skriver fram texten i motsvarande takt. */
-  const times = [];
-  let t = 300;
-  [[0,180,540],[1,180,540],[2,48,0]].forEach(([gi, pace, pause])=>{
-    words[gi].forEach(()=>{ times.push(t); t += pace; });
-    t += pause;
-  });
-  let startAt = 0, shown = 0, wiv = null;
-  function wupd(){
+  function scrub(){
+    ticking = false;
     const r = sec.getBoundingClientRect();
-    if(!startAt){
-      if(r.top < innerHeight * .8) startAt = performance.now();
-      else return;
+    if(r.bottom < -140 || r.top > innerHeight + 140) return;
+    const p = (innerHeight - r.top) / (r.height + innerHeight);
+    const mOn = p > IMG_IN && p < IMG_OUT;
+    if(mOn !== mediaOn){
+      mediaOn = mOn;
+      if(mOn){ sec.classList.add('alt-on'); imgs[i].classList.add('on'); start(); }
+      else { imgs.forEach(im=> im.classList.remove('on')); stop(); }
     }
-    const el = performance.now() - startAt;
-    let nT = 0; while(nT < times.length && times[nT] <= el) nT++;
-    const enter = Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight * .8)));
-    const nS = Math.floor(enter * all.length * 1.3);
-    const n = Math.max(nT, nS);
-    while(shown < n && shown < all.length){ all[shown].classList.add('on'); shown++; }
-    if(shown >= all.length){ clearInterval(wiv); removeEventListener('scroll', wupd); }
+    G.forEach(g=>{
+      const n = Math.max(1, g.ws.length - 1);
+      g.ws.forEach((w, k)=>{
+        const tin  = g.tin  + g.span  * (k / n);
+        const tout = g.tout + g.ospan * (k / n);
+        w.classList.toggle('on', p >= tin && p < tout);
+      });
+    });
   }
-  wiv = setInterval(wupd, 90);
-  addEventListener('scroll', wupd, {passive:true});
-  wupd();
+  const onS = ()=>{ if(!ticking){ requestAnimationFrame(scrub); ticking = true; } };
+  addEventListener('scroll', onS, {passive:true});
+  addEventListener('resize', onS, {passive:true});
+  scrub();
 })();
 </script>
 <script>
