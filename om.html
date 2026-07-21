@@ -150,9 +150,10 @@
   .diff{ background:var(--paper); border-top:1px solid var(--line); }
   .diff-grid{
     margin-top:clamp(30px,4vw,48px);
-    display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line);
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line);
     border:1px solid var(--line);
   }
+  @media (max-width:939px){ .diff-grid{ grid-template-columns:1fr; } }
   .cell{ background:#fff; padding:clamp(24px,3vw,38px); }
   .cell h3{ font-size:1.1rem; }
   .cell h3::before{ content:''; display:block; width:36px; height:3px; margin-bottom:16px;
@@ -252,32 +253,39 @@
   <section class="hero">
     <div class="wrap">
       <div class="eyebrow rv in">Om SODAREA</div>
-      <h1 class="rv in d1">De tidiga skedena avgör <span class="grad">vad som blir byggt</span></h1>
-      <p class="rv in d2">Ändå fattas de största besluten ofta på det minsta underlaget. SODAREA analyserar planförutsättningarna och genererar förslag inom platsens ramar. Det som ser byggbart ut är det också.</p>
+      <h1 class="rv in d1">Alla borde kunna se <span class="grad">samma framtid</span></h1>
+      <p class="rv in d2">SODAREA började med en frustration: gång på gång fattades viktiga beslut innan människor kunde se vad som faktiskt skulle byggas. Problemet var inte brist på information. Problemet var att ingen såg samma sak.</p>
     </div>
   </section>
 
-  <!-- 4. Differentiering -->
+  <!-- 2. Varför SODAREA finns: samsyn -->
+  <section class="sec why">
+    <div class="wrap">
+      <div class="eyebrow rv">Varför SODAREA finns</div>
+      <h2 class="rv d1">Kunskapen finns. <span class="grad">Samsynen saknas.</span></h2>
+      <p class="rv d2">Planunderlagen rymmer enorm kunskap om vad en plats klarar och tål. Men kunskapen är svår att läsa, svår att dela och svår att samlas kring. Den som inte kan tyda en plankarta står utanför samtalet.</p>
+      <p class="rv d2">Det är svårt för en politiker att besluta om något den inte kan se. Detsamma gäller boende, tjänstepersoner, exploatörer och arkitekter. När människor kan se samma alternativ blir det lättare att diskutera samma framtid.</p>
+      <p class="rv d3">Därför bygger vi SODAREA: för att göra fler människor delaktiga i samma beslut.</p>
+    </div>
+  </section>
+
+  <!-- 3. Vad som gör SODAREA annorlunda -->
   <section class="sec diff">
     <div class="wrap">
       <div class="eyebrow rv">Skillnaden</div>
       <h2 class="rv d1">Vad som gör SODAREA <span class="grad">annorlunda</span></h2>
       <div class="diff-grid rv d2">
         <div class="cell">
-          <h3>Byggd för besluten före projektering</h3>
-          <p>För skedet där frågan är vad, inte hur.</p>
+          <h3>Juridiskt hållbart</h3>
+          <p>Varje förslag utgår från platsens verkliga planförutsättningar. Det ger beslutsunderlag som är tydliga, svåra att misstolka och robusta i dialog och prövning.</p>
         </div>
         <div class="cell">
-          <h3>Förslag som utgår från platsens verkliga förutsättningar</h3>
-          <p>Ingenting föreslås som inte får plats.</p>
+          <h3>Hela planeringsresan</h3>
+          <p>SODAREA följer projektet: när möjligheter utforskas, genom planprocessen och efter att detaljplanen vunnit laga kraft.</p>
         </div>
         <div class="cell">
-          <h3>Fler alternativ, tidigare</h3>
-          <p>Utforska AI-genererade alternativ eller forma egna. En idé till kostar minuter, inte möten.</p>
-        </div>
-        <div class="cell">
-          <h3>Bilder som håller för beslut</h3>
-          <p>Realistiska bilder och filmer. Alla runt bordet ser samma sak.</p>
+          <h3>Samsyn</h3>
+          <p>Politiker, boende, exploatörer, arkitekter och kommun kan förstå samma plats. När fler ser samma sak blir det enklare att fatta beslut.</p>
         </div>
       </div>
     </div>
@@ -287,19 +295,19 @@
   <section class="team">
     <div class="team-img" role="img" aria-label="Johan Baettig och Ben Grubert, grundare av SODAREA"></div>
     <div class="team-text">
-      <div class="eyebrow rv">Teamet bakom produkten</div>
-      <h2 class="rv d1">Utvecklad där besluten <span class="grad">faktiskt fattas</span></h2>
-      <p class="rv d2">SODAREA har vuxit fram i pågående projekt med kommuner, exploatörer och konsulter, byggd av ett team med erfarenhet från både AI och stadsutveckling.</p>
+      <div class="eyebrow rv">Grundarna</div>
+      <h2 class="rv d1">Grundarna bakom <span class="grad">SODAREA</span></h2>
+      <p class="rv d2">SODAREA har vuxit fram i pågående stadsutvecklingsprojekt, tillsammans med kommuner, exploatörer och konsulter.</p>
       <div class="person rv d2">
         <h3>Ben Grubert</h3>
-        <div class="roll">Arkitekt &amp; Stadsplanerare</div>
-        <p>Arkitekt SAR/MSA. Djup kunskap i genomförbarhet, PBL och BBR. Certifierad sakkunnig inom tillgänglighet.</p>
+        <div class="roll">CEO &amp; Co-founder</div>
+        <p>Leder SODAREA:s riktning, affär och partnerskap. Arkitekt SAR/MSA och stadsplanerare med djup kunskap i genomförbarhet, PBL och BBR. Certifierad sakkunnig inom tillgänglighet.</p>
         <a class="btn-line fkontakt" href="mailto:info@sodarea.se?subject=Till%20Ben%20Grubert">Kontakta Ben</a>
       </div>
       <div class="person rv d3">
         <h3>Johan Baettig</h3>
-        <div class="roll">Creative Director &amp; Konceptutvecklare</div>
-        <p>Strategi, design och AI. Gör komplexa planfrågor begripliga i koncept, bild och film.</p>
+        <div class="roll">CPO &amp; Co-founder</div>
+        <p>Ansvarar för produktvisionen och utvecklingen av SODAREA. Bakgrund inom strategi, design och AI, med fokus på att göra komplexa planfrågor begripliga i koncept, bild och film.</p>
         <a class="btn-line fkontakt" href="mailto:info@sodarea.se?subject=Till%20Johan%20Baettig">Kontakta Johan</a>
       </div>
       <div class="refs-row rv d3">
@@ -312,7 +320,7 @@
   <!-- 6. Mic drop -->
   <section class="drop">
     <div class="wrap">
-      <h2 class="rv">SODAREA börjar inte med en bild.<br>Den börjar med <span class="grad">platsens förutsättningar</span>.</h2>
+      <h2 class="rv">Vi bygger SODAREA för att fler<br>ska kunna se <span class="grad">samma framtid</span>.</h2>
     </div>
   </section>
 
