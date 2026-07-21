@@ -141,7 +141,7 @@
   .ss-edge{ display:none; }
 
   /* ---------- BRYGGA: fler alternativ (lugn breaker mellan vad och hur) ---------- */
-  .alt-break{ position:relative; height:205vh; }   /* scrollbana: scenen pinnas medan koreografin spelar */
+  .alt-break{ position:relative; height:260vh; }   /* scrollbana: scenen pinnas medan koreografin spelar */
   .alt-stick{
     position:sticky; top:var(--vvt, 0px);
     height:100vh; height:100dvh; height:var(--vvh, 100dvh);
@@ -421,7 +421,7 @@
     color:#fff;
     filter:drop-shadow(0 2px 16px rgba(8,12,20,.5)) drop-shadow(0 0 44px rgba(8,12,20,.38));
   }
-  .data h2 .l2 .gw{ animation-delay:-1.7s; }   /* ordgruppens senare ord ligger längre fram i flödet */
+
   .data h2 .gw{
     font-style:normal;
     /* 25% uppljusade brandfärger — läsbarhet mot mörk fotobakgrund */
@@ -855,9 +855,7 @@
       background-size:750% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
       animation:rot-grad 9s ease-in-out infinite;
     }
-    .gphrase .w:nth-of-type(2){ animation-delay:-.45s; }
-    .gphrase .w:nth-of-type(3){ animation-delay:-.9s; }
-    .gphrase .w:nth-of-type(4){ animation-delay:-1.35s; }
+    /* alla ord i samma fas: hela frasen bär EN ton som vandrar genom spektrat */
   }
 
 
@@ -2064,15 +2062,15 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   /* ett scrollsteg in i scenen triggar hela textresan som EN lugn animation
      (~2s, med pauser mellan raderna); texten står sedan kvar tills gruppen
      tonar bort scrubbat mot slutet av den pinnade resan */
-  const IMG_IN = .02, IMG_OUT = .985;
-  const REVEAL_AT = .10, RESET_AT = .04;
-  const OUT_START = .85, OUT_SPAN = .12;  /* gruppens gemensamma utdissolve */
+  const IMG_IN = .015, IMG_OUT = .99;
+  const REVEAL_AT = .06, RESET_AT = .025;
+  const OUT_START = .90, OUT_SPAN = .085; /* gruppens gemensamma utdissolve — sent och snabbt */
   const stick = sec.querySelector('.alt-stick');
   const copy = sec.querySelector('.alt-copy');
   let played = false, pending = [];
   function playText(){
     let t = 120;
-    [[0, 160, 380], [1, 160, 380], [2, 55, 0]].forEach(([gi, pace, pause])=>{
+    [[0, 140, 320], [1, 140, 320], [2, 48, 0]].forEach(([gi, pace, pause])=>{
       words[gi].forEach(w=>{ pending.push(setTimeout(()=> w.classList.add('on'), t)); t += pace; });
       t += pause;
     });
