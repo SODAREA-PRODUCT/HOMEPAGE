@@ -552,7 +552,9 @@
     background:var(--paper); opacity:0; border-radius:inherit;
   }
   .ss-vignette{
-    position:absolute; inset:0; pointer-events:none; opacity:0; --vy:-999px;
+    position:absolute; inset:0; pointer-events:none; opacity:0; --vy:-999px; --vtop:0px;
+    -webkit-mask-image:linear-gradient(to bottom, transparent calc(var(--vtop) - 34px), #000 calc(var(--vtop) + 56px));
+    mask-image:linear-gradient(to bottom, transparent calc(var(--vtop) - 34px), #000 calc(var(--vtop) + 56px));
     background:
       radial-gradient(300px 300px at calc(50% - 110px) calc(var(--vy) - 150px), rgba(32,211,180,.05), transparent 70%),
       radial-gradient(340px 340px at 50% var(--vy), rgba(61,126,255,.04), transparent 70%),
@@ -1613,6 +1615,7 @@ buildStep1(); buildStep2(); buildStep3();
   const stage = document.getElementById('storyStage');
   const steps = [...story.querySelectorAll('.sstep')];
   const vig = document.getElementById('deckVignette');
+  const vigHead = story.querySelector('.story-head');
   const glow = document.getElementById('storyGlow');
   const prog = document.getElementById('storyProgFill');
   const progWrap = story.querySelector('.story-prog');
@@ -1820,7 +1823,11 @@ buildStep1(); buildStep2(); buildStep3();
     });
     if(vig){
       vig.style.opacity = vigMax > 0 ? vigMax.toFixed(3) : '0';
-      if(vigMax > 0) vig.style.setProperty('--vy', (vigY + stage.offsetTop).toFixed(1) + 'px');
+      if(vigMax > 0){
+        vig.style.setProperty('--vy', (vigY + stage.offsetTop).toFixed(1) + 'px');
+        /* skuggans överkant får aldrig nå upp över rubriken */
+        if(vigHead) vig.style.setProperty('--vtop', (vigHead.offsetTop + vigHead.offsetHeight + 6) + 'px');
+      }
     }
   }
   function apply(){
