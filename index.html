@@ -937,6 +937,9 @@
     background:#fff; border-color:var(--azure); box-shadow:0 0 0 4px rgba(61,126,255,.12); }
   .pm-field select{ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5l5 5 5-5' fill='none' stroke='%238a93a0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>");
     background-repeat:no-repeat; background-position:right 14px center; padding-right:38px; }
+  .pm-field.err input, .pm-field.err select, .pm-field.err textarea{
+    background:#fff; border-color:#e25c50; box-shadow:0 0 0 4px rgba(226,92,80,.10); }
+  .pm-err{ font-size:12px; color:#c9473c; line-height:1.45; }
   .pm-send{ justify-self:start; margin-top:6px; }
   .pm-legal{ font-size:12px; color:var(--muted); line-height:1.55; margin-top:2px; max-width:52ch; }
   .pm-legal a{ color:var(--body); text-decoration:underline; text-underline-offset:2px; }
@@ -2166,9 +2169,32 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   }
   modal.querySelectorAll('[data-pm-close]').forEach(el=>el.addEventListener('click',close));
   addEventListener('keydown',e=>{ if(e.key==='Escape' && !modal.hidden) close(); });
+  function setErr(el,msg){
+    const f=el.closest('.pm-field'); if(!f) return;
+    f.classList.add('err');
+    let m=f.querySelector('.pm-err');
+    if(!m){ m=document.createElement('span'); m.className='pm-err'; f.appendChild(m); }
+    m.textContent=msg;
+  }
+  function clearErr(el){
+    const f=el.closest('.pm-field'); if(!f) return;
+    f.classList.remove('err');
+    const m=f.querySelector('.pm-err'); if(m) m.remove();
+  }
+  form.querySelectorAll('input,select,textarea').forEach(el=>{
+    el.addEventListener('input',()=>clearErr(el));
+    el.addEventListener('change',()=>clearErr(el));
+  });
   form.addEventListener('submit',e=>{
     e.preventDefault();
-    if(!form.reportValidity()) return;
+    let first=null;
+    form.querySelectorAll('[required]').forEach(el=>{
+      const v=el.value.trim(); let msg='';
+      if(!v) msg='Fyll i fältet.';
+      else if(el.type==='email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) msg='Ange en giltig e-postadress.';
+      if(msg){ setErr(el,msg); if(!first) first=el; } else clearErr(el);
+    });
+    if(first){ first.focus(); return; }
     const d=new FormData(form);
     const subject='Pilotansökan — '+String(d.get('org')||'').trim();
     const body=[
