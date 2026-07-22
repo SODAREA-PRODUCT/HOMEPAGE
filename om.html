@@ -104,6 +104,7 @@
   #omMenu.open .mm-nav a:nth-child(3){ transition-delay:.17s; }
   #omMenu.open .mm-nav a:nth-child(4){ transition-delay:.23s; }
   #omMenu.open .mm-nav a:nth-child(5){ transition-delay:.29s; }
+  #omMenu.open .mm-nav a:nth-child(6){ transition-delay:.35s; }
   #omMenu .mm-cta{
     width:100%; justify-content:center; margin-top:22px;
     opacity:0; transform:translateY(10px);
@@ -249,6 +250,9 @@
   .cta-b .wrap{ padding-top:clamp(72px,9vw,120px); padding-bottom:clamp(72px,9vw,120px); }
   .cta-b h2{ font-size:clamp(1.8rem,2.6vw + .6rem,2.8rem); }
   .cta-b p{ margin:16px auto 0; color:var(--body); font-size:15.5px; line-height:1.7; max-width:50ch; }
+  .cta-b .cta-alt{ margin-top:20px; font-size:14px; color:var(--muted); }
+  .cta-b .cta-alt a{ color:var(--body); text-decoration:underline; text-underline-offset:3px; transition:color .2s; }
+  .cta-b .cta-alt a:hover{ color:var(--ink); }
   .btn{ display:inline-flex; align-items:center; gap:9px; margin-top:28px; padding:14px 24px; border-radius:999px;
     font-weight:600; font-size:14.5px; color:#fff;
     background:linear-gradient(90deg,var(--teal),var(--azure),var(--violet));
@@ -292,6 +296,7 @@
       <a href="./#hur">Så fungerar SODAREA <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="./#case">Projekt <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="om.html">Om SODAREA <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a href="./#kontakt">Kontakt <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </nav>
     <a class="btn mm-cta" href="./#ansok">
       Ansök om pilotplats
@@ -378,6 +383,7 @@
       <a class="btn rv d2" href="./#ansok">Ansök om en pilotplats
         <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
+      <p class="cta-alt rv d2">Övriga frågor? Mejla oss på <a href="mailto:info@sodarea.se">info@sodarea.se</a></p>
     </div>
   </section>
 </main>

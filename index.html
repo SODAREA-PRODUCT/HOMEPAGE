@@ -279,6 +279,7 @@
   #mobileMenu.open .mm-nav a:nth-child(3){ transition-delay:.17s; }
   #mobileMenu.open .mm-nav a:nth-child(4){ transition-delay:.23s; }
   #mobileMenu.open .mm-nav a:nth-child(5){ transition-delay:.29s; }
+  #mobileMenu.open .mm-nav a:nth-child(6){ transition-delay:.35s; }
   .mm-cta{
     width:100%; justify-content:center; margin-top:22px;
     opacity:0; transform:translateY(10px);
@@ -968,6 +969,25 @@
     width:min(90vw, 760px); height:auto;
     transform:translateZ(0); backface-visibility:hidden; will-change:transform;
   }
+  #introCube{ display:none; width:112px; height:112px; }
+  #introCube .ie{ stroke-dasharray:1; stroke-dashoffset:1; animation:introDraw .34s var(--ease) forwards; }
+  @keyframes introDraw{ to{ stroke-dashoffset:0; } }
+  #introCube .ie:nth-child(1){ animation-delay:.05s; }
+  #introCube .ie:nth-child(2){ animation-delay:.14s; }
+  #introCube .ie:nth-child(3){ animation-delay:.23s; }
+  #introCube .ie:nth-child(4){ animation-delay:.32s; }
+  #introCube .ie:nth-child(5){ animation-delay:.44s; }
+  #introCube .ie:nth-child(6){ animation-delay:.50s; }
+  #introCube .ie:nth-child(7){ animation-delay:.56s; }
+  #introCube .ie:nth-child(8){ animation-delay:.62s; }
+  #introCube .ie:nth-child(9){ animation-delay:.74s; }
+  #introCube .ie:nth-child(10){ animation-delay:.80s; }
+  #introCube .ie:nth-child(11){ animation-delay:.86s; }
+  #introCube .ie:nth-child(12){ animation-delay:.92s; }
+  @media (max-width:939px){
+    #intro video{ display:none; }
+    #introCube{ display:block; }
+  }
   html:not(.boot) #intro{ display:none; }
 
   @keyframes heroRise{ from{ opacity:0; transform:translateY(20px); filter:blur(7px); } to{ opacity:1; transform:none; filter:none; } }
@@ -1010,7 +1030,26 @@ document.documentElement.classList.add('boot');
 <body>
 
 <div id="intro" aria-hidden="true" title="Klicka för att hoppa över">
-  <video muted playsinline autoplay preload="auto" src="media/symbol-animation.mp4"></video>
+  <video muted playsinline preload="auto" data-src="media/symbol-animation.mp4"></video>
+  <svg id="introCube" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+    <defs><linearGradient id="icg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#20d3b4"/><stop offset="52%" stop-color="#3d7eff"/><stop offset="100%" stop-color="#9159ff"/>
+    </linearGradient></defs>
+    <g stroke="url(#icg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path class="ie" pathLength="1" d="M22 38H72"/>
+      <path class="ie" pathLength="1" d="M72 38V88"/>
+      <path class="ie" pathLength="1" d="M72 88H22"/>
+      <path class="ie" pathLength="1" d="M22 88V38"/>
+      <path class="ie" pathLength="1" d="M22 38L48 14"/>
+      <path class="ie" pathLength="1" d="M72 38L98 14"/>
+      <path class="ie" pathLength="1" d="M72 88L98 64"/>
+      <path class="ie" pathLength="1" d="M22 88L48 64"/>
+      <path class="ie" pathLength="1" d="M48 14H98"/>
+      <path class="ie" pathLength="1" d="M98 14V64"/>
+      <path class="ie" pathLength="1" d="M98 64H48"/>
+      <path class="ie" pathLength="1" d="M48 64V14"/>
+    </g>
+  </svg>
 </div>
 
 <header id="siteHeader">
@@ -1038,6 +1077,7 @@ document.documentElement.classList.add('boot');
       <a href="#hur">Så fungerar SODAREA <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="#case">Projekt <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="om.html">Om SODAREA <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a href="#kontakt">Kontakt <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </nav>
     <button class="btn mm-cta" type="button" data-pilot>
       Ansök om pilotplats
@@ -1995,10 +2035,17 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     if(ov){ ov.classList.add('done'); setTimeout(()=> ov.remove(), 650); }
   }
   if(!v || reduce){ finish(); return; }
+  ov.addEventListener('click', finish, {once:true});
+  if(window.matchMedia('(max-width:939px)').matches){
+    /* mobil: SVG-kuben ritar sig (ingen video — 3.8MB hann aldrig buffras och frös) */
+    setTimeout(finish, 1450);
+    return;
+  }
+  v.src = v.dataset.src;
+  v.autoplay = true;
   v.playbackRate = 3.0;
   v.addEventListener('ended', finish, {once:true});
   v.addEventListener('error', finish, {once:true});
-  ov.addEventListener('click', finish, {once:true});
   const p = v.play();
   if(p && p.catch) p.catch(finish);
   setTimeout(finish, 5000); // säkerhetsnät om videon aldrig spelar/slutar
