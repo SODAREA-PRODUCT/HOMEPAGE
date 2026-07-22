@@ -1353,9 +1353,11 @@ document.documentElement.classList.add('boot');
     if(t !== lastT){ lastT = t; doc.setProperty('--vvt', t + 'px'); }
   }
   function upd(){
-    /* omedelbart: scenerna ska följa verktygsfältets glidning frame för frame —
-       fördröjd commit + CSS-transition gav den synliga "knuffen" */
-    commit();
+    /* debounce: commit först när verktygsfältet satt sig — kontinuerliga
+       commits skakade hela sidan i Chrome (layout per scrollframe);
+       transform-appliceringen gör att själva justeringen är knuff-fri */
+    clearTimeout(timer);
+    timer = setTimeout(commit, 120);
   }
   commit();
   vv.addEventListener('resize', upd);
@@ -1992,7 +1994,7 @@ buildStep1(); buildStep2(); buildStep3();
 /* ---- nav + reveal + hero rotate ---- */
 const header = document.getElementById('siteHeader');
 const coarsePtr = window.matchMedia('(pointer:coarse)').matches;
-let lastScrollY = window.scrollY, dirAcc = 0, downAcc = 0;
+let lastScrollY = window.scrollY, dirAcc = 0, downAcc = 0, upAcc = 0;
 const onScrollHeader = ()=>{
   const y = window.scrollY;
   header.classList.toggle('scrolled', y > 24);
@@ -2002,8 +2004,10 @@ const onScrollHeader = ()=>{
      gömmer headern; tröskeln är högre än verktygsfältets scrollY-hopp */
   if(coarsePtr){
     const dy = y - lastScrollY;
-    if(dy > 0) downAcc += dy; else downAcc = 0;
+    if(dy > 0){ downAcc += dy; upAcc = 0; }
+    else if(dy < 0){ upAcc += -dy; downAcc = 0; }
     if(downAcc > 160 && !document.body.classList.contains('menu-open')) header.classList.add('hide');
+    else if(upAcc > 70) header.classList.remove('hide');
     lastScrollY = y; return;
   }
   const dy = y - lastScrollY;
