@@ -983,7 +983,19 @@
     html.boot .cin{ opacity:1; }
   }
 </style>
-<script>document.documentElement.classList.add('boot');</script>
+<script>
+document.documentElement.classList.add('boot');
+(function(){
+  /* reload ska alltid börja från toppen */
+  const nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+  if(nav && nav.type === 'reload'){
+    if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if(location.hash) history.replaceState(null, '', location.pathname + location.search);
+    scrollTo(0, 0);
+    addEventListener('load', ()=> scrollTo(0, 0));
+  }
+})();
+</script>
 </head>
 <body>
 
@@ -1953,13 +1965,13 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     if(ov){ ov.classList.add('done'); setTimeout(()=> ov.remove(), 650); }
   }
   if(!v || reduce){ finish(); return; }
-  v.playbackRate = 2.0;
+  v.playbackRate = 3.0;
   v.addEventListener('ended', finish, {once:true});
   v.addEventListener('error', finish, {once:true});
   ov.addEventListener('click', finish, {once:true});
   const p = v.play();
   if(p && p.catch) p.catch(finish);
-  setTimeout(finish, 8000); // säkerhetsnät om videon aldrig spelar/slutar
+  setTimeout(finish, 5000); // säkerhetsnät om videon aldrig spelar/slutar
 })();
 
 /* plan-sektionens lock: sticky bildspel, faser styrda av scrollprogress + mjuk parallax */
