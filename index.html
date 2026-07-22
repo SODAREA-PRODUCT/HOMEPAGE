@@ -278,6 +278,7 @@
   #mobileMenu.open .mm-nav a:nth-child(2){ transition-delay:.11s; }
   #mobileMenu.open .mm-nav a:nth-child(3){ transition-delay:.17s; }
   #mobileMenu.open .mm-nav a:nth-child(4){ transition-delay:.23s; }
+  #mobileMenu.open .mm-nav a:nth-child(5){ transition-delay:.29s; }
   .mm-cta{
     width:100%; justify-content:center; margin-top:22px;
     opacity:0; transform:translateY(10px);
@@ -1029,6 +1030,7 @@ document.documentElement.classList.add('boot');
   <div class="mm-back" data-mm-close></div>
   <div class="mm-sheet">
     <nav class="mm-nav" aria-label="Meny">
+      <a href="#top">Hem <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="#planforutsattningar">Planförutsättningar <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="#hur">Så fungerar SODAREA <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="#case">Projekt <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -1937,14 +1939,18 @@ buildStep1(); buildStep2(); buildStep3();
 
 /* ---- nav + reveal + hero rotate ---- */
 const header = document.getElementById('siteHeader');
-let lastScrollY = window.scrollY;
+let lastScrollY = window.scrollY, dirAcc = 0;
 const onScrollHeader = ()=>{
   const y = window.scrollY;
   header.classList.toggle('scrolled', y > 24);
-  const goingDown = y > lastScrollY + 2;
-  const goingUp = y < lastScrollY - 2;
-  if(goingDown && y > 140 && !document.body.classList.contains('menu-open')) header.classList.add('hide');
-  else if(goingUp || y <= 140) header.classList.remove('hide');
+  const dy = y - lastScrollY;
+  if(Math.abs(dy) > 1){
+    /* ackumulera riktning: enstaka pixelhopp (t.ex. när iOS-verktygsfältet
+       ändrar viewporthöjden i de pinnade scenerna) får inte gömma headern igen */
+    dirAcc = (dy > 0) === (dirAcc > 0) ? dirAcc + dy : dy;
+    if(dirAcc > 26 && y > 140 && !document.body.classList.contains('menu-open')) header.classList.add('hide');
+    else if(dirAcc < -14 || y <= 140) header.classList.remove('hide');
+  }
   lastScrollY = y;
 };
 window.addEventListener('scroll', onScrollHeader, {passive:true}); onScrollHeader();
@@ -2032,6 +2038,8 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   }
   btn.addEventListener('click', ()=> toggle());
   menu.querySelectorAll('a, [data-pilot], [data-mm-close]').forEach(el=> el.addEventListener('click', ()=> toggle(false)));
+  const hdrLogo = document.querySelector('#siteHeader .logo');
+  if(hdrLogo) hdrLogo.addEventListener('click', ()=> toggle(false));
   window.addEventListener('keydown', e=>{ if(e.key==='Escape') toggle(false); });
   window.addEventListener('resize', ()=>{ if(innerWidth >= 940 && menu.classList.contains('open')) toggle(false); }, {passive:true});
 })();
@@ -2060,10 +2068,18 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   }
   document.querySelectorAll('a[href="#planforutsattningar"], a[href="#hur"]').forEach(a=>{
     a.addEventListener('click', e=>{
-      const top = target(a.getAttribute('href'));
+      const href = a.getAttribute('href');
+      const top = target(href);
       if(top === null) return;
       e.preventDefault();
       window.scrollTo({ top, behavior:'smooth' });
+      /* garantera scenläget vid landning: rubrik framme direkt, klustret växer
+         fram av sig självt — oberoende av om scroll-eventen hann uppdatera */
+      if(href === '#planforutsattningar'){
+        const sec = document.querySelector(href);
+        sec.classList.add('ph1');
+        setTimeout(()=> sec.classList.add('ph2'), 650);
+      }
     });
   });
 })();
