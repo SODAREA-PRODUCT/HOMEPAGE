@@ -639,6 +639,15 @@
        Kön ligger nedfälld nedanför, det aktiva kortet står frontalt, färdiga
        kort tippar bakåt (halv backflip) och parkerar liggande högst upp. */
     .story{ height:440vh; }
+    /* full-bleed även på mobil: vinjetten når browserkanterna utan ljusa marginaler */
+    .story{
+      margin-left:calc(-1 * max(var(--gutter), env(safe-area-inset-left)));
+      margin-right:calc(-1 * max(var(--gutter), env(safe-area-inset-right)));
+    }
+    .story-head{
+      padding-left:max(var(--gutter), env(safe-area-inset-left));
+      padding-right:max(var(--gutter), env(safe-area-inset-right));
+    }
     #hur.band{ padding-bottom:0; }
     .story{ margin-bottom:-18vh; }   /* nästa sektion glider upp lagom sent, utan att täcka sista kortet */
     body.scene-lock header{ transform:translateY(-100%) !important; }  /* headern vilar under installationen */
