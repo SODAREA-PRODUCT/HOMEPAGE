@@ -969,25 +969,6 @@
     width:min(90vw, 760px); height:auto;
     transform:translateZ(0); backface-visibility:hidden; will-change:transform;
   }
-  #introCube{ display:none; width:112px; height:112px; }
-  #introCube .ie{ stroke-dasharray:1; stroke-dashoffset:1; animation:introDraw .34s var(--ease) forwards; }
-  @keyframes introDraw{ to{ stroke-dashoffset:0; } }
-  #introCube .ie:nth-child(1){ animation-delay:.05s; }
-  #introCube .ie:nth-child(2){ animation-delay:.14s; }
-  #introCube .ie:nth-child(3){ animation-delay:.23s; }
-  #introCube .ie:nth-child(4){ animation-delay:.32s; }
-  #introCube .ie:nth-child(5){ animation-delay:.44s; }
-  #introCube .ie:nth-child(6){ animation-delay:.50s; }
-  #introCube .ie:nth-child(7){ animation-delay:.56s; }
-  #introCube .ie:nth-child(8){ animation-delay:.62s; }
-  #introCube .ie:nth-child(9){ animation-delay:.74s; }
-  #introCube .ie:nth-child(10){ animation-delay:.80s; }
-  #introCube .ie:nth-child(11){ animation-delay:.86s; }
-  #introCube .ie:nth-child(12){ animation-delay:.92s; }
-  @media (max-width:939px){
-    #intro video{ display:none; }
-    #introCube{ display:block; }
-  }
   html:not(.boot) #intro{ display:none; }
 
   @keyframes heroRise{ from{ opacity:0; transform:translateY(20px); filter:blur(7px); } to{ opacity:1; transform:none; filter:none; } }
@@ -1030,26 +1011,7 @@ document.documentElement.classList.add('boot');
 <body>
 
 <div id="intro" aria-hidden="true" title="Klicka för att hoppa över">
-  <video muted playsinline preload="auto" data-src="media/symbol-animation.mp4"></video>
-  <svg id="introCube" viewBox="0 0 120 120" fill="none" aria-hidden="true">
-    <defs><linearGradient id="icg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#20d3b4"/><stop offset="52%" stop-color="#3d7eff"/><stop offset="100%" stop-color="#9159ff"/>
-    </linearGradient></defs>
-    <g stroke="url(#icg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-      <path class="ie" pathLength="1" d="M22 38H72"/>
-      <path class="ie" pathLength="1" d="M72 38V88"/>
-      <path class="ie" pathLength="1" d="M72 88H22"/>
-      <path class="ie" pathLength="1" d="M22 88V38"/>
-      <path class="ie" pathLength="1" d="M22 38L48 14"/>
-      <path class="ie" pathLength="1" d="M72 38L98 14"/>
-      <path class="ie" pathLength="1" d="M72 88L98 64"/>
-      <path class="ie" pathLength="1" d="M22 88L48 64"/>
-      <path class="ie" pathLength="1" d="M48 14H98"/>
-      <path class="ie" pathLength="1" d="M98 14V64"/>
-      <path class="ie" pathLength="1" d="M98 64H48"/>
-      <path class="ie" pathLength="1" d="M48 64V14"/>
-    </g>
-  </svg>
+  <video muted playsinline autoplay preload="auto" src="media/intro-symbol.mp4"></video>
 </div>
 
 <header id="siteHeader">
@@ -1258,7 +1220,7 @@ document.documentElement.classList.add('boot');
   <!-- ============ CTA ============ -->
   <section class="cta" id="kontakt">
     <div class="wrap">
-      <video class="cta-symbol reveal in" src="media/symbol-animation.mp4" muted loop playsinline autoplay preload="metadata" width="400" height="400" aria-hidden="true" id="ctaSymbol"></video>
+      <video class="cta-symbol reveal in" src="media/cta-symbol.mp4" muted loop playsinline autoplay preload="metadata" width="400" height="400" aria-hidden="true" id="ctaSymbol"></video>
       <h2 class="reveal rd1">Bli en av de första att <span class="grad-text">använda SODAREA</span></h2>
       <p class="reveal rd2">Vi söker ett begränsat antal pilotpartners bland kommuner, exploatörer och arkitekter.</p>
       <p class="reveal rd3">Som pilotpartner får ni tidig tillgång, påverkar produktens utveckling genom era projekt och får en självklar plats när vi lanserar.</p>
@@ -2036,14 +1998,8 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   }
   if(!v || reduce){ finish(); return; }
   ov.addEventListener('click', finish, {once:true});
-  if(window.matchMedia('(max-width:939px)').matches){
-    /* mobil: SVG-kuben ritar sig (ingen video — 3.8MB hann aldrig buffras och frös) */
-    setTimeout(finish, 1450);
-    return;
-  }
-  v.src = v.dataset.src;
-  v.autoplay = true;
-  v.playbackRate = 3.0;
+  /* 3x-hastigheten är inbakad i intro-symbol.mp4 (122KB, 1520px H.264) —
+     ingen forcerad playbackRate; originalet på 6400x3600 HEVC frös mobildekodern */
   v.addEventListener('ended', finish, {once:true});
   v.addEventListener('error', finish, {once:true});
   const p = v.play();
