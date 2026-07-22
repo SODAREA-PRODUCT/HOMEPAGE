@@ -2066,6 +2066,24 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
     const base = story.getBoundingClientRect().top + scrollY;
     return base + (story.offsetHeight - innerHeight) * (innerWidth < 940 ? 0.05 : 0.16);
   }
+  function igniteplan(){
+    const sec = document.getElementById('planforutsattningar');
+    if(!sec) return;
+    sec.classList.add('ph1');
+    setTimeout(()=> sec.classList.add('ph2'), 650);
+  }
+  /* hash-navigering fran annan sida (om-sidans meny): webblasaren hoppar till
+     sektionstoppen dar scenen ar slackt — flytta till offsetlaget och tand faserna */
+  function fixHashLanding(){
+    const h = location.hash;
+    if(h !== '#planforutsattningar' && h !== '#hur') return;
+    const top = target(h);
+    if(top === null) return;
+    window.scrollTo({ top, behavior:'instant' });
+    if(h === '#planforutsattningar') igniteplan();
+  }
+  fixHashLanding();
+  addEventListener('load', fixHashLanding);
   document.querySelectorAll('a[href="#planforutsattningar"], a[href="#hur"]').forEach(a=>{
     a.addEventListener('click', e=>{
       const href = a.getAttribute('href');
@@ -2075,11 +2093,7 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
       window.scrollTo({ top, behavior:'smooth' });
       /* garantera scenläget vid landning: rubrik framme direkt, klustret växer
          fram av sig självt — oberoende av om scroll-eventen hann uppdatera */
-      if(href === '#planforutsattningar'){
-        const sec = document.querySelector(href);
-        sec.classList.add('ph1');
-        setTimeout(()=> sec.classList.add('ph2'), 650);
-      }
+      if(href === '#planforutsattningar') igniteplan();
     });
   });
 })();
