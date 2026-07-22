@@ -395,7 +395,7 @@
     position:sticky; top:var(--vvt, 0px);
     height:100vh; height:100dvh; height:var(--vvh, 100dvh); overflow:hidden;
     display:flex; flex-direction:column; justify-content:center;
-    transition:height .35s var(--ease), top .35s var(--ease);
+    transition:height .35s var(--ease);
   }
   @media (max-width:939px){
     /* måla även zonen där browserns verktygsfält glider undan — full screen utan glapp */
@@ -654,9 +654,9 @@
     .story{ margin-bottom:-18vh; }   /* nästa sektion glider upp lagom sent, utan att täcka sista kortet */
     #case{ position:relative; z-index:2; }
     .story-stick{
-      /* står still: headern överlagrar istället för att innehållet flyttas
-         (vvt-följningen + transitionen fick korten att "skickas nedåt") */
-      position:sticky; top:0;
+      /* följer synliga ytan exakt (ingen transition = ingen knuff);
+         headern överlagrar utan att påverka innehållet */
+      position:sticky; top:var(--vvt, 0px);
       height:100vh; height:100dvh; height:calc(var(--vvh, 100dvh) + 110px);
       overflow:hidden; display:block; padding:0;
       background:var(--paper);
@@ -1350,11 +1350,12 @@ document.documentElement.classList.add('boot');
        När fältet tillfälligt kommer tillbaka täcker det scenens målade
        110px-förlängning istället för att layouten trycks ihop. */
     if(h > maxH + 4){ maxH = h; doc.setProperty('--vvh', h + 'px'); }
-    if(Math.abs(t - lastT) > 2){ lastT = t; doc.setProperty('--vvt', t + 'px'); }
+    if(t !== lastT){ lastT = t; doc.setProperty('--vvt', t + 'px'); }
   }
   function upd(){
-    clearTimeout(timer);
-    timer = setTimeout(commit, 130);
+    /* omedelbart: scenerna ska följa verktygsfältets glidning frame för frame —
+       fördröjd commit + CSS-transition gav den synliga "knuffen" */
+    commit();
   }
   commit();
   vv.addEventListener('resize', upd);
