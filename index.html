@@ -1992,14 +1992,20 @@ buildStep1(); buildStep2(); buildStep3();
 /* ---- nav + reveal + hero rotate ---- */
 const header = document.getElementById('siteHeader');
 const coarsePtr = window.matchMedia('(pointer:coarse)').matches;
-let lastScrollY = window.scrollY, dirAcc = 0;
+let lastScrollY = window.scrollY, dirAcc = 0, downAcc = 0;
 const onScrollHeader = ()=>{
   const y = window.scrollY;
   header.classList.toggle('scrolled', y > 24);
-  if(y <= 140){ header.classList.remove('hide'); lastScrollY = y; return; }
-  /* pekskärm: scrollY jittrar när iOS-verktygsfältet ändrar viewporten i de
-     pinnade scenerna — där styr fingrets riktning (touch-lyssnarna nedan) */
-  if(coarsePtr){ lastScrollY = y; return; }
+  if(y <= 140){ header.classList.remove('hide'); downAcc = 0; lastScrollY = y; return; }
+  /* pekskärm: fingrets riktning styr (touch-lyssnarna nedan). Momentum-fasen
+     ger inga touch-events — fallback: ihållande nedåtscroll (>160px i följd)
+     gömmer headern; tröskeln är högre än verktygsfältets scrollY-hopp */
+  if(coarsePtr){
+    const dy = y - lastScrollY;
+    if(dy > 0) downAcc += dy; else downAcc = 0;
+    if(downAcc > 160 && !document.body.classList.contains('menu-open')) header.classList.add('hide');
+    lastScrollY = y; return;
+  }
   const dy = y - lastScrollY;
   if(Math.abs(dy) > 1){
     dirAcc = (dy > 0) === (dirAcc > 0) ? dirAcc + dy : dy;
@@ -2016,8 +2022,8 @@ if(coarsePtr){
     if(tY === null) return;
     const y = e.touches[0].clientY, d = y - tY; tY = y;
     tAcc = (d > 0) === (tAcc > 0) ? tAcc + d : d;
-    if(tAcc > 16) header.classList.remove('hide');              /* finger nedåt = scroll upp → visa */
-    else if(tAcc < -40 && window.scrollY > 140 && !document.body.classList.contains('menu-open')) header.classList.add('hide');
+    if(tAcc > 14){ header.classList.remove('hide'); downAcc = 0; }   /* finger nedåt = scroll upp → visa */
+    else if(tAcc < -24 && window.scrollY > 140 && !document.body.classList.contains('menu-open')) header.classList.add('hide');
   }, {passive:true});
 }
 
