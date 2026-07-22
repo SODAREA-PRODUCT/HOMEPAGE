@@ -477,10 +477,12 @@
     .tkw{ font-size:1.3rem; height:1.5em; }
   }
   @media (max-width:939px){
-    /* rubriken en rubrikrad upp; klustret in i synliga ytan (stickens 110px-
-       förlängning ligger under browserns verktygsfält) och närmare rubriken */
-    .data-stick > .wrap{ transform:translateY(clamp(-56px, -11vw, -40px)); }
-    .trust{ bottom:calc(110px + clamp(96px, 15vh, 150px)); }
+    /* stabil topp-ankring: rubrik och kluster ligger i flöde uppifrån med
+       vh-mått (statiska på iOS) — verktygsfältets höjdskiften kan aldrig
+       flytta dem relativt varandra (bottenankring + vvh-centrering kolliderade) */
+    .data-stick{ justify-content:flex-start; padding-top:clamp(120px, 22vh, 200px); }
+    .data-stick > .wrap{ transform:none; }
+    .trust{ position:static; bottom:auto; margin-top:clamp(48px, 9vh, 96px); }
   }
 
   /* ---------- SÅ FUNGERAR SODAREA — premiumkort på scen ---------- */
