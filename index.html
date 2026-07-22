@@ -654,9 +654,9 @@
     .story{ margin-bottom:-18vh; }   /* nästa sektion glider upp lagom sent, utan att täcka sista kortet */
     #case{ position:relative; z-index:2; }
     .story-stick{
-      /* följer synliga ytan exakt (ingen transition = ingen knuff);
-         headern överlagrar utan att påverka innehållet */
-      position:sticky; top:var(--vvt, 0px);
+      /* stabil layout: top:0 — viewport-följningen sker som transform
+         (ren kompositor, ingen omlayout = inget skak); headern överlagrar */
+      position:sticky; top:0; will-change:transform;
       height:100vh; height:100dvh; height:calc(var(--vvh, 100dvh) + 110px);
       overflow:hidden; display:block; padding:0;
       background:var(--paper);
@@ -1721,15 +1721,23 @@ buildStep1(); buildStep2(); buildStep3();
     const parkVisTop = ebBottom + 10;
     /* jämnt toppavstånd oavsett kort: aktiva kortet ligger alltid tätt under
        det som finns ovanför — eyebrown, eller de ryggar som hunnit parkera */
-    const aY = [
+    const bandRef = hMin * Math.cos(M.LIE*RAD) + 24;
+    const QG = bandRef * .62;                        /* väntehögen: komprimerad */
+    const pileH = 2*QG + bandRef;
+    /* aktivt kort: centrerat i synliga ytan så långt det går — klämt mellan
+       rubrik/parkerade ryggar ovanför och de väntande korten nedanför */
+    const aMin = [
       ebBottom + 18,
       parkVisTop + bandParkRef + 14,
       parkVisTop + PS + bandParkRef + 14
     ];
+    const needBelow = [16 + QG + bandRef + 10, 16 + bandRef + 10, 12];
+    const aY = hF.map((h, i)=>{
+      const centered = Math.round(stageH * .47 - h / 2);
+      const maxTop = Math.max(aMin[i], stageH - h - needBelow[i]);
+      return Math.max(aMin[i], Math.min(centered, maxTop));
+    });
     const qT = aY.map(a=> a + hAct + 16);            /* köns topp under respektive aktivt kort */
-    const bandRef = hMin * Math.cos(M.LIE*RAD) + 24;
-    const QG = bandRef * .62;                        /* väntehögen: komprimerad */
-    const pileH = 2*QG + bandRef;
     const introShift = stageH * .16;
     const vtRest = Math.max(headPad + (head ? head.offsetHeight : 120) + introShift + 26,
                             (stageH - pileH) / 2 + 40);
@@ -1741,7 +1749,7 @@ buildStep1(); buildStep2(); buildStep3();
     const sr = story.getBoundingClientRect();
     const exit = clamp01((innerHeight - sr.bottom) / (innerHeight * 0.62));
     stick.style.opacity = (1 - exit).toFixed(3);
-    stick.style.transform = exit > 0 ? `scale(${(1 - exit * .04).toFixed(4)})` : '';
+    stick.style.transform = 'translateY(var(--vvt, 0px))' + (exit > 0 ? ` scale(${(1 - exit * .04).toFixed(4)})` : '');
 
     /* intro: stor rubrik; vid scroll lämnar den mjukt scenen medan
        eyebrown lyfts till toppen och blir scenens fasta rubrik */
