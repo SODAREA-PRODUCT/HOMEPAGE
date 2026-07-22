@@ -652,14 +652,14 @@
     }
     #hur.band{ padding-bottom:0; }
     .story{ margin-bottom:-18vh; }   /* nästa sektion glider upp lagom sent, utan att täcka sista kortet */
-    body.scene-lock header{ transform:translateY(-100%) !important; }  /* headern vilar under installationen */
     #case{ position:relative; z-index:2; }
     .story-stick{
-      position:sticky; top:var(--vvt, 0px);
+      /* står still: headern överlagrar istället för att innehållet flyttas
+         (vvt-följningen + transitionen fick korten att "skickas nedåt") */
+      position:sticky; top:0;
       height:100vh; height:100dvh; height:calc(var(--vvh, 100dvh) + 110px);
       overflow:hidden; display:block; padding:0;
       background:var(--paper);
-      transition:height .35s var(--ease), top .35s var(--ease);
     }
     .story-head{
       display:block; position:absolute; top:0; left:0; right:0; z-index:40; transform:none;
@@ -1744,7 +1744,6 @@ buildStep1(); buildStep2(); buildStep3();
 
     /* intro: stor rubrik; vid scroll lämnar den mjukt scenen medan
        eyebrown lyfts till toppen och blir scenens fasta rubrik */
-    document.body.classList.toggle('scene-lock', p > 0.04 && exit < 0.85);
     if(head){
       const e = sm(clamp01((p - 0.02) / 0.14));
       head.style.transform = `translateY(${((1 - e) * introShift).toFixed(1)}px)`;
@@ -1835,7 +1834,6 @@ buildStep1(); buildStep2(); buildStep3();
     if(mobile){ applyMobile(progress()); ticking = false; return; }
     story.classList.remove('m3d');
     stick.style.transform = '';
-    document.body.classList.remove('scene-lock');
     if(vig) vig.style.opacity = '0';
     const p = progress();
     const {E, F, f, ring} = phases(p);
