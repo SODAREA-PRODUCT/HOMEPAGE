@@ -2094,6 +2094,11 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
      sektionstoppen dar scenen ar slackt — flytta till offsetlaget och tand faserna */
   function fixHashLanding(){
     const h = location.hash;
+    if(h === '#kontakt' || h === '#case'){
+      const el = document.querySelector(h);
+      if(el) window.scrollTo({ top: el.getBoundingClientRect().top + scrollY, behavior:'instant' });
+      return;
+    }
     if(h !== '#planforutsattningar' && h !== '#hur') return;
     const top = target(h);
     if(top === null) return;
