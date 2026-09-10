@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /villkor.html
+Disallow: /integritetspolicy.html
+
+Sitemap: https://sodarea.se/sitemap.xml

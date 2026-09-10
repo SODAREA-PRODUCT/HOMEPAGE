@@ -8,6 +8,18 @@
 <meta property="og:title" content="SODAREA — Visuella byggnadsförslag">
 <meta property="og:description" content="Skapa realistiska byggnadsförslag direkt utifrån verkliga planförutsättningar.">
 <meta property="og:type" content="website">
+<link rel="canonical" href="https://sodarea.se/">
+<meta property="og:url" content="https://sodarea.se/">
+<meta property="og:site_name" content="SODAREA">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:image" content="https://sodarea.se/media/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SODAREA — visuella byggnadsförslag: tre staplade lager från detaljplan till fotorealistisk visualisering">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SODAREA — Visuella byggnadsförslag">
+<meta name="twitter:description" content="Skapa realistiska byggnadsförslag direkt utifrån verkliga planförutsättningar.">
+<meta name="twitter:image" content="https://sodarea.se/media/og-image.jpg">
 <meta name="theme-color" content="#fcfcfb">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -337,13 +349,48 @@
     display:inline-flex; align-items:center; gap:9px; margin-top:32px;
     font-size:11.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
   }
+  /* ---------- SCROLLHINT ---------- */
+  /* Visas efter 5 s om besökaren inte scrollat. På mobil ligger den absolut till höger
+     i knappraden och CTA:n krymper med max-width för att lämna plats (ingen flödespåverkan). */
+  .scroll-hint{
+    position:absolute; right:var(--gutter); bottom:28px; z-index:3;
+    display:inline-flex; align-items:center; gap:12px;
+    color:var(--muted); pointer-events:none; opacity:0; transform:translateY(6px);
+    transition:opacity .7s var(--ease-out) .12s, transform .7s var(--ease-out) .12s;
+  }
+  .sh-label{
+    font-size:9px; font-weight:600; letter-spacing:.24em; text-transform:uppercase;
+    white-space:nowrap; line-height:1.2;
+  }
+  .sh-chevs{ display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .sh-chevs svg{ display:block; width:12px; height:7px; opacity:.18; transform-origin:center; }
+  .sh-chevs svg path{ stroke-width:1.7; }
+  body.hint-on .scroll-hint{ opacity:1; transform:translateY(0); }
+  body.hint-on .sh-chevs svg{ animation:sh-wave 2.4s cubic-bezier(.45,0,.55,1) infinite; }
+  /* måste matcha body.hint-on-selektorns specificitet, annars nollställer
+     animation-shorthanden fördröjningen och vågen rullar i takt i stället för i följd */
+  body.hint-on .sh-chevs svg:nth-child(2){ animation-delay:.16s; }
+  body.hint-on .sh-chevs svg:nth-child(3){ animation-delay:.32s; }
+  @keyframes sh-wave{
+    0%,100%{ transform:translateY(-2px); opacity:.18 }
+    50%    { transform:translateY(3px);  opacity:1 }
+  }
+  @media (prefers-reduced-motion:reduce){
+    body.hint-on .sh-chevs svg{ animation:none; opacity:.55; }
+    .scroll-hint, .hero-actions .btn{ transition:opacity .3s; }
+  }
+
   .hero-media{ line-height:0; min-height:0; }
-  .hero-media img{ width:100%; height:auto; }
+  .hero-media img, .hero-media video{ width:100%; height:auto; display:block; }
 
   @media (min-width:940px){
     .hero-inner{ padding-top:120px; padding-bottom:48px; }
     .hero-media{ z-index:0; }
-    .hero-copy, .hero-actions, .hero-eyebrow{ position:relative; z-index:2; }
+    .hero-copy, .hero-eyebrow{ position:relative; z-index:2; }
+    /* .hero-actions är flex-item i .hero-inner, så z-index gäller utan position:relative.
+       Utan den blir .hero-inner scrollhintens referens och hinten hamnar i herons
+       nederkant, i linje med eyebrown — inte mot knappraden. */
+    .hero-actions{ z-index:2; }
     .hero-copy{ flex:0 0 min(46%, 660px); }
     .hero-sub{ margin-top:28px; }
     .hero-media{
@@ -351,7 +398,7 @@
       right:0;
       width:min(60%, 1100px); display:flex; align-items:center; justify-content:flex-end;
     }
-    .hero-media img{ width:100%; height:100%; object-fit:contain; object-position:center right; }
+    .hero-media img, .hero-media video{ width:100%; height:100%; object-fit:contain; object-position:center right; }
   }
   @media (max-width:939px){
     .hero-tagline{ font-weight:700; font-size:clamp(1.1rem, 4.6vw, 1.35rem); }
@@ -359,9 +406,11 @@
     .hero-grid{ flex-direction:column; align-items:stretch; gap:0; justify-content:flex-start; }
     .hero h1{ letter-spacing:-.03em; }
     .hero-media{ order:-1; flex:none; margin:-14px calc(-1 * var(--gutter)) 0; display:block; }
-    .hero-media img{ width:100%; max-width:none; height:auto; }
+    .hero-media img, .hero-media video{ width:100%; max-width:none; height:auto; }
     .hero-copy{ position:relative; z-index:2; margin-top:-60px; }
     .hero-actions{ margin-top:16px; }
+    .hero-actions .btn{ transition:max-width .55s var(--ease-out); }
+    body.hint-on .hero-actions .btn{ max-width:calc(100% - 156px); }
     .hero-eyebrow{ display:none; }
   }
   @media (max-width:939px) and (max-height:700px){
@@ -950,6 +999,8 @@
   .pm-sub{ margin-top:9px; color:var(--body); font-size:14.5px; line-height:1.6; }
   #pilotForm{ margin-top:26px; display:grid; gap:16px; }
   .pm-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  /* Roll rymmer "Mark- och exploateringschef" — behöver bredare kolumn än Organisation */
+  .pm-row-roll{ grid-template-columns:.82fr 1.18fr; }
   .pm-field{ display:grid; gap:7px; }
   .pm-field > span{ font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
   .pm-field input, .pm-field select, .pm-field textarea{
@@ -1028,6 +1079,8 @@ document.documentElement.classList.add('boot');
   }
 })();
 </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
 <body>
 
@@ -1081,10 +1134,31 @@ document.documentElement.classList.add('boot');
           <p class="hero-sub hero-tagline reveal in rd1 cin"><span class="tg">Planenliga&ensp;|&ensp;Justerbara&ensp;|&ensp;Fotorealistiska</span></p>
         </div>
         <div class="hero-media reveal in rd2 cin" id="heroMedia">
-          <picture>
-            <source media="(max-width:939px)" srcset="media/hero-mobil.jpg" width="1374" height="1400">
-            <img src="media/hero-bg.jpg" alt="Lagervisualisering — från detaljplan, via analys och volymstudier, till färdig stadsmiljö" width="2000" height="1728" fetchpriority="high">
-          </picture>
+          <video id="heroVid" width="2000" height="1728" autoplay loop muted playsinline
+                 preload="auto" disablepictureinpicture
+                 aria-label="Lagervisualisering — från detaljplan, via analys och volymstudier, till färdig stadsmiljö"></video>
+          <script>
+          /* Källa och posterbild sätts här, synkront under parsningen, så att bara rätt
+             variant hämtas — media-attributet på source-element inuti video är inte
+             pålitligt i webbläsarna.
+             Reducerad rörelse: ingen uppspelning, posterbilden får stå kvar. */
+          (function(){
+            var v = document.getElementById('heroVid');
+            var liten = matchMedia('(max-width:939px)').matches;
+            v.poster = liten ? 'media/hero-mobil.jpg' : 'media/hero-bg.jpg';
+            if (matchMedia('(prefers-reduced-motion: reduce)').matches){
+              v.removeAttribute('autoplay'); v.removeAttribute('loop'); v.preload = 'none';
+              return;
+            }
+            v.src = liten ? 'media/hero-mobil.mp4' : 'media/hero-bg.mp4';
+          })();
+          </script>
+          <noscript>
+            <picture>
+              <source media="(max-width:939px)" srcset="media/hero-mobil.jpg" width="1374" height="1400">
+              <img src="media/hero-bg.jpg" alt="Lagervisualisering — från detaljplan, via analys och volymstudier, till färdig stadsmiljö" width="2000" height="1728" fetchpriority="high">
+            </picture>
+          </noscript>
         </div>
       </div>
       <div class="hero-actions reveal in rd3 cin">
@@ -1095,6 +1169,12 @@ document.documentElement.classList.add('boot');
       </div>
       <div class="hero-eyebrow reveal in rd4 cin">Pilotprogram 2026 · begränsat antal platser</div>
     </div>
+    <!-- Ligger utanför .hero-inner: knappraden har blur och transform från boot-kaskaden,
+         och båda skapar en containing block som skulle låsa hinten till knappen. -->
+    <span class="scroll-hint" id="scrollHint" aria-hidden="true">
+      <span class="sh-label">Scrolla för mer</span>
+      <span class="sh-chevs"><svg viewBox="0 0 14 9" fill="none" aria-hidden="true"><path d="M1 1.4L7 7.2l6-5.8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg><svg viewBox="0 0 14 9" fill="none" aria-hidden="true"><path d="M1 1.4L7 7.2l6-5.8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg><svg viewBox="0 0 14 9" fill="none" aria-hidden="true"><path d="M1 1.4L7 7.2l6-5.8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </span>
   </section>
 
   <!-- ============ PLANFÖRUTSÄTTNINGAR (data tags) ============ -->
@@ -1304,7 +1384,7 @@ document.documentElement.classList.add('boot');
       <h3 id="pmTitle">Ansök om pilotplats</h3>
       <p class="pm-sub">Berätta kort om er verksamhet, så återkommer vi inom några dagar.</p>
       <form id="pilotForm" novalidate>
-        <div class="pm-row">
+        <div class="pm-row pm-row-roll">
           <label class="pm-field"><span>Organisation</span><input name="org" type="text" required autocomplete="organization" placeholder="Kommun eller bolag"></label>
           <label class="pm-field"><span>Roll</span>
             <select name="roll">
@@ -2252,6 +2332,47 @@ document.querySelectorAll('.reveal:not(.in)').forEach(e=> io.observe(e));
   addEventListener('scroll', onS, {passive:true});
   addEventListener('resize', onS, {passive:true});
   scrub();
+})();
+</script>
+<script>
+/* scrollhint: visas efter 5 s om besökaren står kvar högst upp, försvinner vid scroll */
+(function(){
+  var hint = document.getElementById('scrollHint');
+  if(!hint) return;
+  var hero = document.querySelector('.hero');
+  var knapp = document.querySelector('.hero-actions .btn');
+
+  /* Under 940 px ska hinten stå i linje med knappen. Knappens avstånd till herons
+     nederkant varierar med skärmhöjden (heron är 100svh och innehållet kan tränga
+     ihop sig), så vi mäter i stället för att gissa ett fast värde. */
+  function placera(){
+    if(!knapp || !hero) return;
+    if(innerWidth >= 940){ hint.style.bottom = ''; return; }
+    var k = knapp.getBoundingClientRect(), h = hero.getBoundingClientRect();
+    var mitt = k.top + k.height / 2;
+    hint.style.bottom = Math.round(h.bottom - mitt - hint.offsetHeight / 2) + 'px';
+  }
+  placera();
+  addEventListener('resize', placera, {passive:true});
+  addEventListener('orientationchange', function(){ setTimeout(placera, 120); });
+
+  var t = setTimeout(visa, 5000), klar = false;
+  function nereVidToppen(){ return (window.scrollY || document.documentElement.scrollTop) < 40; }
+  function visa(){
+    if(klar || !nereVidToppen()) return;
+    klar = true;
+    placera();
+    document.body.classList.add('hint-on');
+  }
+  function dölj(){
+    clearTimeout(t); klar = true;
+    document.body.classList.remove('hint-on');
+  }
+  addEventListener('scroll', function s(){
+    if(nereVidToppen()) return;
+    dölj();
+    removeEventListener('scroll', s);
+  }, {passive:true});
 })();
 </script>
 <script>

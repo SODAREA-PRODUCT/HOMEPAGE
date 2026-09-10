@@ -1,2 +1,8 @@
 .vercel
 Assets/
+.DS_Store
+
+# Källfiler för heron — renderade varianter ligger i media/hero-*.mp4
+media/SODAREA-Living-Layers-5s-2.mp4
+# Dubblett av filen i Assets/ — hamnade i webroten av misstag
+Brobyholm - Strängnäs kommun - Ben Grubert Architecture (1080p).mp4
