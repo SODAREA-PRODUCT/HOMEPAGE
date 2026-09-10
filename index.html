@@ -922,23 +922,21 @@
     transition:opacity .5s var(--ease), transform .5s var(--ease);
   }
   .vision .w.on{ opacity:1; transform:none; }
-  .gphrase{
+  /* Gradienten sitter på varje ord, aldrig på frasen.
+     Orden tonar in med opacity och transform, och ett element som animerar dem
+     får ett eget kompositionslager — som ritas UTAN förälderns background-clip.
+     Låg klippningen på .gphrase försvann därför raden ibland helt, och delar av
+     bokstäver blev kvar som fragment under scroll (syntes i både #alternativ och
+     #visionBreak). Med gradienten på ordet självt finns ingen klippning att bryta.
+     Detta gällde tidigare bara under 940 px; buggen fanns kvar på desktop.
+     background-size:1800% gör färgfönstret så smalt att alla ord bär samma ton,
+     och gemensam animation håller dem i fas — frasen läses som EN grupp. */
+  .gphrase{ color:inherit; }
+  .gphrase .w{
     background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
+    background-size:1800% 100%;
     -webkit-background-clip:text; background-clip:text; color:transparent;
-    /* smalt fönster: hela frasen bär nästan samma ton som vandrar genom spektrat */
-    animation:rot-grad 9s ease-in-out infinite; background-size:1800% 100%;
-  }
-  @media (max-width:939px){
-    /* iOS klipper inte förälderns gradient genom animerade barn — ge orden egen
-       gradient med fasförskjutning så flödet läses som EN grupp */
-    .gphrase{ background:none; animation:none; color:inherit;
-      -webkit-background-clip:border-box; background-clip:border-box; }
-    .gphrase .w{
-      background:linear-gradient(90deg, var(--teal) 0%, var(--azure) 25%, var(--violet) 50%, var(--azure) 75%, var(--teal) 100%);
-      background-size:1800% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
-      animation:rot-grad 9s ease-in-out infinite;
-    }
-    /* alla ord i samma fas: hela frasen bär EN ton som vandrar genom spektrat */
+    animation:rot-grad 9s ease-in-out infinite;
   }
 
 
